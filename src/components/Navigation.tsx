@@ -34,10 +34,14 @@ const Navigation = ({ user, onSearch, onLogout }: NavigationProps) => {
   return (
     <nav className="bg-background border-b border-border px-4 py-3 shadow-sm">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        {/* Logo */}
+        {/* Logo with Khalulu Owl */}
         <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">Z</span>
+          <div className="w-8 h-8 flex items-center justify-center">
+            <img
+              src="/lovable-uploads/e153d080-0e68-4853-b008-897623780941.png"
+              alt="Khalulu the Owl"
+              className="w-8 h-8 object-contain"
+            />
           </div>
           <h1 className="text-xl font-bold text-foreground">Zintsomi College</h1>
         </div>
