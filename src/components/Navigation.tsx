@@ -10,6 +10,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
 
 interface NavigationProps {
   user?: {
@@ -23,11 +25,36 @@ interface NavigationProps {
 const Navigation = ({ user, onSearch, onLogout }: NavigationProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const { isDark, toggleTheme } = useTheme();
+  const { signOut } = useAuth();
+  const { toast } = useToast();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (onSearch && searchQuery.trim()) {
       onSearch(searchQuery.trim());
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      const { error } = await signOut();
+      if (error) {
+        toast({
+          title: "Error",
+          description: "Failed to sign out",
+          variant: "destructive",
+        });
+      } else {
+        if (onLogout) {
+          onLogout();
+        }
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      });
     }
   };
 
@@ -88,7 +115,7 @@ const Navigation = ({ user, onSearch, onLogout }: NavigationProps) => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>
-                <DropdownMenuItem onClick={onLogout}>
+                <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>
                 </DropdownMenuItem>

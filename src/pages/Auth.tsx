@@ -1,8 +1,10 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 import KhaluluOwl from '@/components/KhaluluOwl';
 
 interface AuthProps {
@@ -14,25 +16,91 @@ const Auth = ({ onLogin, onBack }: AuthProps) => {
   const [isSignUp, setIsSignUp] = useState(true);
   const [formData, setFormData] = useState({
     username: '',
+    fullName: '',
     email: '',
     password: ''
   });
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const { signUp, signIn, user } = useAuth();
+  const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Redirect if user is already authenticated
+  useEffect(() => {
+    if (user) {
+      onLogin({
+        name: user.user_metadata?.full_name || user.user_metadata?.username || user.email?.split('@')[0] || 'User',
+        email: user.email || ''
+      });
+    }
+  }, [user, onLogin]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simple form validation
-    if (isSignUp && (!formData.username || !formData.email || !formData.password)) {
-      return;
-    }
-    if (!isSignUp && (!formData.email || !formData.password)) {
-      return;
-    }
+    setIsLoading(true);
 
-    // Mock successful authentication
-    onLogin({
-      name: formData.username || formData.email.split('@')[0],
-      email: formData.email
-    });
+    try {
+      if (isSignUp) {
+        // Sign up flow
+        if (!formData.username || !formData.fullName || !formData.email || !formData.password) {
+          toast({
+            title: "Error",
+            description: "Please fill in all fields",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        const { error } = await signUp(
+          formData.email,
+          formData.password,
+          formData.username,
+          formData.fullName
+        );
+
+        if (error) {
+          toast({
+            title: "Sign Up Error",
+            description: error.message,
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Success!",
+            description: "Account created successfully. Please check your email to verify your account.",
+          });
+        }
+      } else {
+        // Sign in flow
+        if (!formData.email || !formData.password) {
+          toast({
+            title: "Error",
+            description: "Please fill in all fields",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        const { error } = await signIn(formData.email, formData.password);
+
+        if (error) {
+          toast({
+            title: "Sign In Error",
+            description: error.message,
+            variant: "destructive",
+          });
+        }
+        // Success handling is done in useEffect when user state changes
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,8 +125,12 @@ const Auth = ({ onLogin, onBack }: AuthProps) => {
         {/* Auth Form */}
         <div className="bg-white rounded-3xl shadow-xl p-8">
           <div className="text-center mb-8">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <span className="text-white font-bold text-xl">Z</span>
+            <div className="w-12 h-12 flex items-center justify-center mx-auto mb-4">
+              <img
+                src="/lovable-uploads/e153d080-0e68-4853-b008-897623780941.png"
+                alt="Khalulu the Owl"
+                className="w-12 h-12 object-contain"
+              />
             </div>
             <h2 className="text-3xl font-bold text-gray-800 mb-2">
               {isSignUp ? 'Join Zintsomi College' : 'Welcome Back'}
@@ -73,21 +145,39 @@ const Auth = ({ onLogin, onBack }: AuthProps) => {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {isSignUp && (
-              <div>
-                <Label htmlFor="username" className="text-gray-700 font-medium">
-                  Username
-                </Label>
-                <Input
-                  id="username"
-                  name="username"
-                  type="text"
-                  value={formData.username}
-                  onChange={handleInputChange}
-                  placeholder="Enter your username"
-                  className="mt-1 rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500"
-                  required={isSignUp}
-                />
-              </div>
+              <>
+                <div>
+                  <Label htmlFor="username" className="text-gray-700 font-medium">
+                    Username
+                  </Label>
+                  <Input
+                    id="username"
+                    name="username"
+                    type="text"
+                    value={formData.username}
+                    onChange={handleInputChange}
+                    placeholder="Choose a username"
+                    className="mt-1 rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                    required={isSignUp}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="fullName" className="text-gray-700 font-medium">
+                    Full Name
+                  </Label>
+                  <Input
+                    id="fullName"
+                    name="fullName"
+                    type="text"
+                    value={formData.fullName}
+                    onChange={handleInputChange}
+                    placeholder="Enter your full name"
+                    className="mt-1 rounded-xl border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                    required={isSignUp}
+                  />
+                </div>
+              </>
             )}
 
             <div>
@@ -124,9 +214,10 @@ const Auth = ({ onLogin, onBack }: AuthProps) => {
 
             <Button
               type="submit"
+              disabled={isLoading}
               className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl py-3 text-lg font-semibold"
             >
-              {isSignUp ? 'Create Account' : 'Sign In'}
+              {isLoading ? 'Please wait...' : (isSignUp ? 'Create Account' : 'Sign In')}
             </Button>
           </form>
 

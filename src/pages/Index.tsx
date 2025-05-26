@@ -4,18 +4,17 @@ import Welcome from './Welcome';
 import Auth from './Auth';
 import Courses from './Courses';
 import KhaluluOwl from '@/components/KhaluluOwl';
+import { useAuth } from '@/hooks/useAuth';
 
 const Index = () => {
   const [currentPage, setCurrentPage] = useState<'welcome' | 'auth' | 'courses'>('welcome');
-  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  const { user, loading } = useAuth();
 
   const handleLogin = (userData: { name: string; email: string }) => {
-    setUser(userData);
     setCurrentPage('courses');
   };
 
   const handleLogout = () => {
-    setUser(null);
     setCurrentPage('welcome');
   };
 
@@ -27,24 +26,47 @@ const Index = () => {
     setCurrentPage('welcome');
   };
 
-  if (currentPage === 'auth') {
-    return <Auth onLogin={handleLogin} onBack={handleBackToWelcome} />;
+  // Show loading state while checking auth
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="text-center">
+          <img
+            src="/lovable-uploads/e153d080-0e68-4853-b008-897623780941.png"
+            alt="Khalulu the Owl"
+            className="w-16 h-16 object-contain mx-auto mb-4 animate-bounce"
+          />
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
   }
 
-  if (currentPage === 'courses' && user) {
+  // If user is authenticated, show courses directly
+  if (user && currentPage !== 'auth') {
     return (
       <div className="min-h-screen bg-background">
-        <Courses user={user} onLogout={handleLogout} />
+        <Courses 
+          user={{
+            name: user.user_metadata?.full_name || user.user_metadata?.username || user.email?.split('@')[0] || 'User',
+            email: user.email || ''
+          }} 
+          onLogout={handleLogout} 
+        />
         
         {/* Greeting from Khalulu */}
         <div className="fixed bottom-4 right-4 z-50">
           <KhaluluOwl 
-            userName={user.name}
+            userName={user.user_metadata?.full_name || user.user_metadata?.username || 'there'}
             className="scale-75"
           />
         </div>
       </div>
     );
+  }
+
+  if (currentPage === 'auth') {
+    return <Auth onLogin={handleLogin} onBack={handleBackToWelcome} />;
   }
 
   return (
