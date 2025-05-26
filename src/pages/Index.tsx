@@ -33,7 +33,7 @@ const Index = () => {
 
   if (currentPage === 'courses' && user) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <Courses user={user} onLogout={handleLogout} />
         
         {/* Greeting from Khalulu */}
