@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import KhaluluOwl from '@/components/KhaluluOwl';
+import { BookOpen, Bot, Headphones } from 'lucide-react';
 
 interface WelcomeProps {
   onLogin: () => void;
@@ -58,7 +58,7 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-16">
           <div className="text-center p-6 bg-white rounded-2xl shadow-sm">
             <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-              <span className="text-blue-600 text-xl">📚</span>
+              <BookOpen className="text-blue-600 w-6 h-6" />
             </div>
             <h3 className="font-semibold text-gray-800 mb-2">Multi-Language Courses</h3>
             <p className="text-gray-600 text-sm">Learn storytelling in IsiZulu, Nguni, Sesotho, English, and Sepedi</p>
@@ -66,7 +66,7 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
           
           <div className="text-center p-6 bg-white rounded-2xl shadow-sm">
             <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-              <span className="text-purple-600 text-xl">🤖</span>
+              <Bot className="text-purple-600 w-6 h-6" />
             </div>
             <h3 className="font-semibold text-gray-800 mb-2">AI-Powered Stories</h3>
             <p className="text-gray-600 text-sm">Create personalized characters and interactive narratives with AI</p>
@@ -74,17 +74,12 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
           
           <div className="text-center p-6 bg-white rounded-2xl shadow-sm">
             <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-              <span className="text-green-600 text-xl">🥽</span>
+              <Headphones className="text-green-600 w-6 h-6" />
             </div>
             <h3 className="font-semibold text-gray-800 mb-2">VR Experiences</h3>
             <p className="text-gray-600 text-sm">Immerse yourself in virtual reality storytelling environments</p>
           </div>
         </div>
-      </div>
-
-      {/* Khalulu Owl at Bottom */}
-      <div className="pb-8">
-        <KhaluluOwl className="animate-fade-in" />
       </div>
     </div>
   );

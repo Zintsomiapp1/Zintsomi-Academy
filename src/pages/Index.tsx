@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import Welcome from './Welcome';
 import Auth from './Auth';
 import Courses from './Courses';
-import KhaluluOwl from '@/components/KhaluluOwl';
 import { useAuth } from '@/hooks/useAuth';
 
 const Index = () => {
@@ -53,14 +52,6 @@ const Index = () => {
           }} 
           onLogout={handleLogout} 
         />
-        
-        {/* Greeting from Khalulu */}
-        <div className="fixed bottom-4 right-4 z-50">
-          <KhaluluOwl 
-            userName={user.user_metadata?.full_name || user.user_metadata?.username || 'there'}
-            className="scale-75"
-          />
-        </div>
       </div>
     );
   }
