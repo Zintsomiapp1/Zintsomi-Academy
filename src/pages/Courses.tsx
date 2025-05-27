@@ -7,6 +7,7 @@ import CourseGrid from '@/components/CourseGrid';
 interface CoursesProps {
   user?: {
     name: string;
+    email: string;
     avatar?: string;
   };
   onLogout?: () => void;
