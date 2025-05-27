@@ -125,17 +125,17 @@ const Auth = ({ onLogin, onBack }: AuthProps) => {
         {/* Auth Form */}
         <div className="bg-white rounded-3xl shadow-xl p-8">
           <div className="text-center mb-8">
-            <div className="w-12 h-12 flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 flex items-center justify-center mx-auto mb-4">
               <img
                 src="/lovable-uploads/e153d080-0e68-4853-b008-897623780941.png"
                 alt="Khalulu the Owl"
-                className="w-12 h-12 object-contain"
+                className="w-16 h-16 object-contain animate-bounce"
               />
             </div>
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">
+            <h2 className="text-3xl font-bold text-gray-800 mb-2 animate-fade-in">
               {isSignUp ? 'Join Zintsomi College' : 'Welcome Back'}
             </h2>
-            <p className="text-gray-600">
+            <p className="text-gray-600 animate-fade-in">
               {isSignUp 
                 ? 'Create your account to start learning' 
                 : 'Sign in to continue your journey'

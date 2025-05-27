@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Search, User, LogOut, Moon, Sun } from 'lucide-react';
+import { Search, User, LogOut, Moon, Sun, Menu, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -62,12 +62,12 @@ const Navigation = ({ user, onSearch, onLogout }: NavigationProps) => {
     <nav className="bg-background border-b border-border px-4 py-3 shadow-sm">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo with Khalulu Owl */}
-        <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 flex items-center justify-center">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 flex items-center justify-center">
             <img
               src="/lovable-uploads/e153d080-0e68-4853-b008-897623780941.png"
               alt="Khalulu the Owl"
-              className="w-8 h-8 object-contain"
+              className="w-10 h-10 object-contain hover:scale-110 transition-transform duration-200"
             />
           </div>
           <h1 className="text-xl font-bold text-foreground">Zintsomi College</h1>
@@ -94,7 +94,7 @@ const Navigation = ({ user, onSearch, onLogout }: NavigationProps) => {
               variant="ghost"
               size="icon"
               onClick={toggleTheme}
-              className="rounded-full"
+              className="rounded-full hover:scale-105 transition-transform duration-200"
             >
               {isDark ? (
                 <Sun className="h-5 w-5" />
@@ -107,7 +107,7 @@ const Navigation = ({ user, onSearch, onLogout }: NavigationProps) => {
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                <Button variant="ghost" className="relative h-10 w-10 rounded-full hover:scale-105 transition-transform duration-200">
                   <Avatar className="h-10 w-10">
                     <AvatarImage src={user.avatar} alt={user.name} />
                     <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>

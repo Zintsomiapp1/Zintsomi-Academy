@@ -13,11 +13,15 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex flex-col">
       {/* Header */}
       <header className="text-center pt-16 pb-8">
-        <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <span className="text-white font-bold text-2xl">Z</span>
+        <div className="flex items-center justify-center mb-4">
+          <img
+            src="/lovable-uploads/e153d080-0e68-4853-b008-897623780941.png"
+            alt="Khalulu the Owl"
+            className="w-16 h-16 object-contain animate-bounce"
+          />
         </div>
-        <h1 className="text-4xl font-bold text-gray-800 mb-2">Zintsomi College</h1>
-        <p className="text-gray-600 text-lg">AI-Powered Storytelling & Learning Platform</p>
+        <h1 className="text-4xl font-bold text-gray-800 mb-2 animate-fade-in">Zintsomi College</h1>
+        <p className="text-gray-600 text-lg animate-fade-in">AI-Powered Storytelling & Learning Platform</p>
       </header>
 
       {/* Main Content */}
