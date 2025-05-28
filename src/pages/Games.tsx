@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,7 +8,7 @@ import {
   Triangle, 
   Circle, 
   MemoryStick, 
-  Snake, 
+  Zap, 
   Puzzle,
   MousePointer,
   TextCursor,
@@ -62,7 +61,7 @@ const Games = () => {
       id: 'snake',
       title: 'Snake Game',
       description: 'Eat, grow, don\'t crash',
-      icon: Snake,
+      icon: Zap,
       difficulty: 'Medium'
     },
     {
