@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Heart, MessageCircle, Play, Star } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -22,8 +23,24 @@ interface CourseCardProps {
 }
 
 const CourseCard = ({ course, onLike, onComment }: CourseCardProps) => {
+  const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    navigate(`/course/${course.id}`);
+  };
+
+  const handleLikeClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onLike?.(course.id);
+  };
+
+  const handleCommentClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onComment?.(course.id);
+  };
+
   return (
-    <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden rounded-2xl">
+    <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden rounded-2xl cursor-pointer" onClick={handleCardClick}>
       <div className="relative aspect-video overflow-hidden">
         <img
           src={course.thumbnail}
@@ -63,7 +80,7 @@ const CourseCard = ({ course, onLike, onComment }: CourseCardProps) => {
           <div className="flex items-center justify-between pt-2">
             <div className="flex items-center space-x-4">
               <button
-                onClick={() => onLike?.(course.id)}
+                onClick={handleLikeClick}
                 className="flex items-center space-x-1 text-gray-500 hover:text-red-500 transition-colors"
               >
                 <Heart className="w-4 h-4" />
@@ -71,7 +88,7 @@ const CourseCard = ({ course, onLike, onComment }: CourseCardProps) => {
               </button>
               
               <button
-                onClick={() => onComment?.(course.id)}
+                onClick={handleCommentClick}
                 className="flex items-center space-x-1 text-gray-500 hover:text-blue-500 transition-colors"
               >
                 <MessageCircle className="w-4 h-4" />

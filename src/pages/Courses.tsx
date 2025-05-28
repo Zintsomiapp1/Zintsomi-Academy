@@ -1,8 +1,10 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navigation from '@/components/Navigation';
 import CategoryTabs from '@/components/CategoryTabs';
 import CourseGrid from '@/components/CourseGrid';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 interface CoursesProps {
   user?: {
@@ -13,8 +15,24 @@ interface CoursesProps {
   onLogout?: () => void;
 }
 
+interface Course {
+  id: string;
+  title: string;
+  creator: string;
+  thumbnail: string;
+  likes: number;
+  comments: number;
+  isPremium: boolean;
+  rating?: number;
+  category: string;
+  duration?: string;
+}
+
 const Courses = ({ user, onLogout }: CoursesProps) => {
   const [activeCategory, setActiveCategory] = useState('All');
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
   
   const categories = [
     'All',
@@ -31,85 +49,63 @@ const Courses = ({ user, onLogout }: CoursesProps) => {
     'AR Content'
   ];
 
-  // Sample course data
-  const courses = [
-    {
-      id: '1',
-      title: 'Traditional IsiZulu Folk Tales',
-      creator: 'Dr. Nomsa Mbeki',
-      thumbnail: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=225&fit=crop',
-      likes: 234,
-      comments: 45,
-      isPremium: true,
-      rating: 4.8,
-      category: 'IsiZulu Storytelling',
-      duration: '2h 30m'
-    },
-    {
-      id: '2',
-      title: 'AI Character Creation Workshop',
-      creator: 'Prof. Thabo Molefe',
-      thumbnail: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=225&fit=crop',
-      likes: 156,
-      comments: 28,
-      isPremium: false,
-      rating: 4.6,
-      category: 'AI-Powered',
-      duration: '1h 45m'
-    },
-    {
-      id: '3',
-      title: 'Sesotho Stories for Children',
-      creator: 'Mrs. Lerato Motsepe',
-      thumbnail: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=225&fit=crop',
-      likes: 189,
-      comments: 32,
-      isPremium: true,
-      rating: 4.9,
-      category: 'Sesotho',
-      duration: '3h 15m'
-    },
-    {
-      id: '4',
-      title: 'Virtual Reality Storytelling Basics',
-      creator: 'Dr. Sipho Ndlovu',
-      thumbnail: 'https://images.unsplash.com/photo-1592478411213-6153e4ebc696?w=400&h=225&fit=crop',
-      likes: 298,
-      comments: 67,
-      isPremium: true,
-      rating: 4.7,
-      category: 'VR Content',
-      duration: '4h 20m'
-    },
-    {
-      id: '5',
-      title: 'English Narrative Techniques',
-      creator: 'Prof. Sarah Williams',
-      thumbnail: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=225&fit=crop',
-      likes: 167,
-      comments: 23,
-      isPremium: false,
-      rating: 4.5,
-      category: 'English',
-      duration: '2h 10m'
-    },
-    {
-      id: '6',
-      title: 'Sepedi Oral Traditions',
-      creator: 'Chief Kgabo Mampuru',
-      thumbnail: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&h=225&fit=crop',
-      likes: 143,
-      comments: 19,
-      isPremium: true,
-      rating: 4.8,
-      category: 'Sepedi',
-      duration: '2h 45m'
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
+  const fetchCourses = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('courses')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      // Transform data to match CourseCard interface
+      const transformedCourses = data.map(course => ({
+        id: course.id,
+        title: course.title,
+        creator: course.creator,
+        thumbnail: course.thumbnail || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=225&fit=crop',
+        likes: Math.floor(Math.random() * 300) + 50, // Mock data for now
+        comments: Math.floor(Math.random() * 100) + 10, // Mock data for now
+        isPremium: course.is_premium,
+        rating: course.rating,
+        category: course.category,
+        duration: course.duration,
+      }));
+
+      setCourses(transformedCourses);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load courses",
+        variant: "destructive",
+      });
+      setLoading(false);
     }
-  ];
+  };
 
   const filteredCourses = activeCategory === 'All' 
     ? courses 
     : courses.filter(course => course.category === activeCategory);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Navigation user={user} onLogout={onLogout} />
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading courses...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
