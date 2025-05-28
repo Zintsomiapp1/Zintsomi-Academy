@@ -10,16 +10,17 @@ interface CategoryTabsProps {
 
 const CategoryTabs = ({ categories, activeCategory, onCategoryChange }: CategoryTabsProps) => {
   return (
-    <div className="flex space-x-2 overflow-x-auto pb-2">
+    <div className="flex flex-wrap gap-2 p-1 bg-gray-100 rounded-lg">
       {categories.map((category) => (
         <Button
           key={category}
-          variant={activeCategory === category ? "default" : "outline"}
+          variant={activeCategory === category ? "default" : "ghost"}
+          size="sm"
           onClick={() => onCategoryChange(category)}
-          className={`whitespace-nowrap rounded-full ${
+          className={`whitespace-nowrap ${
             activeCategory === category
-              ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white"
-              : "hover:bg-gray-50"
+              ? 'bg-white text-gray-900 shadow-sm'
+              : 'text-gray-600 hover:text-gray-900'
           }`}
         >
           {category}

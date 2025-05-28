@@ -1,7 +1,8 @@
 
 import React from 'react';
+import { Play, Star, Users, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { BookOpen, Bot, Headphones } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface WelcomeProps {
   onLogin: () => void;
@@ -10,75 +11,127 @@ interface WelcomeProps {
 
 const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex flex-col">
-      {/* Header */}
-      <header className="text-center pt-16 pb-8">
-        <div className="flex items-center justify-center mb-4">
-          <img
-            src="/lovable-uploads/e153d080-0e68-4853-b008-897623780941.png"
-            alt="Khalulu the Owl"
-            className="w-16 h-16 object-contain animate-bounce"
-          />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      {/* Hero Section */}
+      <div className="relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <img
+              src="/lovable-uploads/e153d080-0e68-4853-b008-897623780941.png"
+              alt="Khalulu the Owl"
+              className="w-24 h-24 object-contain mx-auto mb-8 animate-bounce"
+            />
+            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+              Welcome to{' '}
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Zintsomi College
+              </span>
+            </h1>
+            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+              Discover the magic of storytelling through AI-powered courses, immersive VR experiences, 
+              and interactive learning in multiple African languages.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button 
+                size="lg" 
+                onClick={onSignUp}
+                className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3"
+              >
+                Get Started Free
+              </Button>
+              <Button 
+                variant="outline" 
+                size="lg" 
+                onClick={onLogin}
+                className="px-8 py-3"
+              >
+                Sign In
+              </Button>
+            </div>
+          </div>
         </div>
-        <h1 className="text-4xl font-bold text-gray-800 mb-2 animate-fade-in">Zintsomi College</h1>
-        <p className="text-gray-600 text-lg animate-fade-in">AI-Powered Storytelling & Learning Platform</p>
-      </header>
+      </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center justify-center px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-800 mb-4">
-            Join the Zintsomi College
+      {/* Features Section */}
+      <div className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Learn Through Stories
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Experience learning like never before with our innovative approach to education
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <Card className="text-center p-6 hover:shadow-lg transition-shadow">
+              <CardContent className="pt-6">
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <BookOpen className="w-6 h-6 text-blue-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">Interactive Stories</h3>
+                <p className="text-gray-600 text-sm">
+                  Engage with immersive storytelling experiences
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center p-6 hover:shadow-lg transition-shadow">
+              <CardContent className="pt-6">
+                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <Play className="w-6 h-6 text-purple-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">VR Content</h3>
+                <p className="text-gray-600 text-sm">
+                  Step into virtual worlds and experience stories firsthand
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center p-6 hover:shadow-lg transition-shadow">
+              <CardContent className="pt-6">
+                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <Users className="w-6 h-6 text-green-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">Community</h3>
+                <p className="text-gray-600 text-sm">
+                  Join a vibrant community of learners and storytellers
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center p-6 hover:shadow-lg transition-shadow">
+              <CardContent className="pt-6">
+                <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <Star className="w-6 h-6 text-yellow-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">AI-Powered</h3>
+                <p className="text-gray-600 text-sm">
+                  Personalized learning experiences powered by AI
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+
+      {/* CTA Section */}
+      <div className="py-16 bg-gradient-to-r from-blue-600 to-purple-600">
+        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-white mb-4">
+            Ready to Begin Your Journey?
           </h2>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto mb-8">
-            Discover the magic of storytelling through AI-powered courses, immersive VR experiences, 
-            and interactive learning in multiple African languages.
+          <p className="text-blue-100 mb-8 text-lg">
+            Join thousands of learners exploring African storytelling traditions through modern technology
           </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              onClick={onSignUp}
-              size="lg"
-              className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-full px-8 py-3 text-lg font-semibold"
-            >
-              Get Started
-            </Button>
-            <Button
-              onClick={onLogin}
-              variant="outline"
-              size="lg"
-              className="rounded-full px-8 py-3 text-lg font-semibold"
-            >
-              Sign In
-            </Button>
-          </div>
-        </div>
-
-        {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-16">
-          <div className="text-center p-6 bg-white rounded-2xl shadow-sm">
-            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-              <BookOpen className="text-blue-600 w-6 h-6" />
-            </div>
-            <h3 className="font-semibold text-gray-800 mb-2">Multi-Language Courses</h3>
-            <p className="text-gray-600 text-sm">Learn storytelling in IsiZulu, Nguni, Sesotho, English, and Sepedi</p>
-          </div>
-          
-          <div className="text-center p-6 bg-white rounded-2xl shadow-sm">
-            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-              <Bot className="text-purple-600 w-6 h-6" />
-            </div>
-            <h3 className="font-semibold text-gray-800 mb-2">AI-Powered Stories</h3>
-            <p className="text-gray-600 text-sm">Create personalized characters and interactive narratives with AI</p>
-          </div>
-          
-          <div className="text-center p-6 bg-white rounded-2xl shadow-sm">
-            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-              <Headphones className="text-green-600 w-6 h-6" />
-            </div>
-            <h3 className="font-semibold text-gray-800 mb-2">VR Experiences</h3>
-            <p className="text-gray-600 text-sm">Immerse yourself in virtual reality storytelling environments</p>
-          </div>
+          <Button 
+            size="lg" 
+            onClick={onSignUp}
+            className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3"
+          >
+            Start Learning Today
+          </Button>
         </div>
       </div>
     </div>
