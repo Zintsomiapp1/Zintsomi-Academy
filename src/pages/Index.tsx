@@ -45,13 +45,7 @@ const Index = () => {
   if (user && currentPage !== 'auth') {
     return (
       <div className="min-h-screen bg-background">
-        <Courses 
-          user={{
-            name: user.user_metadata?.full_name || user.user_metadata?.username || user.email?.split('@')[0] || 'User',
-            email: user.email || ''
-          }} 
-          onLogout={handleLogout} 
-        />
+        <Courses />
       </div>
     );
   }
