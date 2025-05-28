@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
+import KhaluluOwl from '@/components/KhaluluOwl';
 
 interface AuthProps {
   onLogin: (userData: { name: string; email: string }) => void;
@@ -17,6 +18,8 @@ const Auth = ({ onLogin, onBack }: AuthProps) => {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showSuccessGreeting, setShowSuccessGreeting] = useState(false);
+  const [registeredUsername, setRegisteredUsername] = useState('');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -54,6 +57,10 @@ const Auth = ({ onLogin, onBack }: AuthProps) => {
         );
         if (error) throw error;
         
+        // Show Khalulu greeting with username
+        setRegisteredUsername(formData.username || formData.fullName);
+        setShowSuccessGreeting(true);
+        
         toast({
           title: "Success!",
           description: "Account created! Please check your email to verify your account.",
@@ -76,6 +83,41 @@ const Auth = ({ onLogin, onBack }: AuthProps) => {
       [e.target.name]: e.target.value,
     }));
   };
+
+  const handleContinueAfterGreeting = () => {
+    setShowSuccessGreeting(false);
+    setIsLogin(true); // Switch to login mode
+    setFormData({
+      email: '',
+      password: '',
+      fullName: '',
+      username: '',
+    });
+  };
+
+  if (showSuccessGreeting) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          <Card className="w-full text-center">
+            <CardContent className="pt-8 pb-8">
+              <KhaluluOwl 
+                message={`Hello ${registeredUsername}! Welcome to Zintsomi College! Your account has been created successfully. Please check your email to verify your account, then you can sign in to start your learning journey.`}
+                userName={registeredUsername}
+                className="mb-6"
+              />
+              <Button 
+                onClick={handleContinueAfterGreeting}
+                className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+              >
+                Continue to Sign In
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
