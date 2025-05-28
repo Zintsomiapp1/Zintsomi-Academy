@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import Index from "./pages/Index";
 import CoursePlayer from "./pages/CoursePlayer";
+import BrainTraining from "./pages/BrainTraining";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -21,6 +22,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/course/:courseId" element={<CoursePlayer />} />
+            <Route path="/brain-training" element={<BrainTraining user={{ name: "User", email: "user@example.com" }} onBack={() => window.history.back()} />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
