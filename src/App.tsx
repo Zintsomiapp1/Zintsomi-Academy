@@ -31,9 +31,33 @@ function App() {
                 <Route path="/courses" element={<Courses />} />
                 <Route path="/advanced-courses" element={<AdvancedCourses />} />
                 <Route path="/course/:id" element={<CoursePlayer />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/welcome" element={<Welcome />} />
-                <Route path="/brain-training" element={<BrainTraining />} />
+                <Route 
+                  path="/auth" 
+                  element={
+                    <Auth 
+                      onLogin={() => {}} 
+                      onBack={() => window.history.back()} 
+                    />
+                  } 
+                />
+                <Route 
+                  path="/welcome" 
+                  element={
+                    <Welcome 
+                      onLogin={() => window.location.href = '/auth'} 
+                      onSignUp={() => window.location.href = '/auth'} 
+                    />
+                  } 
+                />
+                <Route 
+                  path="/brain-training" 
+                  element={
+                    <BrainTraining 
+                      user={{ name: 'User', email: 'user@example.com' }} 
+                      onBack={() => window.history.back()} 
+                    />
+                  } 
+                />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/wishlist" element={<Wishlist />} />
                 <Route path="/cart" element={<Cart />} />

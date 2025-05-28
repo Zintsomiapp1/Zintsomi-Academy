@@ -12,38 +12,38 @@ const AdvancedCourses = () => {
     {
       id: '1',
       title: 'Advanced African Storytelling',
-      description: 'Master the art of traditional African storytelling with modern techniques',
-      instructor: 'Dr. Amara Okafor',
+      creator: 'Dr. Amara Okafor',
+      thumbnail: '/placeholder.svg',
+      likes: 1234,
+      comments: 89,
+      isPremium: true,
       rating: 4.8,
-      students: 1234,
-      duration: '6 weeks',
-      level: 'Advanced',
-      price: 99.99,
-      image: '/placeholder.svg'
+      category: 'IsiZulu Storytelling',
+      duration: '6 weeks'
     },
     {
       id: '2',
       title: 'Digital Marketing for Beginners',
-      description: 'Learn the fundamentals of digital marketing and social media strategy',
-      instructor: 'Sarah Johnson',
+      creator: 'Sarah Johnson',
+      thumbnail: '/placeholder.svg',
+      likes: 2567,
+      comments: 145,
+      isPremium: false,
       rating: 4.6,
-      students: 2567,
-      duration: '4 weeks',
-      level: 'Beginner',
-      price: 79.99,
-      image: '/placeholder.svg'
+      category: 'English',
+      duration: '4 weeks'
     },
     {
       id: '3',
       title: 'Data Science with Python',
-      description: 'Complete guide to data science using Python and machine learning',
-      instructor: 'Dr. Michael Chen',
+      creator: 'Dr. Michael Chen',
+      thumbnail: '/placeholder.svg',
+      likes: 3456,
+      comments: 234,
+      isPremium: true,
       rating: 4.9,
-      students: 3456,
-      duration: '8 weeks',
-      level: 'Intermediate',
-      price: 149.99,
-      image: '/placeholder.svg'
+      category: 'AI-Powered',
+      duration: '8 weeks'
     }
   ];
 
