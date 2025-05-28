@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -116,7 +117,6 @@ const Games = () => {
   ];
 
   const handlePlayGame = (gameId: string) => {
-    // Placeholder for future game implementation
     console.log(`Playing game: ${gameId}`);
     alert(`${games.find(g => g.id === gameId)?.title} coming soon!`);
   };
@@ -194,7 +194,11 @@ const Games = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="pt-0">
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                  <p className="text-gray-600 text-sm mb-4 overflow-hidden" style={{
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical'
+                  }}>
                     {game.description}
                   </p>
                   <Button
