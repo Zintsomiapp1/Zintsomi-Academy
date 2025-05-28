@@ -1,8 +1,11 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import KhaluluOwl from '@/components/KhaluluOwl';
+import TimePurchaseModal from '@/components/games/TimePurchaseModal';
+import GamingTimeDisplay from '@/components/games/GamingTimeDisplay';
+import { useGamingTime } from '@/hooks/useGamingTime';
+import { useToast } from '@/hooks/use-toast';
 import { 
   Grid2x2, 
   Square, 
@@ -28,6 +31,19 @@ interface Game {
 
 const Games = () => {
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+  const { toast } = useToast();
+  
+  const {
+    totalTimeRemaining,
+    isTimeUp,
+    isPlaying,
+    startPlaying,
+    stopPlaying,
+    purchaseTime,
+    formatTime,
+    getFreeTimeRemaining,
+  } = useGamingTime();
 
   const games: Game[] = [
     {
@@ -117,8 +133,43 @@ const Games = () => {
   ];
 
   const handlePlayGame = (gameId: string) => {
+    if (totalTimeRemaining <= 0) {
+      setShowPurchaseModal(true);
+      return;
+    }
+
     console.log(`Playing game: ${gameId}`);
-    alert(`${games.find(g => g.id === gameId)?.title} coming soon!`);
+    startPlaying();
+    
+    toast({
+      title: "Game Started!",
+      description: `Playing ${games.find(g => g.id === gameId)?.title}. Time remaining: ${formatTime(totalTimeRemaining)}`,
+    });
+    
+    // Simulate game ending after some time (for demo purposes)
+    setTimeout(() => {
+      stopPlaying();
+      if (totalTimeRemaining <= 60) { // Less than 1 minute left
+        toast({
+          title: "Low Time Warning",
+          description: "You have less than 1 minute of gaming time left!",
+          variant: "destructive"
+        });
+      }
+    }, 5000); // Stop after 5 seconds for demo
+  };
+
+  const handlePurchaseTime = () => {
+    purchaseTime();
+    setShowPurchaseModal(false);
+    toast({
+      title: "Purchase Successful!",
+      description: "You've purchased 60 minutes of gaming time for R20!",
+    });
+  };
+
+  const handlePurchaseClick = () => {
+    setShowPurchaseModal(true);
   };
 
   const getDifficultyColor = (difficulty: string) => {
@@ -144,6 +195,16 @@ const Games = () => {
               Learn while you play and have fun expanding your knowledge.
             </p>
             
+            {/* Gaming Time Display */}
+            <div className="mb-6">
+              <GamingTimeDisplay
+                timeRemaining={totalTimeRemaining}
+                formatTime={formatTime}
+                getFreeTimeRemaining={getFreeTimeRemaining}
+                onPurchaseClick={handlePurchaseClick}
+              />
+            </div>
+            
             {/* Sound Toggle */}
             <div className="flex items-center gap-3">
               <Button
@@ -165,7 +226,11 @@ const Games = () => {
           {/* Khalulu Mascot */}
           <div className="lg:w-80">
             <KhaluluOwl 
-              message="Ready to challenge your brain? Pick a game and let's have some fun learning together! 🎯"
+              message={
+                totalTimeRemaining > 0 
+                  ? "Ready to challenge your brain? Pick a game and let's have some fun learning together! 🎯" 
+                  : "Oops! Looks like you're out of gaming time. Purchase more time to continue your learning adventure! 💫"
+              }
               className="transform lg:scale-90"
             />
           </div>
@@ -175,14 +240,20 @@ const Games = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {games.map((game) => {
             const IconComponent = game.icon;
+            const canPlay = totalTimeRemaining > 0;
+            
             return (
               <Card
                 key={game.id}
-                className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 backdrop-blur-sm border-0 shadow-lg"
+                className={`group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-white/80 backdrop-blur-sm border-0 shadow-lg ${
+                  !canPlay ? 'opacity-60' : ''
+                }`}
               >
                 <CardHeader className="pb-4">
                   <div className="flex items-start justify-between">
-                    <div className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl mb-3 group-hover:scale-110 transition-transform duration-300">
+                    <div className={`p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl mb-3 group-hover:scale-110 transition-transform duration-300 ${
+                      !canPlay ? 'opacity-50' : ''
+                    }`}>
                       <IconComponent className="h-8 w-8 text-white" />
                     </div>
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(game.difficulty)}`}>
@@ -203,15 +274,29 @@ const Games = () => {
                   </p>
                   <Button
                     onClick={() => handlePlayGame(game.id)}
-                    className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium py-2 rounded-lg transition-all duration-300 group-hover:scale-105"
+                    className={`w-full font-medium py-2 rounded-lg transition-all duration-300 group-hover:scale-105 ${
+                      canPlay 
+                        ? 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white'
+                        : 'bg-gray-300 text-gray-600 cursor-not-allowed hover:bg-gray-300'
+                    }`}
+                    disabled={!canPlay}
                   >
-                    Play Now
+                    {canPlay ? 'Play Now' : 'Time Expired'}
                   </Button>
                 </CardContent>
               </Card>
             );
           })}
         </div>
+
+        {/* Time Purchase Modal */}
+        <TimePurchaseModal
+          isOpen={showPurchaseModal}
+          onClose={() => setShowPurchaseModal(false)}
+          onPurchase={handlePurchaseTime}
+          timeRemaining={totalTimeRemaining}
+          formatTime={formatTime}
+        />
 
         {/* Footer Section */}
         <div className="mt-12 text-center">
