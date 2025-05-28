@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -13,7 +12,8 @@ import {
   Search,
   LayoutDashboard,
   Heart,
-  ShoppingCart
+  ShoppingCart,
+  Gamepad2
 } from 'lucide-react';
 
 const Navigation = () => {
@@ -24,6 +24,7 @@ const Navigation = () => {
     { path: '/', label: 'Home', icon: Home },
     { path: '/courses', label: 'Courses', icon: BookOpen },
     { path: '/advanced-courses', label: 'Discover', icon: Search },
+    { path: '/games', label: 'Games', icon: Gamepad2 },
     { path: '/brain-training', label: 'Brain Training', icon: Brain },
     { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/wishlist', label: 'Wishlist', icon: Heart },

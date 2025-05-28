@@ -15,6 +15,7 @@ import Dashboard from "@/pages/Dashboard";
 import AdvancedCourses from "@/pages/AdvancedCourses";
 import Wishlist from "@/pages/Wishlist";
 import Cart from "@/pages/Cart";
+import Games from "@/pages/Games";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient({
@@ -39,6 +40,7 @@ function App() {
                   <Route path="/" element={<Index />} />
                   <Route path="/courses" element={<Courses />} />
                   <Route path="/advanced-courses" element={<AdvancedCourses />} />
+                  <Route path="/games" element={<Games />} />
                   <Route path="/course/:id" element={<CoursePlayer />} />
                   <Route 
                     path="/auth" 
