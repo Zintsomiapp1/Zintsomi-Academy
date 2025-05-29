@@ -3,9 +3,16 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Trophy, Clock, BookOpen, Star } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Trophy, Clock, BookOpen, Star, Settings, Shield, User } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { useUserRole } from '@/hooks/useUserRole';
 
 const UserDashboard = () => {
+  const { user } = useAuth();
+  const { isAdmin } = useUserRole();
+
   const enrolledCourses = [
     { id: 1, title: 'African Storytelling Basics', progress: 75, timeSpent: '8h 30m' },
     { id: 2, title: 'Advanced Xhosa Literature', progress: 45, timeSpent: '5h 15m' },
@@ -20,6 +27,54 @@ const UserDashboard = () => {
 
   return (
     <div className="space-y-6">
+      {/* User Profile Section */}
+      <Card>
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Avatar className="w-16 h-16">
+                <AvatarImage src={user?.user_metadata?.avatar_url} alt={user?.user_metadata?.full_name} />
+                <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-lg">
+                  {user?.user_metadata?.full_name?.charAt(0) || user?.email?.charAt(0) || 'U'}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <h2 className="text-xl font-semibold">
+                  {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User'}
+                </h2>
+                <p className="text-gray-600">{user?.email}</p>
+                {isAdmin && (
+                  <Badge className="mt-1 bg-gradient-to-r from-yellow-500 to-orange-500">
+                    <Shield className="w-3 h-3 mr-1" />
+                    Admin
+                  </Badge>
+                )}
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => window.location.href = '/profile-settings'}
+                className="flex items-center gap-2"
+              >
+                <Settings className="w-4 h-4" />
+                Profile Settings
+              </Button>
+              {isAdmin && (
+                <Button
+                  onClick={() => window.location.href = '/admin'}
+                  className="flex items-center gap-2 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600"
+                >
+                  <Shield className="w-4 h-4" />
+                  Admin Panel
+                </Button>
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card>
           <CardContent className="p-6">
@@ -58,6 +113,7 @@ const UserDashboard = () => {
         </Card>
       </div>
 
+      {/* Continue Learning Section */}
       <Card>
         <CardHeader>
           <CardTitle>Continue Learning</CardTitle>
@@ -81,6 +137,7 @@ const UserDashboard = () => {
         </CardContent>
       </Card>
 
+      {/* Achievements Section */}
       <Card>
         <CardHeader>
           <CardTitle>Achievements</CardTitle>

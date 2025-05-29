@@ -16,6 +16,8 @@ import AdvancedCourses from "@/pages/AdvancedCourses";
 import Wishlist from "@/pages/Wishlist";
 import Cart from "@/pages/Cart";
 import Games from "@/pages/Games";
+import ProfileSettings from "@/pages/ProfileSettings";
+import AdminPanel from "@/pages/AdminPanel";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient({
@@ -42,6 +44,8 @@ function App() {
                   <Route path="/advanced-courses" element={<AdvancedCourses />} />
                   <Route path="/games" element={<Games />} />
                   <Route path="/course/:id" element={<CoursePlayer />} />
+                  <Route path="/profile-settings" element={<ProfileSettings />} />
+                  <Route path="/admin" element={<AdminPanel />} />
                   <Route 
                     path="/auth" 
                     element={
