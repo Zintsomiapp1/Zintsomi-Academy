@@ -3,6 +3,7 @@ import React from 'react';
 import { Play, Star, Users, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import ColorfulLogo from '@/components/branding/ColorfulLogo';
 
 interface WelcomeProps {
   onLogin: () => void;
@@ -20,17 +21,18 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
       <div className="relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
           <div className="text-center">
-            <img
-              src="/lovable-uploads/531e05b9-22e5-4b83-a3f4-953ecd13ff8f.png"
-              alt="Khalulu the Bunny"
-              className="w-24 h-24 object-contain mx-auto mb-8 animate-bounce"
-            />
+            <div className="flex items-center justify-center mb-8">
+              <ColorfulLogo size="lg" />
+            </div>
             <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
               Welcome to{' '}
               <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 Zintsomi College
               </span>
             </h1>
+            <div className="text-lg text-gray-600 mb-2">
+              <span className="font-semibold">Dr Sara M</span>
+            </div>
             <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
               Discover the magic of storytelling through AI-powered courses, immersive VR experiences, 
               and interactive learning in multiple African languages.
