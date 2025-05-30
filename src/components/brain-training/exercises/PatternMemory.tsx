@@ -55,15 +55,18 @@ const PatternMemory = ({ onBack }: PatternMemoryProps) => {
     
     console.log('Current pattern so far:', newCurrentPattern);
     console.log('Target pattern:', pattern);
-    console.log('Expected next click:', pattern[newCurrentPattern.length - 1]);
+    console.log('Current step:', newCurrentPattern.length - 1);
+    console.log('Expected click at this step:', pattern[newCurrentPattern.length - 1]);
+    console.log('Actual click:', index);
 
     // Check if the current click matches the expected position in the sequence
-    const expectedIndex = pattern[newCurrentPattern.length - 1];
+    const currentStep = newCurrentPattern.length - 1;
+    const expectedIndex = pattern[currentStep];
     
     if (index !== expectedIndex) {
       // Wrong click - end game immediately
       setGameState('wrong');
-      console.log('Wrong! Expected:', expectedIndex, 'Got:', index);
+      console.log('Wrong! Expected:', expectedIndex, 'Got:', index, 'at step:', currentStep);
       setTimeout(() => {
         setGameState('ready');
       }, 2000);
@@ -94,7 +97,9 @@ const PatternMemory = ({ onBack }: PatternMemoryProps) => {
     let baseClass = "w-16 h-16 border-2 border-gray-300 rounded-lg transition-all duration-200 cursor-pointer ";
     
     if (showPattern && pattern.includes(index)) {
-      baseClass += "bg-blue-500 ";
+      // Show the order number during pattern display
+      const orderNumber = pattern.indexOf(index) + 1;
+      baseClass += "bg-blue-500 text-white font-bold flex items-center justify-center ";
     } else if (currentPattern.includes(index)) {
       baseClass += "bg-green-400 ";
     } else {
@@ -102,6 +107,14 @@ const PatternMemory = ({ onBack }: PatternMemoryProps) => {
     }
     
     return baseClass;
+  };
+
+  const getCellContent = (index: number) => {
+    if (showPattern && pattern.includes(index)) {
+      const orderNumber = pattern.indexOf(index) + 1;
+      return orderNumber;
+    }
+    return null;
   };
 
   return (
@@ -131,21 +144,21 @@ const PatternMemory = ({ onBack }: PatternMemoryProps) => {
           <div className="text-center mb-4">
             {gameState === 'ready' && (
               <div>
-                <p className="mb-4">Memorize the pattern of highlighted squares, then click them in the SAME ORDER</p>
+                <p className="mb-4">Memorize the pattern of highlighted squares with numbers, then click them in the SAME ORDER (1, 2, 3...)</p>
                 <Button onClick={startGame}>Start Level {level}</Button>
               </div>
             )}
             {gameState === 'showing' && (
-              <p className="text-blue-600 font-semibold">Memorize this pattern!</p>
+              <p className="text-blue-600 font-semibold">Memorize this pattern and the order (numbers)!</p>
             )}
             {gameState === 'input' && (
-              <p className="text-green-600 font-semibold">Click the squares in the same order they were shown</p>
+              <p className="text-green-600 font-semibold">Click the squares in the same order they were numbered</p>
             )}
             {gameState === 'correct' && (
               <p className="text-green-600 font-bold">Correct! Well done!</p>
             )}
             {gameState === 'wrong' && (
-              <p className="text-red-600 font-bold">Wrong pattern. Try again!</p>
+              <p className="text-red-600 font-bold">Wrong order. Try again!</p>
             )}
           </div>
 
@@ -156,7 +169,9 @@ const PatternMemory = ({ onBack }: PatternMemoryProps) => {
                 className={getCellClass(index)}
                 onClick={() => handleCellClick(index)}
                 disabled={gameState !== 'input'}
-              />
+              >
+                {getCellContent(index)}
+              </button>
             ))}
           </div>
 
