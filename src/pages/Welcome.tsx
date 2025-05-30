@@ -16,8 +16,8 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
         <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
           <div className="text-center">
             <img
-              src="/lovable-uploads/5951c4f5-f2f4-4cac-afd0-55dcf1c9c0cb.png"
-              alt="Khalulu the Owl"
+              src="/lovable-uploads/531e05b9-22e5-4b83-a3f4-953ecd13ff8f.png"
+              alt="Khalulu the Bunny"
               className="w-24 h-24 object-contain mx-auto mb-8 animate-bounce"
             />
             <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">

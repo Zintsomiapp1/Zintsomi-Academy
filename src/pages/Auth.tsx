@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -144,7 +143,7 @@ const Auth = ({ onLogin, onBack }: AuthProps) => {
         <Card className="w-full">
           <CardHeader className="text-center">
             <img
-              src="/lovable-uploads/5951c4f5-f2f4-4cac-afd0-55dcf1c9c0cb.png"
+              src="/lovable-uploads/531e05b9-22e5-4b83-a3f4-953ecd13ff8f.png"
               alt="Khalulu - Zintsomi College"
               className="w-16 h-16 object-contain mx-auto mb-4"
             />
