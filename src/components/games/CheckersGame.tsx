@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,158 +7,38 @@ import { useGamingTime } from '@/hooks/useGamingTime';
 import { useUserRole } from '@/hooks/useUserRole';
 import GamingTimeDisplay from './GamingTimeDisplay';
 import TimePurchaseModal from './TimePurchaseModal';
+import CheckersBoard from './checkers/CheckersBoard';
+import { useCheckersGame } from './checkers/useCheckersGame';
 
 interface CheckersGameProps {
   onBack: () => void;
 }
 
-type PieceType = 'regular' | 'king';
-type PieceColor = 'red' | 'black';
-
-interface CheckersPiece {
-  type: PieceType;
-  color: PieceColor;
-}
-
-type CheckersBoard = (CheckersPiece | null)[][];
-
 const CheckersGame = ({ onBack }: CheckersGameProps) => {
   const gamingTime = useGamingTime();
   const { isAdmin, loading } = useUserRole();
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
-  const [selectedSquare, setSelectedSquare] = useState<[number, number] | null>(null);
-  const [currentPlayer, setCurrentPlayer] = useState<PieceColor>('red');
-  const [gameStatus, setGameStatus] = useState<'playing' | 'red-wins' | 'black-wins' | 'draw'>('playing');
-  const [moveHistory, setMoveHistory] = useState<string[]>([]);
-  const [validMoves, setValidMoves] = useState<[number, number][]>([]);
-  const [draggedPiece, setDraggedPiece] = useState<{ piece: CheckersPiece; from: [number, number] } | null>(null);
-  const [isProcessingMove, setIsProcessingMove] = useState(false);
-
-  // Initialize checkers board
-  const initializeBoard = (): CheckersBoard => {
-    const board: CheckersBoard = Array(8).fill(null).map(() => Array(8).fill(null));
-    
-    // Place black pieces (top 3 rows, only on dark squares)
-    for (let row = 0; row < 3; row++) {
-      for (let col = 0; col < 8; col++) {
-        if ((row + col) % 2 === 1) {
-          board[row][col] = { type: 'regular', color: 'black' };
-        }
-      }
-    }
-    
-    // Place red pieces (bottom 3 rows, only on dark squares)
-    for (let row = 5; row < 8; row++) {
-      for (let col = 0; col < 8; col++) {
-        if ((row + col) % 2 === 1) {
-          board[row][col] = { type: 'regular', color: 'red' };
-        }
-      }
-    }
-    
-    return board;
-  };
-
-  const [board, setBoard] = useState<CheckersBoard>(initializeBoard);
-
-  const getValidMovesForPiece = (fromRow: number, fromCol: number): [number, number][] => {
-    const piece = board[fromRow][fromCol];
-    if (!piece) return [];
-    
-    const moves: [number, number][] = [];
-    const directions = piece.type === 'king' 
-      ? [[-1, -1], [-1, 1], [1, -1], [1, 1]] // Kings can move in all directions
-      : piece.color === 'red' 
-        ? [[-1, -1], [-1, 1]] // Red moves up
-        : [[1, -1], [1, 1]]; // Black moves down
-    
-    for (const [rowDir, colDir] of directions) {
-      // Simple move (1 square)
-      const newRow = fromRow + rowDir;
-      const newCol = fromCol + colDir;
-      
-      if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8 && !board[newRow][newCol]) {
-        moves.push([newRow, newCol]);
-      }
-      
-      // Jump move (2 squares with capture)
-      const jumpRow = fromRow + rowDir * 2;
-      const jumpCol = fromCol + colDir * 2;
-      
-      if (jumpRow >= 0 && jumpRow < 8 && jumpCol >= 0 && jumpCol < 8 && 
-          board[newRow][newCol] && board[newRow][newCol]!.color !== piece.color && 
-          !board[jumpRow][jumpCol]) {
-        moves.push([jumpRow, jumpCol]);
-      }
-    }
-    
-    return moves;
-  };
-
-  const isValidMove = (fromRow: number, fromCol: number, toRow: number, toCol: number): boolean => {
-    const validMoves = getValidMovesForPiece(fromRow, fromCol);
-    return validMoves.some(([row, col]) => row === toRow && col === toCol);
-  };
-
-  const makeMove = (fromRow: number, fromCol: number, toRow: number, toCol: number) => {
-    if (!isValidMove(fromRow, fromCol, toRow, toCol)) return false;
-    
-    const newBoard = board.map(row => [...row]);
-    const piece = newBoard[fromRow][fromCol]!;
-    
-    // Move the piece
-    newBoard[toRow][toCol] = piece;
-    newBoard[fromRow][fromCol] = null;
-    
-    // Handle capture
-    if (Math.abs(toRow - fromRow) === 2) {
-      const midRow = fromRow + (toRow - fromRow) / 2;
-      const midCol = fromCol + (toCol - fromCol) / 2;
-      newBoard[midRow][midCol] = null;
-    }
-    
-    // Check for king promotion
-    if (piece.color === 'red' && toRow === 0) {
-      newBoard[toRow][toCol] = { ...piece, type: 'king' };
-    } else if (piece.color === 'black' && toRow === 7) {
-      newBoard[toRow][toCol] = { ...piece, type: 'king' };
-    }
-    
-    setBoard(newBoard);
-    return true;
-  };
-
-  const makeAIMove = () => {
-    if (isProcessingMove) return;
-    
-    const validAIMoves: Array<{ from: [number, number], to: [number, number], isCapture: boolean }> = [];
-    
-    for (let row = 0; row < 8; row++) {
-      for (let col = 0; col < 8; col++) {
-        const piece = board[row][col];
-        if (piece && piece.color === 'black') {
-          const moves = getValidMovesForPiece(row, col);
-          moves.forEach(([toRow, toCol]) => {
-            const isCapture = Math.abs(toRow - row) === 2;
-            validAIMoves.push({ from: [row, col], to: [toRow, toCol], isCapture });
-          });
-        }
-      }
-    }
-    
-    // Prioritize captures
-    const captures = validAIMoves.filter(move => move.isCapture);
-    const movesToConsider = captures.length > 0 ? captures : validAIMoves;
-    
-    if (movesToConsider.length > 0) {
-      const randomMove = movesToConsider[Math.floor(Math.random() * movesToConsider.length)];
-      if (makeMove(randomMove.from[0], randomMove.from[1], randomMove.to[0], randomMove.to[1])) {
-        setMoveHistory(prev => [...prev, `Khalulu: ${String.fromCharCode(97 + randomMove.from[1])}${8 - randomMove.from[0]} to ${String.fromCharCode(97 + randomMove.to[1])}${8 - randomMove.to[0]}`]);
-        setCurrentPlayer('red');
-      }
-    }
-    setIsProcessingMove(false);
-  };
+  
+  const {
+    board,
+    selectedSquare,
+    currentPlayer,
+    gameStatus,
+    moveHistory,
+    validMoves,
+    draggedPiece,
+    isProcessingMove,
+    setSelectedSquare,
+    setValidMoves,
+    setDraggedPiece,
+    setCurrentPlayer,
+    setMoveHistory,
+    setIsProcessingMove,
+    getValidMovesForPiece,
+    makeMove,
+    makeAIMove,
+    resetGame
+  } = useCheckersGame();
 
   const handleSquareClick = (row: number, col: number) => {
     // Skip time check for admins
@@ -245,17 +126,6 @@ const CheckersGame = ({ onBack }: CheckersGameProps) => {
     }
   };
 
-  const resetGame = () => {
-    setBoard(initializeBoard());
-    setSelectedSquare(null);
-    setCurrentPlayer('red');
-    setGameStatus('playing');
-    setMoveHistory([]);
-    setValidMoves([]);
-    setDraggedPiece(null);
-    setIsProcessingMove(false);
-  };
-
   useEffect(() => {
     // Only start gaming time for non-admin users and only after admin status is determined
     if (!loading && !isAdmin && gamingTime.totalTimeRemaining > 0) {
@@ -269,58 +139,6 @@ const CheckersGame = ({ onBack }: CheckersGameProps) => {
       }
     };
   }, [isAdmin, loading]);
-
-  const getSquareClass = (row: number, col: number) => {
-    const isLight = (row + col) % 2 === 0;
-    const isSelected = selectedSquare && selectedSquare[0] === row && selectedSquare[1] === col;
-    const isValidMove = validMoves.some(([vRow, vCol]) => vRow === row && vCol === col) && !board[row][col];
-    
-    let baseClass = "w-16 h-16 flex items-center justify-center cursor-pointer transition-all duration-300 transform hover:scale-105 relative ";
-    
-    if (isLight) {
-      baseClass += "bg-gradient-to-br from-amber-100 to-amber-200 shadow-inner ";
-    } else {
-      baseClass += "bg-gradient-to-br from-amber-700 to-amber-900 shadow-lg ";
-    }
-    
-    // Add 3D effect
-    baseClass += "border border-amber-300 shadow-md hover:shadow-xl ";
-    
-    if (isSelected) {
-      baseClass += "ring-4 ring-blue-400 ring-opacity-75 shadow-blue-400/50 ";
-    }
-    
-    if (isValidMove) {
-      baseClass += "ring-2 ring-green-400 ring-opacity-60 ";
-    }
-    
-    return baseClass;
-  };
-
-  const renderPiece = (piece: CheckersPiece, row: number, col: number) => {
-    const baseClass = "w-12 h-12 rounded-full border-4 flex items-center justify-center transform transition-all duration-300 hover:scale-110 cursor-grab active:cursor-grabbing ";
-    let colorClass = "";
-    
-    if (piece.color === 'red') {
-      colorClass = "bg-gradient-to-br from-red-400 to-red-700 border-red-800 shadow-lg ";
-      colorClass += "drop-shadow-[0_4px_8px_rgba(220,38,38,0.6)] ";
-    } else {
-      colorClass = "bg-gradient-to-br from-gray-700 to-black border-gray-900 shadow-xl ";
-      colorClass += "drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] ";
-    }
-    
-    return (
-      <div
-        className={baseClass + colorClass}
-        draggable={piece.color === 'red' && currentPlayer === 'red'}
-        onDragStart={(e) => handleDragStart(e, row, col)}
-      >
-        {piece.type === 'king' && (
-          <Crown className="w-6 h-6 text-yellow-300 filter drop-shadow-lg" />
-        )}
-      </div>
-    );
-  };
 
   return (
     <div className="max-w-6xl mx-auto p-4 space-y-4">
@@ -369,28 +187,17 @@ const CheckersGame = ({ onBack }: CheckersGameProps) => {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-8">
-              <div className="flex justify-center mb-6">
-                <div className="grid grid-cols-8 border-4 border-amber-400 shadow-2xl rounded-lg overflow-hidden transform perspective-1000">
-                  {board.map((row, rowIndex) =>
-                    row.map((piece, colIndex) => (
-                      <div
-                        key={`${rowIndex}-${colIndex}`}
-                        className={getSquareClass(rowIndex, colIndex)}
-                        onClick={() => handleSquareClick(rowIndex, colIndex)}
-                        onDragOver={handleDragOver}
-                        onDrop={(e) => handleDrop(e, rowIndex, colIndex)}
-                      >
-                        {piece && renderPiece(piece, rowIndex, colIndex)}
-                        {validMoves.some(([vRow, vCol]) => vRow === rowIndex && vCol === colIndex) && !piece && (
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="w-4 h-4 bg-green-400 rounded-full opacity-60 animate-pulse"></div>
-                          </div>
-                        )}
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
+              <CheckersBoard
+                board={board}
+                selectedSquare={selectedSquare}
+                validMoves={validMoves}
+                currentPlayer={currentPlayer}
+                isProcessingMove={isProcessingMove}
+                onSquareClick={handleSquareClick}
+                onDragStart={handleDragStart}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+              />
               
               <div className="text-center">
                 <div className="flex items-center justify-center gap-6 mb-4">
