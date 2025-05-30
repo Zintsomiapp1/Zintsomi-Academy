@@ -42,15 +42,13 @@ const Index = () => {
     );
   }
 
-  // If user is authenticated, show user dashboard with Ask Khalulu
+  // If user is authenticated, show user dashboard with Ask Khalulu prominently
   if (user) {
     return (
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
-          <UserDashboard />
-          
-          {/* Ask Khalulu Section */}
-          <div className="mt-12">
+          {/* Ask Khalulu Section - Prominently positioned */}
+          <div className="mb-8">
             <div className="text-center mb-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-2">
                 Need Help? Ask Khalulu!
@@ -61,6 +59,8 @@ const Index = () => {
             </div>
             <AskKhalulu />
           </div>
+          
+          <UserDashboard />
         </div>
       </div>
     );
