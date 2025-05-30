@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Play, Star, Users, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -14,7 +15,7 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-200 via-sky-300 to-sky-400">
+    <div className="min-h-screen bg-white">
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
@@ -32,7 +33,7 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
                 Zintsomi College
               </span>
             </h1>
-            <p className="text-xl text-sky-800 mb-8 max-w-3xl mx-auto font-medium">
+            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto font-medium">
               Discover the magic of storytelling through AI-powered courses, immersive VR experiences, 
               and interactive learning in multiple African languages.
             </p>
@@ -40,7 +41,7 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
               <Button 
                 size="lg" 
                 onClick={onSignUp}
-                className="bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-slate-900 px-8 py-3 font-semibold"
+                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-3 font-semibold"
               >
                 Get Started Free
               </Button>
@@ -66,61 +67,61 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
       </div>
 
       {/* Features Section */}
-      <div className="py-16 bg-gradient-to-r from-purple-500 via-blue-500 to-green-500">
+      <div className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
               Learn Through Stories
             </h2>
-            <p className="text-blue-100 max-w-2xl mx-auto">
+            <p className="text-gray-600 max-w-2xl mx-auto">
               Experience learning like never before with our innovative approach to education
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <Card className="text-center p-6 hover:shadow-lg transition-shadow bg-gradient-to-br from-blue-400 to-blue-600 border-0">
+            <Card className="text-center p-6 hover:shadow-lg transition-shadow bg-white border border-gray-200">
               <CardContent className="pt-6">
-                <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center mx-auto mb-4">
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                   <BookOpen className="w-6 h-6 text-blue-600" />
                 </div>
-                <h3 className="font-semibold text-white mb-2">Interactive Stories</h3>
-                <p className="text-blue-100 text-sm">
+                <h3 className="font-semibold text-gray-900 mb-2">Interactive Stories</h3>
+                <p className="text-gray-600 text-sm">
                   Engage with immersive storytelling experiences
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="text-center p-6 hover:shadow-lg transition-shadow bg-gradient-to-br from-purple-400 to-purple-600 border-0">
+            <Card className="text-center p-6 hover:shadow-lg transition-shadow bg-white border border-gray-200">
               <CardContent className="pt-6">
-                <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center mx-auto mb-4">
+                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                   <Play className="w-6 h-6 text-purple-600" />
                 </div>
-                <h3 className="font-semibold text-white mb-2">VR Content</h3>
-                <p className="text-purple-100 text-sm">
+                <h3 className="font-semibold text-gray-900 mb-2">VR Content</h3>
+                <p className="text-gray-600 text-sm">
                   Step into virtual worlds and experience stories firsthand
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="text-center p-6 hover:shadow-lg transition-shadow bg-gradient-to-br from-green-400 to-green-600 border-0">
+            <Card className="text-center p-6 hover:shadow-lg transition-shadow bg-white border border-gray-200">
               <CardContent className="pt-6">
-                <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center mx-auto mb-4">
+                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                   <Users className="w-6 h-6 text-green-600" />
                 </div>
-                <h3 className="font-semibold text-white mb-2">Community</h3>
-                <p className="text-green-100 text-sm">
+                <h3 className="font-semibold text-gray-900 mb-2">Community</h3>
+                <p className="text-gray-600 text-sm">
                   Join a vibrant community of learners and storytellers
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="text-center p-6 hover:shadow-lg transition-shadow bg-gradient-to-br from-yellow-400 to-yellow-600 border-0">
+            <Card className="text-center p-6 hover:shadow-lg transition-shadow bg-white border border-gray-200">
               <CardContent className="pt-6">
-                <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center mx-auto mb-4">
+                <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                   <Star className="w-6 h-6 text-yellow-600" />
                 </div>
-                <h3 className="font-semibold text-white mb-2">AI-Powered</h3>
-                <p className="text-yellow-100 text-sm">
+                <h3 className="font-semibold text-gray-900 mb-2">AI-Powered</h3>
+                <p className="text-gray-600 text-sm">
                   Personalized learning experiences powered by AI
                 </p>
               </CardContent>
@@ -130,18 +131,18 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
       </div>
 
       {/* CTA Section */}
-      <div className="py-16 bg-gradient-to-r from-red-500 via-pink-500 to-purple-500">
+      <div className="py-16 bg-blue-600">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-white mb-4">
             Ready to Begin Your Journey?
           </h2>
-          <p className="text-red-100 mb-8 text-lg">
+          <p className="text-blue-100 mb-8 text-lg">
             Join thousands of learners exploring African storytelling traditions through modern technology
           </p>
           <Button 
             size="lg" 
             onClick={onSignUp}
-            className="bg-white text-red-600 hover:bg-red-50 px-8 py-3 font-semibold"
+            className="bg-white text-blue-600 hover:bg-gray-50 px-8 py-3 font-semibold"
           >
             Start Learning Today
           </Button>

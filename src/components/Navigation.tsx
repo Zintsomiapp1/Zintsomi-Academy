@@ -8,7 +8,6 @@ import { useUserRole } from '@/hooks/useUserRole';
 import NavigationItem from './navigation/NavigationItem';
 import AuthButtons from './navigation/AuthButtons';
 import MobileMenu from './navigation/MobileMenu';
-import ColorfulLogo from './branding/ColorfulLogo';
 import { createNavItems } from './navigation/NavigationData';
 
 const Navigation = () => {
@@ -38,7 +37,6 @@ const Navigation = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3">
-            <ColorfulLogo size="md" />
             <span className="font-bold text-xl text-white">Zintsomi College</span>
           </Link>
 
