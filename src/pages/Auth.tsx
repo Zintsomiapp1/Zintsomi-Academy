@@ -144,8 +144,8 @@ const Auth = ({ onLogin, onBack }: AuthProps) => {
         <Card className="w-full">
           <CardHeader className="text-center">
             <img
-              src="/lovable-uploads/e153d080-0e68-4853-b008-897623780941.png"
-              alt="Zintsomi College"
+              src="/lovable-uploads/5951c4f5-f2f4-4cac-afd0-55dcf1c9c0cb.png"
+              alt="Khalulu - Zintsomi College"
               className="w-16 h-16 object-contain mx-auto mb-4"
             />
             <CardTitle className="text-2xl font-bold">
