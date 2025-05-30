@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -258,8 +257,7 @@ const CheckersGame = ({ onBack }: CheckersGameProps) => {
   const getSquareClass = (row: number, col: number) => {
     const isLight = (row + col) % 2 === 0;
     const isSelected = selectedSquare && selectedSquare[0] === row && selectedSquare[1] === col;
-    const isValidMove = validMoves.some(([vRow, vCol]) => vRow === row && vCol === col);
-    const piece = board[row][col];
+    const isValidMove = validMoves.some(([vRow, vCol]) => vRow === row && vCol === col) && !board[row][col];
     
     let baseClass = "w-16 h-16 flex items-center justify-center cursor-pointer transition-all duration-300 transform hover:scale-105 relative ";
     
@@ -303,12 +301,6 @@ const CheckersGame = ({ onBack }: CheckersGameProps) => {
       >
         {piece.type === 'king' && (
           <Crown className="w-6 h-6 text-yellow-300 filter drop-shadow-lg" />
-        )}
-        {/* Add highlight dots for valid moves */}
-        {validMoves.some(([vRow, vCol]) => vRow === row && vCol === col) && !board[row][col] && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-4 h-4 bg-green-400 rounded-full opacity-70 animate-pulse"></div>
-          </div>
         )}
       </div>
     );
