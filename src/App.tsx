@@ -20,6 +20,7 @@ import Games from "@/pages/Games";
 import IndigenousGames from "@/pages/IndigenousGames";
 import ProfileSettings from "@/pages/ProfileSettings";
 import AdminPanel from "@/pages/AdminPanel";
+import VRContent from "@/pages/VRContent";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient({
@@ -46,6 +47,7 @@ function App() {
                   <Route path="/advanced-courses" element={<AdvancedCourses />} />
                   <Route path="/games" element={<Games />} />
                   <Route path="/indigenous-games" element={<IndigenousGames />} />
+                  <Route path="/vr-content" element={<VRContent />} />
                   <Route path="/course/:id" element={<CoursePlayer />} />
                   <Route path="/profile-settings" element={<ProfileSettings />} />
                   <Route path="/admin" element={<AdminPanel />} />

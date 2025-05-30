@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Play, Star, Users, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -9,6 +10,10 @@ interface WelcomeProps {
 }
 
 const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
+  const handleVRDemo = () => {
+    window.location.href = '/vr-content';
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Hero Section */}
@@ -45,6 +50,14 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
                 className="px-8 py-3"
               >
                 Sign In
+              </Button>
+              <Button 
+                variant="outline" 
+                size="lg" 
+                onClick={handleVRDemo}
+                className="px-8 py-3 border-purple-500 text-purple-600 hover:bg-purple-50"
+              >
+                Try VR Demo
               </Button>
             </div>
           </div>
