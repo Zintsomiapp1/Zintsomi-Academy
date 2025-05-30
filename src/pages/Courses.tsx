@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import CategoryTabs from '@/components/CategoryTabs';
 import CourseGrid from '@/components/CourseGrid';
@@ -34,7 +33,7 @@ const Courses = () => {
     'English',
     'Sepedi',
     'VR Content',
-    'AI-Powered',
+    'Indigenous Instruments',
     'Audio Books',
     'PDFs',
     'Lectures',
@@ -129,14 +128,14 @@ const Courses = () => {
     },
     {
       id: '8',
-      title: 'AI-Powered Language Learning',
-      creator: 'AI Language Labs',
-      thumbnail: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=225&fit=crop',
+      title: 'Traditional Mbira Lessons',
+      creator: 'Music Heritage Africa',
+      thumbnail: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=225&fit=crop',
       likes: 890,
       comments: 156,
       isPremium: false,
       rating: 4.9,
-      category: 'AI-Powered',
+      category: 'Indigenous Instruments',
       duration: '6 hours',
     },
     {
@@ -258,7 +257,7 @@ const Courses = () => {
             Explore Our Courses
           </h1>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Discover storytelling courses, AI-powered content, and immersive experiences 
+            Discover storytelling courses, indigenous instruments, and immersive experiences 
             across multiple African languages and cutting-edge technologies.
           </p>
         </div>
