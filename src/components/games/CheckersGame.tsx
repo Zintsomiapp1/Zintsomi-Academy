@@ -23,7 +23,7 @@ type CheckersBoard = (CheckersPiece | null)[][];
 
 const CheckersGame = ({ onBack }: CheckersGameProps) => {
   const gamingTime = useGamingTime();
-  const { isAdmin } = useUserRole();
+  const { isAdmin, loading } = useUserRole();
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
   const [selectedSquare, setSelectedSquare] = useState<[number, number] | null>(null);
   const [currentPlayer, setCurrentPlayer] = useState<PieceColor>('red');
@@ -257,17 +257,18 @@ const CheckersGame = ({ onBack }: CheckersGameProps) => {
   };
 
   useEffect(() => {
-    // Only start gaming time for non-admin users
-    if (!isAdmin && gamingTime.totalTimeRemaining > 0) {
+    // Only start gaming time for non-admin users and only after admin status is determined
+    if (!loading && !isAdmin && gamingTime.totalTimeRemaining > 0) {
       gamingTime.startPlaying();
     }
     
     return () => {
-      if (!isAdmin) {
+      // Only stop gaming time for non-admin users
+      if (!loading && !isAdmin) {
         gamingTime.stopPlaying();
       }
     };
-  }, [isAdmin]);
+  }, [isAdmin, loading]);
 
   const getSquareClass = (row: number, col: number) => {
     const isLight = (row + col) % 2 === 0;
@@ -333,7 +334,7 @@ const CheckersGame = ({ onBack }: CheckersGameProps) => {
       </Button>
 
       {/* Only show gaming time display for non-admin users */}
-      {!isAdmin && (
+      {!isAdmin && !loading && (
         <GamingTimeDisplay
           timeRemaining={gamingTime.totalTimeRemaining}
           formatTime={gamingTime.formatTime}
@@ -344,7 +345,7 @@ const CheckersGame = ({ onBack }: CheckersGameProps) => {
       )}
 
       {/* Show admin indicator */}
-      {isAdmin && (
+      {isAdmin && !loading && (
         <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-4 shadow-lg border border-purple-200">
           <div className="flex items-center gap-2">
             <Crown className="h-5 w-5 text-purple-600" />
@@ -461,7 +462,7 @@ const CheckersGame = ({ onBack }: CheckersGameProps) => {
       </div>
 
       {/* Only show purchase modal for non-admin users */}
-      {!isAdmin && (
+      {!isAdmin && !loading && (
         <TimePurchaseModal
           isOpen={showPurchaseModal}
           onClose={() => setShowPurchaseModal(false)}
