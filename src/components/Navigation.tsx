@@ -17,7 +17,8 @@ import {
   Gamepad2,
   LogOut,
   Shield,
-  Trophy
+  Trophy,
+  Eye
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserRole } from '@/hooks/useUserRole';
@@ -29,20 +30,21 @@ const Navigation = () => {
   const { isAdmin } = useUserRole();
 
   const navItems = [
-    { path: '/', label: 'Home', icon: Home },
-    { path: '/courses', label: 'Courses', icon: BookOpen },
-    { path: '/advanced-courses', label: 'Discover', icon: Search },
-    { path: '/games', label: 'Games', icon: Gamepad2 },
-    { path: '/indigenous-games', label: 'Indigenous Games', icon: Trophy },
-    { path: '/brain-training', label: 'Brain Training', icon: Brain },
-    { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { path: '/wishlist', label: 'Wishlist', icon: Heart },
-    { path: '/cart', label: 'Cart', icon: ShoppingCart },
+    { path: '/', label: 'Home', icon: Home, gradient: 'from-blue-500 to-purple-600' },
+    { path: '/courses', label: 'Courses', icon: BookOpen, gradient: 'from-green-500 to-blue-600' },
+    { path: '/advanced-courses', label: 'Discover', icon: Search, gradient: 'from-purple-500 to-pink-600' },
+    { path: '/games', label: 'Games', icon: Gamepad2, gradient: 'from-orange-500 to-red-600' },
+    { path: '/indigenous-games', label: 'Indigenous Games', icon: Trophy, gradient: 'from-yellow-500 to-orange-600' },
+    { path: '/vr-content', label: 'VR Experience', icon: Eye, gradient: 'from-red-500 to-pink-600' },
+    { path: '/brain-training', label: 'Brain Training', icon: Brain, gradient: 'from-indigo-500 to-purple-600' },
+    { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, gradient: 'from-gray-500 to-gray-700' },
+    { path: '/wishlist', label: 'Wishlist', icon: Heart, gradient: 'from-pink-500 to-red-600' },
+    { path: '/cart', label: 'Cart', icon: ShoppingCart, gradient: 'from-emerald-500 to-green-600' },
   ];
 
   // Add admin panel for admin users
   if (isAdmin) {
-    navItems.push({ path: '/admin', label: 'Admin Panel', icon: Shield });
+    navItems.push({ path: '/admin', label: 'Admin Panel', icon: Shield, gradient: 'from-red-600 to-red-800' });
   }
 
   const isActive = (path: string) => location.pathname === path;
@@ -54,6 +56,26 @@ const Navigation = () => {
     } catch (error) {
       console.error('Error signing out:', error);
     }
+  };
+
+  const getButtonClasses = (item: any) => {
+    const baseClasses = 'flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300';
+    
+    if (isActive(item.path)) {
+      return `${baseClasses} bg-gradient-to-r ${item.gradient} text-white shadow-lg transform scale-105`;
+    }
+    
+    return `${baseClasses} text-gray-600 hover:text-white hover:bg-gradient-to-r hover:${item.gradient} hover:shadow-md hover:transform hover:scale-102`;
+  };
+
+  const getMobileButtonClasses = (item: any) => {
+    const baseClasses = 'flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium transition-all duration-300 w-full';
+    
+    if (isActive(item.path)) {
+      return `${baseClasses} bg-gradient-to-r ${item.gradient} text-white shadow-lg`;
+    }
+    
+    return `${baseClasses} text-gray-600 hover:text-white hover:bg-gradient-to-r hover:${item.gradient} hover:shadow-md`;
   };
 
   return (
@@ -76,11 +98,7 @@ const Navigation = () => {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    isActive(item.path)
-                      ? 'bg-blue-100 text-blue-700'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                  }`}
+                  className={getButtonClasses(item)}
                 >
                   <Icon className="h-4 w-4" />
                   <span>{item.label}</span>
@@ -149,11 +167,7 @@ const Navigation = () => {
                     key={item.path}
                     to={item.path}
                     onClick={() => setIsMenuOpen(false)}
-                    className={`flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                      isActive(item.path)
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                    }`}
+                    className={getMobileButtonClasses(item)}
                   >
                     <Icon className="h-5 w-5" />
                     <span>{item.label}</span>
