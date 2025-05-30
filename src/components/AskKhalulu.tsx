@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Send, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -16,7 +17,7 @@ interface Message {
 }
 
 const AskKhalulu = () => {
-  const { user } = useAuth();
+  const { user, session } = useAuth();
   const { toast } = useToast();
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -31,7 +32,7 @@ const AskKhalulu = () => {
   const [conversationId, setConversationId] = useState<string | null>(null);
 
   const handleSendMessage = async () => {
-    if (!inputMessage.trim() || !user) return;
+    if (!inputMessage.trim() || !user || !session) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -45,13 +46,8 @@ const AskKhalulu = () => {
     setIsTyping(true);
 
     try {
-      // Get the current session to ensure we have a valid token
-      const { data: { session } } = await supabase.auth.getSession();
+      console.log('Sending message to Khalulu with session:', !!session);
       
-      if (!session) {
-        throw new Error('No valid session found');
-      }
-
       const { data, error } = await supabase.functions.invoke('chat-with-khalulu', {
         body: {
           message: inputMessage,
@@ -62,7 +58,12 @@ const AskKhalulu = () => {
         },
       });
 
-      if (error) throw error;
+      console.log('Edge function response:', { data, error });
+
+      if (error) {
+        console.error('Edge function error:', error);
+        throw error;
+      }
 
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -107,7 +108,7 @@ const AskKhalulu = () => {
   };
 
   // Show login message if user is not authenticated
-  if (!user) {
+  if (!user || !session) {
     return (
       <Card className="w-full max-w-2xl mx-auto h-96">
         <CardContent className="p-6 flex flex-col items-center justify-center h-full">
