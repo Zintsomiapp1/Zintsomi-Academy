@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Play, Star, Users, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -17,7 +16,7 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <div className="relative overflow-hidden">
+      <div className="relative overflow-hidden bg-white">
         <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="flex items-center justify-center mb-8">
