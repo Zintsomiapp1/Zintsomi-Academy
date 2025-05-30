@@ -17,21 +17,33 @@ serve(async (req) => {
   try {
     const { message, conversationId } = await req.json();
     
+    // Get the authorization header
+    const authHeader = req.headers.get('Authorization');
+    
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
       {
         global: {
-          headers: { Authorization: req.headers.get('Authorization')! },
+          headers: authHeader ? { Authorization: authHeader } : {},
         },
       }
     );
 
-    // Get user
+    // Get user from the token
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
-    if (userError || !user) {
-      throw new Error('Unauthorized');
+    
+    if (userError) {
+      console.error('Auth error:', userError);
+      throw new Error('Authentication failed');
     }
+    
+    if (!user) {
+      console.error('No user found');
+      throw new Error('User not authenticated');
+    }
+
+    console.log('User authenticated:', user.email);
 
     let currentConversationId = conversationId;
 
@@ -46,7 +58,10 @@ serve(async (req) => {
         .select()
         .single();
 
-      if (convError) throw convError;
+      if (convError) {
+        console.error('Conversation creation error:', convError);
+        throw convError;
+      }
       currentConversationId = newConversation.id;
     }
 
@@ -59,7 +74,10 @@ serve(async (req) => {
         content: message
       }]);
 
-    if (userMsgError) throw userMsgError;
+    if (userMsgError) {
+      console.error('User message save error:', userMsgError);
+      throw userMsgError;
+    }
 
     // Get conversation history
     const { data: messages, error: historyError } = await supabaseClient
@@ -68,19 +86,24 @@ serve(async (req) => {
       .eq('conversation_id', currentConversationId)
       .order('created_at', { ascending: true });
 
-    if (historyError) throw historyError;
+    if (historyError) {
+      console.error('History fetch error:', historyError);
+      throw historyError;
+    }
 
     // Prepare messages for OpenAI
     const openAIMessages = [
       {
         role: 'system',
-        content: `You are Khalulu, a wise and friendly owl who serves as a learning companion. You are chatty, encouraging, and love to help with educational topics. Your personality is warm, patient, and slightly playful. You often use gentle encouragement and relate things back to learning and growth. You should be conversational and remember the context of your chats. Keep responses engaging but not too long.`
+        content: `You are Khalulu, a wise and friendly owl who serves as a learning companion. You are chatty, encouraging, and love to help with educational topics. Your personality is warm, patient, and slightly playful. You often use gentle encouragement and relate things back to learning and growth. You should be conversational and remember the context of your chats. Keep responses engaging but not too long. You can provide current information like time zones when asked, but focus on being educational and supportive.`
       },
       ...messages.map(msg => ({
         role: msg.role,
         content: msg.content
       }))
     ];
+
+    console.log('Calling OpenAI with messages:', openAIMessages.length);
 
     // Call OpenAI API
     const openAIResponse = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -97,13 +120,16 @@ serve(async (req) => {
       }),
     });
 
-    const openAIData = await openAIResponse.json();
-    
     if (!openAIResponse.ok) {
-      throw new Error(`OpenAI API error: ${openAIData.error?.message}`);
+      const errorData = await openAIResponse.json();
+      console.error('OpenAI API error:', errorData);
+      throw new Error(`OpenAI API error: ${errorData.error?.message || 'Unknown error'}`);
     }
 
+    const openAIData = await openAIResponse.json();
     const aiResponse = openAIData.choices[0].message.content;
+
+    console.log('OpenAI response received');
 
     // Save AI response
     const { error: aiMsgError } = await supabaseClient
@@ -114,7 +140,10 @@ serve(async (req) => {
         content: aiResponse
       }]);
 
-    if (aiMsgError) throw aiMsgError;
+    if (aiMsgError) {
+      console.error('AI message save error:', aiMsgError);
+      throw aiMsgError;
+    }
 
     return new Response(JSON.stringify({ 
       response: aiResponse, 
@@ -125,7 +154,9 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Error in chat-with-khalulu function:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ 
+      error: error.message || 'An unexpected error occurred'
+    }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
