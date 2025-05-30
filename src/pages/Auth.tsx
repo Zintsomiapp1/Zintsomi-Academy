@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -22,6 +22,37 @@ const Auth = ({ onLogin, onBack }: AuthProps) => {
   const { signIn, signUp } = useAuth();
   const { toast } = useToast();
 
+  // Check for email verification status on component mount
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const error = urlParams.get('error');
+    const errorDescription = urlParams.get('error_description');
+    
+    if (error) {
+      toast({
+        title: "Verification Error",
+        description: errorDescription || "There was an issue with email verification. Please try signing in or contact support.",
+        variant: "destructive",
+      });
+      // Clear the error from URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    // Check if this is a successful verification
+    const token = urlParams.get('token');
+    const type = urlParams.get('type');
+    
+    if (token && type === 'signup') {
+      toast({
+        title: "Email Verified!",
+        description: "Your email has been verified successfully. You can now sign in.",
+      });
+      setIsLogin(true);
+      // Clear the URL parameters
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, [toast]);
+
   const handleSubmit = async (formData: {
     email: string;
     password: string;
@@ -33,7 +64,19 @@ const Auth = ({ onLogin, onBack }: AuthProps) => {
     try {
       if (isLogin) {
         const { data, error } = await signIn(formData.email, formData.password);
-        if (error) throw error;
+        if (error) {
+          // Check if it's an unverified email error
+          if (error.message?.includes('email not confirmed')) {
+            toast({
+              title: "Email Not Verified",
+              description: "Please check your email and click the verification link before signing in.",
+              variant: "destructive",
+            });
+          } else {
+            throw error;
+          }
+          return;
+        }
         
         onLogin({
           name: data.user?.user_metadata?.full_name || data.user?.email?.split('@')[0] || 'User',
