@@ -4,6 +4,13 @@ import { ArrowLeft, Headphones, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
+// Extend the Window interface to include AFRAME
+declare global {
+  interface Window {
+    AFRAME: any;
+  }
+}
+
 const VRContent = () => {
   const [aframeLoaded, setAframeLoaded] = useState(false);
 
@@ -21,7 +28,10 @@ const VRContent = () => {
     
     script.onload = () => {
       console.log('A-Frame loaded successfully');
-      setAframeLoaded(true);
+      // Add a small delay to ensure A-Frame is fully initialized
+      setTimeout(() => {
+        setAframeLoaded(true);
+      }, 500);
     };
 
     script.onerror = () => {
