@@ -19,12 +19,16 @@ serve(async (req) => {
     
     // Get the authorization header
     const authHeader = req.headers.get('Authorization');
-    console.log('Auth header present:', !!authHeader);
+    console.log('Authorization header:', authHeader ? 'present' : 'missing');
     
     if (!authHeader) {
       console.error('No authorization header found');
       throw new Error('Authorization header missing');
     }
+
+    // Extract the token from the Bearer token
+    const token = authHeader.replace('Bearer ', '');
+    console.log('Extracted token length:', token ? token.length : 0);
 
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
@@ -33,32 +37,45 @@ serve(async (req) => {
         global: {
           headers: { Authorization: authHeader },
         },
+        auth: {
+          persistSession: false,
+        }
       }
     );
 
-    // Get user from the token
-    const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
-    
-    if (userError) {
-      console.error('Auth error:', userError);
-      throw new Error(`Authentication failed: ${userError.message}`);
-    }
-    
-    if (!user) {
-      console.error('No user found');
-      throw new Error('User not authenticated');
-    }
+    // Set the session explicitly using the token
+    const { data: sessionData, error: sessionError } = await supabaseClient.auth.setSession({
+      access_token: token,
+      refresh_token: token, // In some cases, we might need this
+    });
 
-    console.log('User authenticated:', user.email);
+    if (sessionError) {
+      console.error('Session error:', sessionError);
+      // Try to get user directly with the token
+      const { data: { user }, error: userError } = await supabaseClient.auth.getUser(token);
+      
+      if (userError || !user) {
+        console.error('User verification error:', userError);
+        throw new Error(`Authentication failed: ${userError?.message || 'Invalid token'}`);
+      }
+      
+      console.log('User authenticated via direct token verification:', user.email);
+    } else if (sessionData?.user) {
+      console.log('User authenticated via session:', sessionData.user.email);
+    } else {
+      throw new Error('Authentication failed: No user found');
+    }
 
     let currentConversationId = conversationId;
 
-    // Create new conversation if none exists
-    if (!currentConversationId) {
+    // Create new conversation if none exists - use the user from session or direct verification
+    const userId = sessionData?.user?.id || (await supabaseClient.auth.getUser(token)).data.user?.id;
+    
+    if (!currentConversationId && userId) {
       const { data: newConversation, error: convError } = await supabaseClient
         .from('chat_conversations')
         .insert([{
-          user_id: user.id,
+          user_id: userId,
           title: 'Chat with Khalulu'
         }])
         .select()
