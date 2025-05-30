@@ -55,16 +55,15 @@ const PatternMemory = ({ onBack }: PatternMemoryProps) => {
     
     console.log('Current pattern so far:', newCurrentPattern);
     console.log('Target pattern:', pattern);
+    console.log('Expected next click:', pattern[newCurrentPattern.length - 1]);
 
-    // Check if the current click is correct so far
-    const isCorrectSoFar = newCurrentPattern.every((clickedIndex, idx) => 
-      clickedIndex === pattern[idx]
-    );
-
-    if (!isCorrectSoFar) {
+    // Check if the current click matches the expected position in the sequence
+    const expectedIndex = pattern[newCurrentPattern.length - 1];
+    
+    if (index !== expectedIndex) {
       // Wrong click - end game immediately
       setGameState('wrong');
-      console.log('Wrong pattern detected');
+      console.log('Wrong! Expected:', expectedIndex, 'Got:', index);
       setTimeout(() => {
         setGameState('ready');
       }, 2000);
