@@ -1,40 +1,96 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Gamepad2, Puzzle, Eye, Brain, Target, Timer } from 'lucide-react';
+import SudokuGame from '@/components/games/SudokuGame';
+import EyeTest from '@/components/games/EyeTest';
+import IQQuiz from '@/components/games/IQQuiz';
+
+type GameType = 'sudoku' | 'eye-test' | 'iq-quiz' | null;
 
 const Games = () => {
+  const [currentGame, setCurrentGame] = useState<GameType>(null);
+
   const gameCategories = [
     {
       title: 'Puzzle Games',
       description: 'Challenge your problem-solving skills',
       icon: Puzzle,
       games: ['Sudoku', 'Word Puzzles', 'Logic Grid'],
-      color: 'bg-blue-500'
+      color: 'bg-blue-500',
+      gameId: 'sudoku' as GameType
     },
     {
       title: 'Eye Tests',
       description: 'Test and improve your visual acuity',
       icon: Eye,
       games: ['Visual Acuity', 'Color Blind Test', 'Reaction Time'],
-      color: 'bg-green-500'
+      color: 'bg-green-500',
+      gameId: 'eye-test' as GameType
     },
     {
       title: 'IQ Challenges',
       description: 'Test your cognitive abilities',
       icon: Brain,
       games: ['Pattern Recognition', 'Number Sequences', 'Spatial Reasoning'],
-      color: 'bg-purple-500'
+      color: 'bg-purple-500',
+      gameId: 'iq-quiz' as GameType
     },
     {
       title: 'Memory Games',
       description: 'Enhance your memory skills',
       icon: Target,
       games: ['Memory Match', 'Sequence Memory', 'Visual Memory'],
-      color: 'bg-orange-500'
+      color: 'bg-orange-500',
+      gameId: null
     }
   ];
+
+  if (currentGame === 'sudoku') {
+    return (
+      <div className="min-h-screen bg-gray-50 p-4">
+        <Button
+          variant="ghost"
+          onClick={() => setCurrentGame(null)}
+          className="mb-4"
+        >
+          ← Back to Games
+        </Button>
+        <SudokuGame />
+      </div>
+    );
+  }
+
+  if (currentGame === 'eye-test') {
+    return (
+      <div className="min-h-screen bg-gray-50 p-4">
+        <Button
+          variant="ghost"
+          onClick={() => setCurrentGame(null)}
+          className="mb-4"
+        >
+          ← Back to Games
+        </Button>
+        <EyeTest />
+      </div>
+    );
+  }
+
+  if (currentGame === 'iq-quiz') {
+    return (
+      <div className="min-h-screen bg-gray-50 p-4">
+        <Button
+          variant="ghost"
+          onClick={() => setCurrentGame(null)}
+          className="mb-4"
+        >
+          ← Back to Games
+        </Button>
+        <IQQuiz />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -76,7 +132,13 @@ const Games = () => {
                       </div>
                     ))}
                   </div>
-                  <Button className="w-full">Play Games</Button>
+                  <Button 
+                    className="w-full" 
+                    onClick={() => category.gameId && setCurrentGame(category.gameId)}
+                    disabled={!category.gameId}
+                  >
+                    {category.gameId ? 'Play Games' : 'Coming Soon'}
+                  </Button>
                 </CardContent>
               </Card>
             );
@@ -93,15 +155,27 @@ const Games = () => {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Button variant="outline" className="h-20 flex flex-col gap-2">
+              <Button 
+                variant="outline" 
+                className="h-20 flex flex-col gap-2"
+                onClick={() => setCurrentGame('sudoku')}
+              >
                 <Puzzle className="w-6 h-6" />
                 <span>Quick Sudoku</span>
               </Button>
-              <Button variant="outline" className="h-20 flex flex-col gap-2">
+              <Button 
+                variant="outline" 
+                className="h-20 flex flex-col gap-2"
+                onClick={() => setCurrentGame('eye-test')}
+              >
                 <Eye className="w-6 h-6" />
                 <span>Eye Test</span>
               </Button>
-              <Button variant="outline" className="h-20 flex flex-col gap-2">
+              <Button 
+                variant="outline" 
+                className="h-20 flex flex-col gap-2"
+                onClick={() => setCurrentGame('iq-quiz')}
+              >
                 <Brain className="w-6 h-6" />
                 <span>IQ Quiz</span>
               </Button>
