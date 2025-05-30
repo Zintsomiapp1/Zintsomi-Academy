@@ -32,7 +32,7 @@ const Index = () => {
       <div className="min-h-screen bg-gradient-to-br from-blue-200 via-blue-300 to-blue-400 flex items-center justify-center">
         <div className="text-center">
           <img
-            src="/lovable-uploads/e153d080-0e68-4853-b008-897623780941.png"
+            src="/lovable-uploads/531e05b9-22e5-4b83-a3f4-953ecd13ff8f.png"
             alt="Khalulu the storyteller"
             className="w-16 h-16 object-contain mx-auto mb-4 animate-bounce"
           />
@@ -45,15 +45,15 @@ const Index = () => {
   // If user is authenticated, show user dashboard with Ask Khalulu prominently
   if (user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-200 via-red-300 to-red-400">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-gray-50">
         <div className="container mx-auto px-4 py-8">
           {/* Ask Khalulu Section - Prominently positioned */}
           <div className="mb-8">
             <div className="text-center mb-6">
-              <h2 className="text-2xl font-bold text-white mb-2">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
                 Need Help? Ask Khalulu the Storyteller!
               </h2>
-              <p className="text-red-100">
+              <p className="text-gray-600">
                 Your friendly AI companion is here to help with any questions about your learning journey.
               </p>
             </div>

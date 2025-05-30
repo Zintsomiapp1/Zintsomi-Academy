@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Play, Star, Users, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -21,14 +22,14 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
           <div className="text-center">
             <div className="flex items-center justify-center mb-8">
               <img
-                src="/lovable-uploads/e153d080-0e68-4853-b008-897623780941.png"
+                src="/lovable-uploads/531e05b9-22e5-4b83-a3f4-953ecd13ff8f.png"
                 alt="Khalulu the storyteller"
                 className="w-20 h-20 object-contain animate-bounce"
               />
             </div>
             <h1 className="text-4xl md:text-6xl font-bold mb-6 text-slate-900">
               Welcome to{' '}
-              <span className="text-slate-900 font-extrabold">
+              <span className="text-blue-600 font-extrabold">
                 Zintsomi College
               </span>
             </h1>
@@ -48,7 +49,7 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
                 variant="outline" 
                 size="lg" 
                 onClick={onLogin}
-                className="px-8 py-3 border-slate-700 text-slate-800 hover:bg-slate-800 hover:text-white border-2"
+                className="px-8 py-3 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white border-2"
               >
                 Sign In
               </Button>
@@ -56,7 +57,7 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
                 variant="outline" 
                 size="lg" 
                 onClick={handleVRDemo}
-                className="px-8 py-3 border-slate-700 text-slate-800 hover:bg-slate-800 hover:text-white border-2"
+                className="px-8 py-3 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white border-2"
               >
                 Try VR Demo
               </Button>
