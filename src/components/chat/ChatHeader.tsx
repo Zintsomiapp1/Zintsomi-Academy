@@ -8,7 +8,7 @@ const ChatHeader = () => {
     <CardHeader className="pb-3">
       <CardTitle className="flex items-center space-x-2">
         <img
-          src="/lovable-uploads/e153d080-0e68-4853-b008-897623780941.png"
+          src="/lovable-uploads/531e05b9-22e5-4b83-a3f4-953ecd13ff8f.png"
           alt="Khalulu the Storyteller"
           className="w-8 h-8 object-contain"
         />

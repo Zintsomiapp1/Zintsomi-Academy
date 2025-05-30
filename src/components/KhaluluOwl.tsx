@@ -17,7 +17,7 @@ const KhaluluOwl = ({ message, userName, className = "" }: KhaluluOwlProps) => {
       {/* Owl Avatar */}
       <div className="relative">
         <img
-          src="/lovable-uploads/e153d080-0e68-4853-b008-897623780941.png"
+          src="/lovable-uploads/531e05b9-22e5-4b83-a3f4-953ecd13ff8f.png"
           alt="Khalulu the storyteller"
           className="w-24 h-24 object-contain animate-bounce"
         />
