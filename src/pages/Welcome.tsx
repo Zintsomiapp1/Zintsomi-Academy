@@ -21,8 +21,13 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
       <div className="relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
           <div className="text-center">
-            <div className="flex items-center justify-center mb-8">
+            <div className="flex items-center justify-center mb-8 space-x-4">
               <ColorfulLogo size="lg" />
+              <img
+                src="/lovable-uploads/e153d080-0e68-4853-b008-897623780941.png"
+                alt="Khalulu the Owl"
+                className="w-16 h-16 object-contain animate-bounce"
+              />
             </div>
             <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
               Welcome to{' '}
