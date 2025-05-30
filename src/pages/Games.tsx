@@ -9,7 +9,6 @@ import IQQuiz from '@/components/games/IQQuiz';
 import ChessGame from '@/components/games/ChessGame';
 import CheckersGame from '@/components/games/CheckersGame';
 import { useGamingTime } from '@/hooks/useGamingTime';
-import GamingTimeDisplay from '@/components/games/GamingTimeDisplay';
 import TimePurchaseModal from '@/components/games/TimePurchaseModal';
 
 type GameType = 'sudoku' | 'eye-test' | 'iq-quiz' | 'chess' | 'checkers' | null;
@@ -127,17 +126,6 @@ const Games = () => {
           <p className="text-gray-600 max-w-2xl mx-auto mb-6">
             Enhance your cognitive abilities through fun and engaging games
           </p>
-          
-          {/* Gaming Time Display */}
-          <div className="max-w-2xl mx-auto mb-6">
-            <GamingTimeDisplay
-              timeRemaining={gamingTime.totalTimeRemaining}
-              formatTime={gamingTime.formatTime}
-              getFreeTimeRemaining={gamingTime.getFreeTimeRemaining}
-              getTimeUntilReset={gamingTime.getTimeUntilReset}
-              onPurchaseClick={() => setShowPurchaseModal(true)}
-            />
-          </div>
 
           {/* Gaming Advertisement */}
           <div className="bg-gradient-to-r from-green-100 to-blue-100 rounded-xl p-6 max-w-4xl mx-auto border border-green-200">
