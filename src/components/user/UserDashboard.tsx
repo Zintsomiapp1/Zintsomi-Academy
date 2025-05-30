@@ -20,16 +20,10 @@ const UserDashboard = () => {
   const { user } = useAuth();
 
   const stats = [
-    { label: 'Courses Completed', value: '3', icon: Trophy, color: 'text-yellow-600' },
-    { label: 'Hours Learned', value: '24', icon: Clock, color: 'text-blue-600' },
-    { label: 'Current Streak', value: '7 days', icon: Target, color: 'text-green-600' },
-    { label: 'Certificates', value: '2', icon: BookOpen, color: 'text-purple-600' }
-  ];
-
-  const recentCourses = [
-    { title: 'IsiZulu Storytelling', progress: 75, thumbnail: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=60&fit=crop' },
-    { title: 'Advanced Narratives', progress: 45, thumbnail: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=100&h=60&fit=crop' },
-    { title: 'Digital Storytelling', progress: 90, thumbnail: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=100&h=60&fit=crop' }
+    { label: 'Courses Completed', value: '0', icon: Trophy, color: 'text-yellow-600' },
+    { label: 'Hours Learned', value: '0', icon: Clock, color: 'text-blue-600' },
+    { label: 'Current Streak', value: '0 days', icon: Target, color: 'text-green-600' },
+    { label: 'Certificates', value: '0', icon: BookOpen, color: 'text-purple-600' }
   ];
 
   return (
@@ -42,7 +36,7 @@ const UserDashboard = () => {
               <h2 className="text-2xl font-bold mb-2">
                 Welcome back, {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Learner'}!
               </h2>
-              <p className="text-gray-600">Continue your learning journey</p>
+              <p className="text-gray-600">Start your learning journey today</p>
             </div>
             <div className="flex gap-2">
               <Link to="/profile-settings">
@@ -88,29 +82,18 @@ const UserDashboard = () => {
         })}
       </div>
 
-      {/* Recent Courses */}
+      {/* Empty Learning State */}
       <Card>
         <CardHeader>
           <CardTitle>Continue Learning</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          {recentCourses.map((course, index) => (
-            <div key={index} className="flex items-center gap-4 p-4 border rounded-lg">
-              <img 
-                src={course.thumbnail} 
-                alt={course.title}
-                className="w-16 h-10 object-cover rounded"
-              />
-              <div className="flex-1">
-                <h4 className="font-medium">{course.title}</h4>
-                <div className="flex items-center gap-2 mt-1">
-                  <Progress value={course.progress} className="flex-1" />
-                  <span className="text-sm text-gray-600">{course.progress}%</span>
-                </div>
-              </div>
-              <Button size="sm">Continue</Button>
-            </div>
-          ))}
+        <CardContent className="text-center py-12">
+          <BookOpen className="w-16 h-16 mx-auto mb-4 text-gray-400" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">No courses started yet</h3>
+          <p className="text-gray-600 mb-6">Begin your learning journey by exploring our course catalog</p>
+          <Link to="/courses">
+            <Button>Browse Courses</Button>
+          </Link>
         </CardContent>
       </Card>
 
