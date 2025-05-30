@@ -16,7 +16,8 @@ import {
   ShoppingCart,
   Gamepad2,
   LogOut,
-  Shield
+  Shield,
+  Trophy
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserRole } from '@/hooks/useUserRole';
@@ -32,6 +33,7 @@ const Navigation = () => {
     { path: '/courses', label: 'Courses', icon: BookOpen },
     { path: '/advanced-courses', label: 'Discover', icon: Search },
     { path: '/games', label: 'Games', icon: Gamepad2 },
+    { path: '/indigenous-games', label: 'Indigenous Games', icon: Trophy },
     { path: '/brain-training', label: 'Brain Training', icon: Brain },
     { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/wishlist', label: 'Wishlist', icon: Heart },

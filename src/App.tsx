@@ -17,6 +17,7 @@ import AdvancedCourses from "@/pages/AdvancedCourses";
 import Wishlist from "@/pages/Wishlist";
 import Cart from "@/pages/Cart";
 import Games from "@/pages/Games";
+import IndigenousGames from "@/pages/IndigenousGames";
 import ProfileSettings from "@/pages/ProfileSettings";
 import AdminPanel from "@/pages/AdminPanel";
 import NotFound from "@/pages/NotFound";
@@ -44,6 +45,7 @@ function App() {
                   <Route path="/courses" element={<Courses />} />
                   <Route path="/advanced-courses" element={<AdvancedCourses />} />
                   <Route path="/games" element={<Games />} />
+                  <Route path="/indigenous-games" element={<IndigenousGames />} />
                   <Route path="/course/:id" element={<CoursePlayer />} />
                   <Route path="/profile-settings" element={<ProfileSettings />} />
                   <Route path="/admin" element={<AdminPanel />} />

@@ -4,6 +4,7 @@ import Welcome from './Welcome';
 import Auth from './Auth';
 import { useAuth } from '@/hooks/useAuth';
 import UserDashboard from '@/components/user/UserDashboard';
+import AskKhalulu from '@/components/AskKhalulu';
 
 const Index = () => {
   const [currentPage, setCurrentPage] = useState<'welcome' | 'auth' | 'dashboard'>('welcome');
@@ -41,12 +42,25 @@ const Index = () => {
     );
   }
 
-  // If user is authenticated, show user dashboard
+  // If user is authenticated, show user dashboard with Ask Khalulu
   if (user) {
     return (
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
           <UserDashboard />
+          
+          {/* Ask Khalulu Section */}
+          <div className="mt-12">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                Need Help? Ask Khalulu!
+              </h2>
+              <p className="text-gray-600">
+                Your friendly AI companion is here to help with any questions about your learning journey.
+              </p>
+            </div>
+            <AskKhalulu />
+          </div>
         </div>
       </div>
     );
