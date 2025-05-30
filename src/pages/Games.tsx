@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Gamepad2, Puzzle, Eye, Brain, Target, Timer, Crown, Zap } from 'lucide-react';
@@ -9,6 +8,8 @@ import IQQuiz from '@/components/games/IQQuiz';
 import ChessGame from '@/components/games/ChessGame';
 import CheckersGame from '@/components/games/CheckersGame';
 import { useGamingTime } from '@/hooks/useGamingTime';
+import { useUserRole } from '@/hooks/useUserRole';
+import GamingTimeDisplay from '@/components/games/GamingTimeDisplay';
 import TimePurchaseModal from '@/components/games/TimePurchaseModal';
 
 type GameType = 'sudoku' | 'eye-test' | 'iq-quiz' | 'chess' | 'checkers' | null;
@@ -17,6 +18,7 @@ const Games = () => {
   const [currentGame, setCurrentGame] = useState<GameType>(null);
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
   const gamingTime = useGamingTime();
+  const { isAdmin, loading } = useUserRole();
 
   const gameCategories = [
     {
@@ -54,12 +56,27 @@ const Games = () => {
   ];
 
   const handleGameStart = (gameId: GameType) => {
-    if (gamingTime.totalTimeRemaining <= 0) {
+    // Skip time check for admins
+    if (!isAdmin && gamingTime.totalTimeRemaining <= 0) {
       setShowPurchaseModal(true);
       return;
     }
     setCurrentGame(gameId);
   };
+
+  useEffect(() => {
+    // Only start gaming time for non-admin users and only after admin status is determined
+    if (!loading && !isAdmin && gamingTime.totalTimeRemaining > 0) {
+      gamingTime.startPlaying();
+    }
+    
+    return () => {
+      // Only stop gaming time for non-admin users
+      if (!loading && !isAdmin) {
+        gamingTime.stopPlaying();
+      }
+    };
+  }, [isAdmin, loading]);
 
   if (currentGame === 'chess') {
     return <ChessGame onBack={() => setCurrentGame(null)} />;
@@ -126,6 +143,29 @@ const Games = () => {
           <p className="text-gray-600 max-w-2xl mx-auto mb-6">
             Enhance your cognitive abilities through fun and engaging games
           </p>
+
+          {/* Only show gaming time display for non-admin users */}
+          {!isAdmin && !loading && (
+            <div className="max-w-2xl mx-auto mb-6">
+              <GamingTimeDisplay
+                timeRemaining={gamingTime.totalTimeRemaining}
+                formatTime={gamingTime.formatTime}
+                getFreeTimeRemaining={gamingTime.getFreeTimeRemaining}
+                getTimeUntilReset={gamingTime.getTimeUntilReset}
+                onPurchaseClick={() => setShowPurchaseModal(true)}
+              />
+            </div>
+          )}
+
+          {/* Show admin indicator */}
+          {isAdmin && !loading && (
+            <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-4 max-w-2xl mx-auto mb-6 shadow-lg border border-purple-200">
+              <div className="flex items-center justify-center gap-2">
+                <Crown className="h-5 w-5 text-purple-600" />
+                <span className="font-semibold text-purple-800">Admin Mode - Unlimited Gaming Time</span>
+              </div>
+            </div>
+          )}
 
           {/* Gaming Advertisement */}
           <div className="bg-gradient-to-r from-green-100 to-blue-100 rounded-xl p-6 max-w-4xl mx-auto border border-green-200">
@@ -246,16 +286,19 @@ const Games = () => {
         </Card>
       </div>
 
-      <TimePurchaseModal
-        isOpen={showPurchaseModal}
-        onClose={() => setShowPurchaseModal(false)}
-        onPurchase={() => {
-          gamingTime.purchaseTime();
-          setShowPurchaseModal(false);
-        }}
-        timeRemaining={gamingTime.totalTimeRemaining}
-        formatTime={gamingTime.formatTime}
-      />
+      {/* Only show purchase modal for non-admin users */}
+      {!isAdmin && !loading && (
+        <TimePurchaseModal
+          isOpen={showPurchaseModal}
+          onClose={() => setShowPurchaseModal(false)}
+          onPurchase={() => {
+            gamingTime.purchaseTime();
+            setShowPurchaseModal(false);
+          }}
+          timeRemaining={gamingTime.totalTimeRemaining}
+          formatTime={gamingTime.formatTime}
+        />
+      )}
     </div>
   );
 };
