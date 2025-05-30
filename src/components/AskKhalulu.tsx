@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Send, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -32,7 +31,10 @@ const AskKhalulu = () => {
   const [conversationId, setConversationId] = useState<string | null>(null);
 
   const handleSendMessage = async () => {
-    if (!inputMessage.trim() || !user || !session) return;
+    if (!inputMessage.trim() || !user || !session) {
+      console.log('Missing requirements:', { hasMessage: !!inputMessage.trim(), hasUser: !!user, hasSession: !!session });
+      return;
+    }
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -46,15 +48,25 @@ const AskKhalulu = () => {
     setIsTyping(true);
 
     try {
-      console.log('Sending message to Khalulu with session:', !!session);
+      console.log('Attempting to send message with session token:', !!session.access_token);
       
+      // Get a fresh session to ensure we have a valid token
+      const { data: { session: freshSession }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !freshSession) {
+        console.error('Session error:', sessionError);
+        throw new Error('Session invalid');
+      }
+
+      console.log('Using fresh session token for edge function call');
+
       const { data, error } = await supabase.functions.invoke('chat-with-khalulu', {
         body: {
           message: inputMessage,
           conversationId: conversationId
         },
         headers: {
-          Authorization: `Bearer ${session.access_token}`,
+          Authorization: `Bearer ${freshSession.access_token}`,
         },
       });
 
