@@ -33,16 +33,13 @@ const Navigation = () => {
   const handleMenuClose = () => setIsMenuOpen(false);
 
   return (
-    <nav className="bg-white shadow-sm border-b sticky top-0 z-50">
+    <nav className="bg-gradient-to-r from-blue-500 to-purple-600 shadow-sm border-b sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3">
             <ColorfulLogo size="md" />
-            <div className="flex flex-col">
-              <span className="font-bold text-xl text-gray-900">Zintsomi College</span>
-              <span className="text-xs text-gray-600">Dr Sara M</span>
-            </div>
+            <span className="font-bold text-xl text-white">Zintsomi College</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -71,7 +68,7 @@ const Navigation = () => {
               variant="ghost"
               size="sm"
               onClick={handleMenuToggle}
-              className="p-2"
+              className="p-2 text-white hover:bg-white hover:bg-opacity-20"
             >
               {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>

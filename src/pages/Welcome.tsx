@@ -16,7 +16,7 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-yellow-50 to-green-50">
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
@@ -30,9 +30,6 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
                 Zintsomi College
               </span>
             </h1>
-            <div className="text-lg text-gray-600 mb-2">
-              <span className="font-semibold">Dr Sara M</span>
-            </div>
             <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
               Discover the magic of storytelling through AI-powered courses, immersive VR experiences, 
               and interactive learning in multiple African languages.
@@ -41,7 +38,7 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
               <Button 
                 size="lg" 
                 onClick={onSignUp}
-                className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3"
+                className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-8 py-3"
               >
                 Get Started Free
               </Button>
@@ -49,7 +46,7 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
                 variant="outline" 
                 size="lg" 
                 onClick={onLogin}
-                className="px-8 py-3"
+                className="px-8 py-3 border-green-500 text-green-600 hover:bg-green-50"
               >
                 Sign In
               </Button>
@@ -57,7 +54,7 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
                 variant="outline" 
                 size="lg" 
                 onClick={handleVRDemo}
-                className="px-8 py-3 border-purple-500 text-purple-600 hover:bg-purple-50"
+                className="px-8 py-3 border-yellow-500 text-yellow-600 hover:bg-yellow-50"
               >
                 Try VR Demo
               </Button>
@@ -67,7 +64,7 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
       </div>
 
       {/* Features Section */}
-      <div className="py-16 bg-white">
+      <div className="py-16 bg-gradient-to-r from-green-100 to-blue-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
@@ -79,10 +76,10 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <Card className="text-center p-6 hover:shadow-lg transition-shadow">
+            <Card className="text-center p-6 hover:shadow-lg transition-shadow bg-gradient-to-br from-blue-50 to-blue-100">
               <CardContent className="pt-6">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <BookOpen className="w-6 h-6 text-blue-600" />
+                <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <BookOpen className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-2">Interactive Stories</h3>
                 <p className="text-gray-600 text-sm">
@@ -91,10 +88,10 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
               </CardContent>
             </Card>
 
-            <Card className="text-center p-6 hover:shadow-lg transition-shadow">
+            <Card className="text-center p-6 hover:shadow-lg transition-shadow bg-gradient-to-br from-purple-50 to-purple-100">
               <CardContent className="pt-6">
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Play className="w-6 h-6 text-purple-600" />
+                <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <Play className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-2">VR Content</h3>
                 <p className="text-gray-600 text-sm">
@@ -103,10 +100,10 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
               </CardContent>
             </Card>
 
-            <Card className="text-center p-6 hover:shadow-lg transition-shadow">
+            <Card className="text-center p-6 hover:shadow-lg transition-shadow bg-gradient-to-br from-green-50 to-green-100">
               <CardContent className="pt-6">
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Users className="w-6 h-6 text-green-600" />
+                <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <Users className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-2">Community</h3>
                 <p className="text-gray-600 text-sm">
@@ -115,10 +112,10 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
               </CardContent>
             </Card>
 
-            <Card className="text-center p-6 hover:shadow-lg transition-shadow">
+            <Card className="text-center p-6 hover:shadow-lg transition-shadow bg-gradient-to-br from-yellow-50 to-yellow-100">
               <CardContent className="pt-6">
-                <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Star className="w-6 h-6 text-yellow-600" />
+                <div className="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <Star className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-2">AI-Powered</h3>
                 <p className="text-gray-600 text-sm">
@@ -131,18 +128,18 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
       </div>
 
       {/* CTA Section */}
-      <div className="py-16 bg-gradient-to-r from-blue-600 to-purple-600">
+      <div className="py-16 bg-gradient-to-r from-orange-500 to-red-500">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-white mb-4">
             Ready to Begin Your Journey?
           </h2>
-          <p className="text-blue-100 mb-8 text-lg">
+          <p className="text-orange-100 mb-8 text-lg">
             Join thousands of learners exploring African storytelling traditions through modern technology
           </p>
           <Button 
             size="lg" 
             onClick={onSignUp}
-            className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3"
+            className="bg-white text-orange-600 hover:bg-gray-100 px-8 py-3"
           >
             Start Learning Today
           </Button>
