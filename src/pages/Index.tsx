@@ -29,11 +29,11 @@ const Index = () => {
   // Show loading state while checking auth
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-green-400 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-200 via-blue-300 to-blue-400 flex items-center justify-center">
         <div className="text-center">
           <img
             src="/lovable-uploads/e153d080-0e68-4853-b008-897623780941.png"
-            alt="Khalulu the Owl"
+            alt="Khalulu the Storyteller"
             className="w-16 h-16 object-contain mx-auto mb-4 animate-bounce"
           />
           <p className="text-white font-medium">Loading...</p>
@@ -45,15 +45,15 @@ const Index = () => {
   // If user is authenticated, show user dashboard with Ask Khalulu prominently
   if (user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-400 via-blue-500 to-purple-600">
+      <div className="min-h-screen bg-gradient-to-br from-red-200 via-red-300 to-red-400">
         <div className="container mx-auto px-4 py-8">
           {/* Ask Khalulu Section - Prominently positioned */}
           <div className="mb-8">
             <div className="text-center mb-6">
               <h2 className="text-2xl font-bold text-white mb-2">
-                Need Help? Ask Khalulu!
+                Need Help? Ask Khalulu the Storyteller!
               </h2>
-              <p className="text-blue-100">
+              <p className="text-red-100">
                 Your friendly AI companion is here to help with any questions about your learning journey.
               </p>
             </div>

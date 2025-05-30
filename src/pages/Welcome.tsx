@@ -15,7 +15,7 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-400 via-orange-500 to-red-500">
+    <div className="min-h-screen bg-gradient-to-br from-blue-200 via-blue-300 to-blue-400">
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
@@ -23,7 +23,7 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
             <div className="flex items-center justify-center mb-8">
               <img
                 src="/lovable-uploads/e153d080-0e68-4853-b008-897623780941.png"
-                alt="Khalulu the Owl"
+                alt="Khalulu the Storyteller"
                 className="w-20 h-20 object-contain animate-bounce"
               />
             </div>
@@ -33,7 +33,7 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
                 Zintsomi College
               </span>
             </h1>
-            <p className="text-xl text-orange-100 mb-8 max-w-3xl mx-auto">
+            <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
               Discover the magic of storytelling through AI-powered courses, immersive VR experiences, 
               and interactive learning in multiple African languages.
             </p>
@@ -41,7 +41,7 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
               <Button 
                 size="lg" 
                 onClick={onSignUp}
-                className="bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-orange-900 px-8 py-3 font-semibold"
+                className="bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-blue-900 px-8 py-3 font-semibold"
               >
                 Get Started Free
               </Button>
@@ -49,7 +49,7 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
                 variant="outline" 
                 size="lg" 
                 onClick={onLogin}
-                className="px-8 py-3 border-yellow-300 text-yellow-100 hover:bg-yellow-100 hover:text-orange-900 border-2"
+                className="px-8 py-3 border-yellow-300 text-yellow-100 hover:bg-yellow-100 hover:text-blue-900 border-2"
               >
                 Sign In
               </Button>
@@ -57,7 +57,7 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
                 variant="outline" 
                 size="lg" 
                 onClick={handleVRDemo}
-                className="px-8 py-3 border-red-300 text-red-100 hover:bg-red-100 hover:text-red-900 border-2"
+                className="px-8 py-3 border-white text-white hover:bg-white hover:text-blue-900 border-2"
               >
                 Try VR Demo
               </Button>

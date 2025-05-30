@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Send, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -21,7 +22,7 @@ const AskKhalulu = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "Hello! I'm Khalulu, your friendly learning companion. How can I help you today?",
+      text: "Hello! I'm Khalulu the Storyteller, your friendly learning companion. How can I help you today?",
       isUser: false,
       timestamp: new Date()
     }
@@ -126,12 +127,12 @@ const AskKhalulu = () => {
         <CardContent className="p-6 flex flex-col items-center justify-center h-full">
           <img
             src="/lovable-uploads/531e05b9-22e5-4b83-a3f4-953ecd13ff8f.png"
-            alt="Khalulu"
+            alt="Khalulu the Storyteller"
             className="w-16 h-16 object-contain mb-4"
           />
           <h3 className="text-lg font-semibold mb-2">Please Sign In</h3>
           <p className="text-gray-600 text-center">
-            You need to be logged in to chat with Khalulu, your AI learning companion.
+            You need to be logged in to chat with Khalulu the Storyteller, your AI learning companion.
           </p>
         </CardContent>
       </Card>
@@ -144,10 +145,10 @@ const AskKhalulu = () => {
         <CardTitle className="flex items-center space-x-2">
           <img
             src="/lovable-uploads/531e05b9-22e5-4b83-a3f4-953ecd13ff8f.png"
-            alt="Khalulu"
+            alt="Khalulu the Storyteller"
             className="w-8 h-8 object-contain"
           />
-          <span>Ask Khalulu</span>
+          <span>Ask Khalulu the Storyteller</span>
           <MessageCircle className="w-5 h-5 text-blue-600" />
         </CardTitle>
       </CardHeader>
