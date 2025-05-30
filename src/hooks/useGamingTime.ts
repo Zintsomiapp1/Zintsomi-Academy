@@ -2,8 +2,10 @@
 import { useState, useEffect } from 'react';
 
 interface GamingTimeState {
-  freeTimeUsed: number; // in seconds
+  freeTimeUsed: number; // in seconds (out of 600 daily)
   purchasedTime: number; // in seconds
+  purchasedTimeExpiry: number; // timestamp when purchased time expires
+  lastResetDate: string; // date when free time was last reset
   totalTimeRemaining: number; // in seconds
   isTimeUp: boolean;
 }
@@ -11,18 +13,33 @@ interface GamingTimeState {
 export const useGamingTime = () => {
   const [gamingTime, setGamingTime] = useState<GamingTimeState>(() => {
     const saved = localStorage.getItem('zintsomi-gaming-time');
+    const today = new Date().toDateString();
+    
     if (saved) {
       const parsed = JSON.parse(saved);
+      const isNewDay = parsed.lastResetDate !== today;
+      
+      // Check if purchased time has expired (30 days)
+      const now = Date.now();
+      const validPurchasedTime = (parsed.purchasedTimeExpiry && now < parsed.purchasedTimeExpiry) 
+        ? parsed.purchasedTime || 0 
+        : 0;
+      
       return {
-        freeTimeUsed: parsed.freeTimeUsed || 0,
-        purchasedTime: parsed.purchasedTime || 0,
-        totalTimeRemaining: Math.max(0, (600 - (parsed.freeTimeUsed || 0)) + (parsed.purchasedTime || 0)),
+        freeTimeUsed: isNewDay ? 0 : (parsed.freeTimeUsed || 0), // Reset if new day
+        purchasedTime: validPurchasedTime,
+        purchasedTimeExpiry: validPurchasedTime > 0 ? parsed.purchasedTimeExpiry : 0,
+        lastResetDate: today,
+        totalTimeRemaining: Math.max(0, (600 - (isNewDay ? 0 : (parsed.freeTimeUsed || 0))) + validPurchasedTime),
         isTimeUp: false,
       };
     }
+    
     return {
       freeTimeUsed: 0,
       purchasedTime: 0,
+      purchasedTimeExpiry: 0,
+      lastResetDate: today,
       totalTimeRemaining: 600, // 10 minutes in seconds
       isTimeUp: false,
     };
@@ -35,8 +52,10 @@ export const useGamingTime = () => {
     localStorage.setItem('zintsomi-gaming-time', JSON.stringify({
       freeTimeUsed: gamingTime.freeTimeUsed,
       purchasedTime: gamingTime.purchasedTime,
+      purchasedTimeExpiry: gamingTime.purchasedTimeExpiry,
+      lastResetDate: gamingTime.lastResetDate,
     }));
-  }, [gamingTime.freeTimeUsed, gamingTime.purchasedTime]);
+  }, [gamingTime.freeTimeUsed, gamingTime.purchasedTime, gamingTime.purchasedTimeExpiry, gamingTime.lastResetDate]);
 
   // Timer effect
   useEffect(() => {
@@ -55,6 +74,7 @@ export const useGamingTime = () => {
         const newTotalTimeRemaining = Math.max(0, (600 - newFreeTimeUsed) + newPurchasedTime);
 
         return {
+          ...prev,
           freeTimeUsed: newFreeTimeUsed,
           purchasedTime: newPurchasedTime,
           totalTimeRemaining: newTotalTimeRemaining,
@@ -77,9 +97,13 @@ export const useGamingTime = () => {
   };
 
   const purchaseTime = () => {
+    const now = Date.now();
+    const thirtyDaysFromNow = now + (30 * 24 * 60 * 60 * 1000); // 30 days in milliseconds
+    
     setGamingTime(prev => ({
       ...prev,
       purchasedTime: prev.purchasedTime + 3600, // 60 minutes in seconds
+      purchasedTimeExpiry: thirtyDaysFromNow,
       totalTimeRemaining: prev.totalTimeRemaining + 3600,
       isTimeUp: false,
     }));
@@ -95,6 +119,14 @@ export const useGamingTime = () => {
     return Math.max(0, 600 - gamingTime.freeTimeUsed);
   };
 
+  const getTimeUntilReset = () => {
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+    return Math.floor((tomorrow.getTime() - now.getTime()) / 1000);
+  };
+
   return {
     ...gamingTime,
     isPlaying,
@@ -103,5 +135,6 @@ export const useGamingTime = () => {
     purchaseTime,
     formatTime,
     getFreeTimeRemaining,
+    getTimeUntilReset,
   };
 };

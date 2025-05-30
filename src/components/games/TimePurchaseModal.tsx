@@ -41,7 +41,10 @@ const TimePurchaseModal = ({
                 Time remaining: <span className="font-semibold text-red-600">{formatTime(timeRemaining)}</span>
               </p>
               <p className="text-gray-700">
-                You've used up your free gaming time! Purchase more time to continue playing.
+                You've used up your free 10-minute daily gaming time! Purchase more time to continue playing.
+              </p>
+              <p className="text-sm text-blue-600 mt-2">
+                💡 Your free 10 minutes reset every 24 hours!
               </p>
             </div>
             
@@ -49,10 +52,10 @@ const TimePurchaseModal = ({
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="font-semibold text-gray-900">60 Minutes Gaming</h4>
-                  <p className="text-sm text-gray-600">Unlock 1 hour of unlimited gaming</p>
+                  <p className="text-sm text-gray-600">Unlock 1 hour of gaming (expires in 30 days)</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl font-bold text-green-600">R20</p>
+                  <p className="text-2xl font-bold text-green-600">R25</p>
                   <p className="text-xs text-gray-500">South African Rands</p>
                 </div>
               </div>
@@ -68,7 +71,7 @@ const TimePurchaseModal = ({
             className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
           >
             <CreditCard className="h-4 w-4 mr-2" />
-            Purchase R20
+            Purchase R25
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

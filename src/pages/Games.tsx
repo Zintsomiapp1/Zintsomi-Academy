@@ -2,24 +2,39 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Gamepad2, Puzzle, Eye, Brain, Target, Timer } from 'lucide-react';
+import { Gamepad2, Puzzle, Eye, Brain, Target, Timer, Crown, Zap } from 'lucide-react';
 import SudokuGame from '@/components/games/SudokuGame';
 import EyeTest from '@/components/games/EyeTest';
 import IQQuiz from '@/components/games/IQQuiz';
+import ChessGame from '@/components/games/ChessGame';
+import CheckersGame from '@/components/games/CheckersGame';
+import { useGamingTime } from '@/hooks/useGamingTime';
+import GamingTimeDisplay from '@/components/games/GamingTimeDisplay';
+import TimePurchaseModal from '@/components/games/TimePurchaseModal';
 
-type GameType = 'sudoku' | 'eye-test' | 'iq-quiz' | null;
+type GameType = 'sudoku' | 'eye-test' | 'iq-quiz' | 'chess' | 'checkers' | null;
 
 const Games = () => {
   const [currentGame, setCurrentGame] = useState<GameType>(null);
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+  const gamingTime = useGamingTime();
 
   const gameCategories = [
+    {
+      title: 'Strategy Games',
+      description: 'Classic board games against AI Khalulu',
+      icon: Crown,
+      games: ['Chess vs Khalulu', 'Checkers vs Khalulu', 'Tic-Tac-Toe'],
+      color: 'bg-purple-500',
+      gameIds: ['chess', 'checkers'] as GameType[]
+    },
     {
       title: 'Puzzle Games',
       description: 'Challenge your problem-solving skills',
       icon: Puzzle,
       games: ['Sudoku', 'Word Puzzles', 'Logic Grid'],
       color: 'bg-blue-500',
-      gameId: 'sudoku' as GameType
+      gameIds: ['sudoku'] as GameType[]
     },
     {
       title: 'Eye Tests',
@@ -27,25 +42,33 @@ const Games = () => {
       icon: Eye,
       games: ['Visual Acuity', 'Color Blind Test', 'Reaction Time'],
       color: 'bg-green-500',
-      gameId: 'eye-test' as GameType
+      gameIds: ['eye-test'] as GameType[]
     },
     {
       title: 'IQ Challenges',
       description: 'Test your cognitive abilities',
       icon: Brain,
       games: ['Pattern Recognition', 'Number Sequences', 'Spatial Reasoning'],
-      color: 'bg-purple-500',
-      gameId: 'iq-quiz' as GameType
-    },
-    {
-      title: 'Memory Games',
-      description: 'Enhance your memory skills',
-      icon: Target,
-      games: ['Memory Match', 'Sequence Memory', 'Visual Memory'],
       color: 'bg-orange-500',
-      gameId: null
+      gameIds: ['iq-quiz'] as GameType[]
     }
   ];
+
+  const handleGameStart = (gameId: GameType) => {
+    if (gamingTime.totalTimeRemaining <= 0) {
+      setShowPurchaseModal(true);
+      return;
+    }
+    setCurrentGame(gameId);
+  };
+
+  if (currentGame === 'chess') {
+    return <ChessGame onBack={() => setCurrentGame(null)} />;
+  }
+
+  if (currentGame === 'checkers') {
+    return <CheckersGame onBack={() => setCurrentGame(null)} />;
+  }
 
   if (currentGame === 'sudoku') {
     return (
@@ -101,9 +124,34 @@ const Games = () => {
             <Gamepad2 className="w-12 h-12 text-blue-600" />
             <h1 className="text-4xl font-bold text-gray-900">Learning Games</h1>
           </div>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-gray-600 max-w-2xl mx-auto mb-6">
             Enhance your cognitive abilities through fun and engaging games
           </p>
+          
+          {/* Gaming Time Display */}
+          <div className="max-w-2xl mx-auto mb-6">
+            <GamingTimeDisplay
+              timeRemaining={gamingTime.totalTimeRemaining}
+              formatTime={gamingTime.formatTime}
+              getFreeTimeRemaining={gamingTime.getFreeTimeRemaining}
+              getTimeUntilReset={gamingTime.getTimeUntilReset}
+              onPurchaseClick={() => setShowPurchaseModal(true)}
+            />
+          </div>
+
+          {/* Gaming Advertisement */}
+          <div className="bg-gradient-to-r from-green-100 to-blue-100 rounded-xl p-6 max-w-4xl mx-auto border border-green-200">
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <Zap className="w-6 h-6 text-green-600" />
+              <h2 className="text-xl font-bold text-gray-900">Free Daily Gaming!</h2>
+            </div>
+            <p className="text-gray-700 mb-2">
+              🎮 Get <span className="font-bold text-green-600">10 minutes free</span> every day to play all our games!
+            </p>
+            <p className="text-sm text-gray-600">
+              Want more time? Purchase 1 hour for just <span className="font-bold text-blue-600">R25</span> - valid for 30 days!
+            </p>
+          </div>
         </div>
 
         {/* Game Categories Grid */}
@@ -132,13 +180,23 @@ const Games = () => {
                       </div>
                     ))}
                   </div>
-                  <Button 
-                    className="w-full" 
-                    onClick={() => category.gameId && setCurrentGame(category.gameId)}
-                    disabled={!category.gameId}
-                  >
-                    {category.gameId ? 'Play Games' : 'Coming Soon'}
-                  </Button>
+                  <div className="space-y-2">
+                    {category.gameIds.map((gameId, idx) => (
+                      <Button 
+                        key={idx}
+                        className="w-full" 
+                        onClick={() => handleGameStart(gameId)}
+                        disabled={gameId === null}
+                      >
+                        {gameId === 'chess' && 'Play Chess vs Khalulu'}
+                        {gameId === 'checkers' && 'Play Checkers vs Khalulu'}
+                        {gameId === 'sudoku' && 'Play Sudoku'}
+                        {gameId === 'eye-test' && 'Start Eye Test'}
+                        {gameId === 'iq-quiz' && 'Take IQ Quiz'}
+                        {gameId === null && 'Coming Soon'}
+                      </Button>
+                    ))}
+                  </div>
                 </CardContent>
               </Card>
             );
@@ -154,19 +212,35 @@ const Games = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               <Button 
                 variant="outline" 
                 className="h-20 flex flex-col gap-2"
-                onClick={() => setCurrentGame('sudoku')}
+                onClick={() => handleGameStart('chess')}
               >
-                <Puzzle className="w-6 h-6" />
-                <span>Quick Sudoku</span>
+                <Crown className="w-6 h-6" />
+                <span>Chess</span>
               </Button>
               <Button 
                 variant="outline" 
                 className="h-20 flex flex-col gap-2"
-                onClick={() => setCurrentGame('eye-test')}
+                onClick={() => handleGameStart('checkers')}
+              >
+                <Target className="w-6 h-6" />
+                <span>Checkers</span>
+              </Button>
+              <Button 
+                variant="outline" 
+                className="h-20 flex flex-col gap-2"
+                onClick={() => handleGameStart('sudoku')}
+              >
+                <Puzzle className="w-6 h-6" />
+                <span>Sudoku</span>
+              </Button>
+              <Button 
+                variant="outline" 
+                className="h-20 flex flex-col gap-2"
+                onClick={() => handleGameStart('eye-test')}
               >
                 <Eye className="w-6 h-6" />
                 <span>Eye Test</span>
@@ -174,7 +248,7 @@ const Games = () => {
               <Button 
                 variant="outline" 
                 className="h-20 flex flex-col gap-2"
-                onClick={() => setCurrentGame('iq-quiz')}
+                onClick={() => handleGameStart('iq-quiz')}
               >
                 <Brain className="w-6 h-6" />
                 <span>IQ Quiz</span>
@@ -183,6 +257,17 @@ const Games = () => {
           </CardContent>
         </Card>
       </div>
+
+      <TimePurchaseModal
+        isOpen={showPurchaseModal}
+        onClose={() => setShowPurchaseModal(false)}
+        onPurchase={() => {
+          gamingTime.purchaseTime();
+          setShowPurchaseModal(false);
+        }}
+        timeRemaining={gamingTime.totalTimeRemaining}
+        formatTime={gamingTime.formatTime}
+      />
     </div>
   );
 };
