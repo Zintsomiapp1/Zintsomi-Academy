@@ -20,9 +20,18 @@ const PatternMemory = ({ onBack }: PatternMemoryProps) => {
   const generatePattern = () => {
     const patternLength = Math.min(3 + level, 8);
     const newPattern: number[] = [];
-    for (let i = 0; i < patternLength; i++) {
-      newPattern.push(Math.floor(Math.random() * (gridSize * gridSize)));
+    const usedIndices = new Set<number>();
+    
+    // Generate unique indices for the pattern
+    while (newPattern.length < patternLength) {
+      const randomIndex = Math.floor(Math.random() * (gridSize * gridSize));
+      if (!usedIndices.has(randomIndex)) {
+        newPattern.push(randomIndex);
+        usedIndices.add(randomIndex);
+      }
     }
+    
+    console.log('Generated pattern:', newPattern);
     setPattern(newPattern);
     setCurrentPattern([]);
   };
@@ -43,22 +52,34 @@ const PatternMemory = ({ onBack }: PatternMemoryProps) => {
 
     const newCurrentPattern = [...currentPattern, index];
     setCurrentPattern(newCurrentPattern);
+    
+    console.log('Current pattern so far:', newCurrentPattern);
+    console.log('Target pattern:', pattern);
 
+    // Check if the current click is correct so far
+    const isCorrectSoFar = newCurrentPattern.every((clickedIndex, idx) => 
+      clickedIndex === pattern[idx]
+    );
+
+    if (!isCorrectSoFar) {
+      // Wrong click - end game immediately
+      setGameState('wrong');
+      console.log('Wrong pattern detected');
+      setTimeout(() => {
+        setGameState('ready');
+      }, 2000);
+      return;
+    }
+
+    // If we've completed the pattern and all clicks were correct
     if (newCurrentPattern.length === pattern.length) {
-      const isCorrect = newCurrentPattern.every((val, idx) => val === pattern[idx]);
-      if (isCorrect) {
-        setGameState('correct');
-        setScore(score + level * 10);
-        setTimeout(() => {
-          setLevel(level + 1);
-          setGameState('ready');
-        }, 1500);
-      } else {
-        setGameState('wrong');
-        setTimeout(() => {
-          setGameState('ready');
-        }, 2000);
-      }
+      setGameState('correct');
+      setScore(score + level * 10);
+      console.log('Pattern completed correctly!');
+      setTimeout(() => {
+        setLevel(level + 1);
+        setGameState('ready');
+      }, 1500);
     }
   };
 
@@ -111,7 +132,7 @@ const PatternMemory = ({ onBack }: PatternMemoryProps) => {
           <div className="text-center mb-4">
             {gameState === 'ready' && (
               <div>
-                <p className="mb-4">Memorize the pattern of highlighted squares</p>
+                <p className="mb-4">Memorize the pattern of highlighted squares, then click them in the SAME ORDER</p>
                 <Button onClick={startGame}>Start Level {level}</Button>
               </div>
             )}
@@ -119,7 +140,7 @@ const PatternMemory = ({ onBack }: PatternMemoryProps) => {
               <p className="text-blue-600 font-semibold">Memorize this pattern!</p>
             )}
             {gameState === 'input' && (
-              <p className="text-green-600 font-semibold">Click the squares in the same order</p>
+              <p className="text-green-600 font-semibold">Click the squares in the same order they were shown</p>
             )}
             {gameState === 'correct' && (
               <p className="text-green-600 font-bold">Correct! Well done!</p>
