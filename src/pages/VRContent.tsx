@@ -14,19 +14,25 @@ const VRContent = () => {
   const [aframeLoaded, setAframeLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [debugInfo, setDebugInfo] = useState<string[]>([]);
+  const [componentMounted, setComponentMounted] = useState(false);
   const sceneRef = useRef<HTMLDivElement>(null);
 
   const addDebugInfo = (info: string) => {
-    console.log('VR Debug:', info);
-    setDebugInfo(prev => [...prev, `${new Date().toLocaleTimeString()}: ${info}`]);
+    const timestamp = new Date().toLocaleTimeString();
+    const message = `${timestamp}: ${info}`;
+    console.log('VR Debug:', message);
+    setDebugInfo(prev => [...prev, message]);
   };
 
   useEffect(() => {
-    addDebugInfo('Component mounted, checking for A-Frame');
+    setComponentMounted(true);
+    addDebugInfo('VRContent component mounted successfully');
+    addDebugInfo(`Window object exists: ${typeof window !== 'undefined'}`);
+    addDebugInfo(`Document ready state: ${document.readyState}`);
     
     // Check if A-Frame is already loaded
     if (window.AFRAME) {
-      addDebugInfo('A-Frame already available');
+      addDebugInfo('A-Frame already available on window');
       setAframeLoaded(true);
       return;
     }
@@ -34,7 +40,7 @@ const VRContent = () => {
     // Check if script already exists
     const existingScript = document.querySelector('script[src*="aframe"]');
     if (existingScript) {
-      addDebugInfo('A-Frame script already exists, waiting for load');
+      addDebugInfo('A-Frame script already exists in document');
       const checkAFrame = setInterval(() => {
         if (window.AFRAME) {
           addDebugInfo('A-Frame became available');
@@ -42,45 +48,53 @@ const VRContent = () => {
           clearInterval(checkAFrame);
         }
       }, 100);
+      
+      setTimeout(() => {
+        if (!window.AFRAME) {
+          addDebugInfo('Timeout waiting for existing A-Frame script');
+          clearInterval(checkAFrame);
+        }
+      }, 5000);
       return;
     }
 
-    addDebugInfo('Loading A-Frame script');
+    addDebugInfo('Creating new A-Frame script element');
     // Load A-Frame script
     const script = document.createElement('script');
     script.src = 'https://aframe.io/releases/1.4.0/aframe.min.js';
     script.async = true;
+    script.crossOrigin = 'anonymous';
     
     script.onload = () => {
-      addDebugInfo('A-Frame script loaded, waiting for initialization');
+      addDebugInfo('A-Frame script onload event fired');
       // Wait for A-Frame to fully initialize
+      let attempts = 0;
+      const maxAttempts = 50;
       const checkAFrame = setInterval(() => {
+        attempts++;
         if (window.AFRAME) {
-          addDebugInfo('A-Frame fully initialized');
+          addDebugInfo(`A-Frame fully initialized after ${attempts} attempts`);
           setAframeLoaded(true);
+          clearInterval(checkAFrame);
+        } else if (attempts >= maxAttempts) {
+          addDebugInfo(`Failed to initialize A-Frame after ${maxAttempts} attempts`);
+          setError('A-Frame failed to initialize properly');
           clearInterval(checkAFrame);
         }
       }, 100);
-      
-      // Timeout after 10 seconds
-      setTimeout(() => {
-        if (!window.AFRAME) {
-          addDebugInfo('Timeout waiting for A-Frame');
-          setError('A-Frame failed to initialize');
-          clearInterval(checkAFrame);
-        }
-      }, 10000);
     };
 
     script.onerror = (e) => {
-      addDebugInfo('Failed to load A-Frame script');
-      setError('Failed to load A-Frame');
+      addDebugInfo(`Failed to load A-Frame script: ${e}`);
+      setError('Failed to load A-Frame from CDN');
       console.error('A-Frame load error:', e);
     };
 
+    addDebugInfo('Appending A-Frame script to document head');
     document.head.appendChild(script);
 
     return () => {
+      addDebugInfo('Component unmounting, cleaning up');
       if (document.head.contains(script)) {
         document.head.removeChild(script);
       }
@@ -90,18 +104,21 @@ const VRContent = () => {
   // Create the VR scene after A-Frame loads
   useEffect(() => {
     if (aframeLoaded && sceneRef.current) {
-      addDebugInfo('Creating VR scene');
+      addDebugInfo('Creating VR scene - A-Frame loaded and ref available');
+      addDebugInfo(`Scene ref current: ${sceneRef.current ? 'exists' : 'null'}`);
       
       // Clear any existing content
       sceneRef.current.innerHTML = '';
       
       try {
+        addDebugInfo('Generating VR scene HTML');
         const sceneHTML = `
           <a-scene
             embedded
-            style="height: 600px; width: 100%;"
+            style="height: 600px; width: 100%; display: block;"
             vr-mode-ui="enabled: true"
             background="color: #87CEEB"
+            debug
           >
             <!-- Assets -->
             <a-assets>
@@ -122,103 +139,20 @@ const VRContent = () => {
               shadow
             ></a-plane>
 
-            <!-- Traditional African Hut -->
-            <a-cylinder 
-              position="-3 1 -6" 
-              radius="2" 
-              height="2" 
-              color="#8B4513"
-              shadow
-            ></a-cylinder>
-            <a-cone 
-              position="-3 3 -6" 
-              radius-bottom="2.5" 
-              radius-top="0.5" 
-              height="2" 
-              color="#DAA520"
-              shadow
-            ></a-cone>
-
-            <!-- Baobab Tree -->
-            <a-cylinder 
-              position="3 1.5 -8" 
-              radius="0.8" 
-              height="3" 
-              color="#8B4513"
-              shadow
-            ></a-cylinder>
-            <a-sphere 
-              position="3 4 -8" 
-              radius="2" 
-              color="#228B22"
-              shadow
-            ></a-sphere>
-
-            <!-- Storytelling Circle -->
-            <a-ring 
-              position="0 0.1 -5" 
-              radius-inner="2" 
-              radius-outer="3" 
-              color="#D2691E"
-              rotation="-90 0 0"
-            ></a-ring>
-
-            <!-- Interactive Story Stones -->
+            <!-- Test cube to ensure something renders -->
             <a-box 
-              position="-1 0.5 -4" 
-              width="0.5" 
-              height="0.5" 
-              depth="0.5" 
-              color="#FF6B6B"
-              animation="property: rotation; to: 0 360 0; loop: true; dur: 10000"
-              class="clickable"
-              shadow
-            ></a-box>
-            <a-box 
-              position="1 0.5 -4" 
-              width="0.5" 
-              height="0.5" 
-              depth="0.5" 
-              color="#4ECDC4"
-              animation="property: rotation; to: 0 360 0; loop: true; dur: 8000"
-              class="clickable"
-              shadow
-            ></a-box>
-            <a-box 
-              position="0 0.5 -3" 
-              width="0.5" 
-              height="0.5" 
-              depth="0.5" 
-              color="#45B7D1"
-              animation="property: rotation; to: 0 360 0; loop: true; dur: 12000"
-              class="clickable"
-              shadow
+              position="0 2 -5" 
+              color="#FF0000"
+              animation="property: rotation; to: 0 360 0; loop: true; dur: 5000"
             ></a-box>
 
-            <!-- Floating Text -->
+            <!-- Welcome text -->
             <a-text 
               position="0 3 -5" 
-              value="Welcome to African Storytelling" 
+              value="VR Scene Loaded Successfully!" 
               align="center" 
               color="#333"
               width="8"
-              animation="property: position; to: 0 3.5 -5; loop: true; dir: alternate; dur: 3000"
-            ></a-text>
-
-            <!-- Khalulu mascot -->
-            <a-sphere 
-              position="0 2 -2" 
-              radius="0.3" 
-              color="#FFE4B5"
-              animation="property: position; to: 0.5 2.2 -2; loop: true; dir: alternate; dur: 2000"
-              shadow
-            ></a-sphere>
-            <a-text 
-              position="0 1.5 -2" 
-              value="Hi! I'm Khalulu!" 
-              align="center" 
-              color="#333"
-              width="4"
             ></a-text>
 
             <!-- Sky -->
@@ -229,31 +163,36 @@ const VRContent = () => {
               look-controls 
               wasd-controls 
               position="0 1.6 0"
-            >
-              <a-cursor
-                animation__click="property: scale; startEvents: click; from: 0.1 0.1 0.1; to: 1 1 1; dur: 150"
-                animation__fusing="property: scale; startEvents: fusing; from: 1 1 1; to: 0.1 0.1 0.1; dur: 1500"
-                raycaster="objects: .clickable"
-                geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
-                material="color: #FF6B6B; shader: flat"
-              ></a-cursor>
-            </a-camera>
+            ></a-camera>
           </a-scene>
         `;
         
+        addDebugInfo('Setting innerHTML for scene container');
         sceneRef.current.innerHTML = sceneHTML;
         addDebugInfo('VR scene HTML injected successfully');
         
         // Check if scene was created
-        const sceneElement = sceneRef.current.querySelector('a-scene');
-        if (sceneElement) {
-          addDebugInfo('A-Scene element found in DOM');
-        } else {
-          addDebugInfo('A-Scene element NOT found in DOM');
-        }
+        setTimeout(() => {
+          const sceneElement = sceneRef.current?.querySelector('a-scene');
+          if (sceneElement) {
+            addDebugInfo('A-Scene element found in DOM');
+            addDebugInfo(`Scene element style: ${sceneElement.getAttribute('style')}`);
+          } else {
+            addDebugInfo('A-Scene element NOT found in DOM');
+            setError('Failed to create A-Scene element');
+          }
+        }, 1000);
+        
       } catch (e) {
         addDebugInfo(`Error creating scene: ${e}`);
         setError(`Failed to create VR scene: ${e}`);
+      }
+    } else {
+      if (!aframeLoaded) {
+        addDebugInfo('Waiting for A-Frame to load');
+      }
+      if (!sceneRef.current) {
+        addDebugInfo('Scene ref not available yet');
       }
     }
   }, [aframeLoaded]);
@@ -265,10 +204,17 @@ const VRContent = () => {
   const renderVRScene = () => {
     if (error) {
       return (
-        <div className="flex items-center justify-center" style={{ height: '600px' }}>
-          <div className="text-center">
-            <div className="text-red-500 mb-4">❌ {error}</div>
+        <div className="flex items-center justify-center bg-red-50 border-2 border-red-200" style={{ height: '600px' }}>
+          <div className="text-center p-8">
+            <div className="text-red-500 mb-4 text-lg font-semibold">❌ {error}</div>
             <p className="text-gray-600">VR content failed to load</p>
+            <Button 
+              onClick={() => window.location.reload()} 
+              className="mt-4"
+              variant="outline"
+            >
+              Retry
+            </Button>
           </div>
         </div>
       );
@@ -276,11 +222,14 @@ const VRContent = () => {
 
     if (!aframeLoaded) {
       return (
-        <div className="flex items-center justify-center" style={{ height: '600px' }}>
-          <div className="text-center">
+        <div className="flex items-center justify-center bg-blue-50 border-2 border-blue-200" style={{ height: '600px' }}>
+          <div className="text-center p-8">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading VR Experience...</p>
+            <p className="text-gray-600 font-semibold">Loading VR Experience...</p>
             <p className="text-sm text-gray-500 mt-2">Please wait while A-Frame initializes</p>
+            <p className="text-xs text-gray-400 mt-4">
+              {componentMounted ? 'Component mounted' : 'Component not mounted'}
+            </p>
           </div>
         </div>
       );
@@ -289,9 +238,22 @@ const VRContent = () => {
     return (
       <div 
         ref={sceneRef}
-        className="relative border-2 border-gray-300" 
-        style={{ height: '600px', width: '100%' }}
-      />
+        className="relative border-4 border-green-500 bg-gray-100" 
+        style={{ 
+          height: '600px', 
+          width: '100%',
+          minHeight: '600px',
+          display: 'block'
+        }}
+      >
+        {/* Fallback content if VR scene doesn't render */}
+        <div className="absolute inset-0 flex items-center justify-center text-gray-500">
+          <div className="text-center">
+            <p>VR Scene Container Ready</p>
+            <p className="text-sm">A-Frame: {aframeLoaded ? 'Loaded' : 'Not Loaded'}</p>
+          </div>
+        </div>
+      </div>
     );
   };
 
@@ -319,24 +281,36 @@ const VRContent = () => {
           </div>
         </div>
 
-        {/* Debug Info */}
-        {debugInfo.length > 0 && (
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="text-sm">Debug Information</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-xs font-mono space-y-1 max-h-32 overflow-y-auto">
-                {debugInfo.map((info, index) => (
+        {/* Debug Info - Always visible for troubleshooting */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="text-sm flex items-center justify-between">
+              Debug Information
+              <span className="text-xs text-gray-500">
+                Component: {componentMounted ? 'Mounted' : 'Not Mounted'} | 
+                A-Frame: {aframeLoaded ? 'Loaded' : 'Loading'} | 
+                Error: {error ? 'Yes' : 'No'}
+              </span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-xs font-mono space-y-1 max-h-40 overflow-y-auto bg-gray-50 p-4 rounded">
+              {debugInfo.length > 0 ? (
+                debugInfo.map((info, index) => (
                   <div key={index} className="text-gray-600">{info}</div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+                ))
+              ) : (
+                <div className="text-red-600">No debug information available - component may not be loading</div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* VR Scene */}
         <Card className="overflow-hidden">
+          <CardHeader>
+            <CardTitle>VR Scene</CardTitle>
+          </CardHeader>
           <CardContent className="p-0">
             {renderVRScene()}
           </CardContent>
