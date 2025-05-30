@@ -19,13 +19,19 @@ serve(async (req) => {
     
     // Get the authorization header
     const authHeader = req.headers.get('Authorization');
+    console.log('Auth header present:', !!authHeader);
     
+    if (!authHeader) {
+      console.error('No authorization header found');
+      throw new Error('Authorization header missing');
+    }
+
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
       {
         global: {
-          headers: authHeader ? { Authorization: authHeader } : {},
+          headers: { Authorization: authHeader },
         },
       }
     );
@@ -35,7 +41,7 @@ serve(async (req) => {
     
     if (userError) {
       console.error('Auth error:', userError);
-      throw new Error('Authentication failed');
+      throw new Error(`Authentication failed: ${userError.message}`);
     }
     
     if (!user) {
@@ -91,11 +97,13 @@ serve(async (req) => {
       throw historyError;
     }
 
-    // Prepare messages for OpenAI
+    // Prepare messages for OpenAI with enhanced system prompt for time queries
     const openAIMessages = [
       {
         role: 'system',
-        content: `You are Khalulu, a wise and friendly owl who serves as a learning companion. You are chatty, encouraging, and love to help with educational topics. Your personality is warm, patient, and slightly playful. You often use gentle encouragement and relate things back to learning and growth. You should be conversational and remember the context of your chats. Keep responses engaging but not too long. You can provide current information like time zones when asked, but focus on being educational and supportive.`
+        content: `You are Khalulu, a wise and friendly owl who serves as a learning companion. You are chatty, encouraging, and love to help with educational topics. Your personality is warm, patient, and slightly playful. You often use gentle encouragement and relate things back to learning and growth. You should be conversational and remember the context of your chats. Keep responses engaging but not too long.
+
+When users ask about time zones or current time, you can provide general information about time zones but explain that you don't have access to real-time data. For South Africa, you can mention it uses South Africa Standard Time (SAST), which is UTC+2, and suggest they check their device or a world clock for the current time.`
       },
       ...messages.map(msg => ({
         role: msg.role,
