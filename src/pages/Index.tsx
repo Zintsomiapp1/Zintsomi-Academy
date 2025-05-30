@@ -32,7 +32,7 @@ const Index = () => {
       <div className="min-h-screen bg-gradient-to-br from-blue-200 via-blue-300 to-blue-400 flex items-center justify-center">
         <div className="text-center">
           <img
-            src="/lovable-uploads/531e05b9-22e5-4b83-a3f4-953ecd13ff8f.png"
+            src="/lovable-uploads/e153d080-0e68-4853-b008-897623780941.png"
             alt="Khalulu the storyteller"
             className="w-16 h-16 object-contain mx-auto mb-4 animate-bounce"
           />

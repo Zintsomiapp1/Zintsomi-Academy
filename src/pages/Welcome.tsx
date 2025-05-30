@@ -22,14 +22,14 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
           <div className="text-center">
             <div className="flex items-center justify-center mb-8">
               <img
-                src="/lovable-uploads/531e05b9-22e5-4b83-a3f4-953ecd13ff8f.png"
+                src="/lovable-uploads/e153d080-0e68-4853-b008-897623780941.png"
                 alt="Khalulu the storyteller"
                 className="w-20 h-20 object-contain animate-bounce"
               />
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-slate-900">
               Welcome to{' '}
-              <span className="bg-gradient-to-r from-slate-800 to-slate-900 bg-clip-text text-transparent font-extrabold">
+              <span className="text-slate-900 font-extrabold">
                 Zintsomi College
               </span>
             </h1>
