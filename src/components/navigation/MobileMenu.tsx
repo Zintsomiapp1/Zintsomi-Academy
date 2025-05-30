@@ -31,13 +31,13 @@ const MobileMenu = ({
     <div className="md:hidden border-t bg-white">
       <div className="px-2 pt-2 pb-3 space-y-1">
         {navItems.map((item) => (
-          <NavigationItem
-            key={item.path}
-            item={item}
-            isActive={isActive(item.path)}
-            isMobile={true}
-            onClick={onItemClick}
-          />
+          <div key={item.path} onClick={onItemClick}>
+            <NavigationItem
+              item={item}
+              isActive={isActive(item.path)}
+              showCartBadge={true}
+            />
+          </div>
         ))}
         <div className="pt-4 border-t space-y-2">
           <AuthButtons 
