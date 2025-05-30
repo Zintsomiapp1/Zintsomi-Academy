@@ -23,11 +23,11 @@ const NavigationItem = ({ item, isActive, showCartBadge }: NavigationItemProps) 
   return (
     <Link to={item.path}>
       <Button
-        variant={isActive ? "default" : "ghost"}
+        variant="ghost"
         size="sm"
-        className={`relative ${
+        className={`relative transition-all duration-200 ${
           isActive && item.gradient 
-            ? `bg-gradient-to-r ${item.gradient} text-white hover:opacity-90 border-0`
+            ? `bg-gradient-to-r ${item.gradient} text-white hover:opacity-90 shadow-lg`
             : isActive 
               ? "bg-primary text-primary-foreground"
               : "hover:bg-accent hover:text-accent-foreground"
