@@ -15,15 +15,17 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { useUserProgress } from '@/hooks/useUserProgress';
 
 const UserDashboard = () => {
   const { user } = useAuth();
+  const { progress } = useUserProgress();
 
   const stats = [
-    { label: 'Courses Completed', value: '0', icon: Trophy, color: 'text-yellow-600' },
-    { label: 'Hours Learned', value: '0', icon: Clock, color: 'text-blue-600' },
-    { label: 'Current Streak', value: '0 days', icon: Target, color: 'text-green-600' },
-    { label: 'Certificates', value: '0', icon: BookOpen, color: 'text-purple-600' }
+    { label: 'Courses Completed', value: progress.coursesCompleted.toString(), icon: Trophy, color: 'text-yellow-600' },
+    { label: 'Hours Learned', value: progress.hoursLearned.toString(), icon: Clock, color: 'text-blue-600' },
+    { label: 'Current Streak', value: `${progress.currentStreak} days`, icon: Target, color: 'text-green-600' },
+    { label: 'Certificates', value: progress.certificates.toString(), icon: BookOpen, color: 'text-purple-600' }
   ];
 
   return (
@@ -82,20 +84,49 @@ const UserDashboard = () => {
         })}
       </div>
 
-      {/* Empty Learning State */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Continue Learning</CardTitle>
-        </CardHeader>
-        <CardContent className="text-center py-12">
-          <BookOpen className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No courses started yet</h3>
-          <p className="text-gray-600 mb-6">Begin your learning journey by exploring our course catalog</p>
-          <Link to="/courses">
-            <Button>Browse Courses</Button>
-          </Link>
-        </CardContent>
-      </Card>
+      {/* Continue Learning or Empty State */}
+      {progress.coursesInProgress.length > 0 ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Continue Learning</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {progress.coursesInProgress.map((course) => (
+              <div key={course.id} className="flex items-center gap-4 p-4 border rounded-lg">
+                <img
+                  src={course.thumbnail || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=225&fit=crop'}
+                  alt={course.title}
+                  className="w-16 h-16 object-cover rounded"
+                />
+                <div className="flex-1">
+                  <h4 className="font-medium text-gray-900">{course.title}</h4>
+                  <div className="mt-2">
+                    <Progress value={course.progress} className="w-full h-2" />
+                    <p className="text-sm text-gray-600 mt-1">{course.progress}% complete</p>
+                  </div>
+                </div>
+                <Link to={`/course/${course.id}`}>
+                  <Button>Continue</Button>
+                </Link>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      ) : (
+        <Card>
+          <CardHeader>
+            <CardTitle>Continue Learning</CardTitle>
+          </CardHeader>
+          <CardContent className="text-center py-12">
+            <BookOpen className="w-16 h-16 mx-auto mb-4 text-gray-400" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No courses started yet</h3>
+            <p className="text-gray-600 mb-6">Begin your learning journey by exploring our course catalog</p>
+            <Link to="/courses">
+              <Button>Browse Courses</Button>
+            </Link>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

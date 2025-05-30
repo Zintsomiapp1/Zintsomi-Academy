@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useCart } from '@/hooks/useCart';
+import { useCartContext } from '@/contexts/CartContext';
 
 interface NavigationItemProps {
   item: {
@@ -16,7 +16,7 @@ interface NavigationItemProps {
 }
 
 const NavigationItem = ({ item, isActive, showCartBadge }: NavigationItemProps) => {
-  const { totalItems } = useCart();
+  const { totalItems } = useCartContext();
   const Icon = item.icon;
 
   return (
