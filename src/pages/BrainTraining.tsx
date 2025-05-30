@@ -1,18 +1,27 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Brain, ArrowLeft, Zap, Target, Clock } from 'lucide-react';
 import KhaluluOwl from '@/components/KhaluluOwl';
+import MemoryTraining from '@/components/brain-training/MemoryTraining';
+import FocusTraining from '@/components/brain-training/FocusTraining';
+import SpeedTraining from '@/components/brain-training/SpeedTraining';
+import ReactionTraining from '@/components/brain-training/ReactionTraining';
 
 interface BrainTrainingProps {
   user: { name: string; email: string };
   onBack: () => void;
 }
 
+type TrainingType = 'memory' | 'focus' | 'speed' | 'reaction' | null;
+
 const BrainTraining = ({ user, onBack }: BrainTrainingProps) => {
+  const [currentTraining, setCurrentTraining] = useState<TrainingType>(null);
+
   const trainingCategories = [
     {
+      id: 'memory' as TrainingType,
       title: 'Memory Training',
       description: 'Enhance your memory with interactive exercises',
       icon: Brain,
@@ -20,6 +29,7 @@ const BrainTraining = ({ user, onBack }: BrainTrainingProps) => {
       exercises: ['Pattern Memory', 'Word Recall', 'Number Sequences']
     },
     {
+      id: 'focus' as TrainingType,
       title: 'Focus & Attention',
       description: 'Improve concentration and attention span',
       icon: Target,
@@ -27,6 +37,7 @@ const BrainTraining = ({ user, onBack }: BrainTrainingProps) => {
       exercises: ['Attention Grid', 'Focus Flow', 'Distraction Filter']
     },
     {
+      id: 'speed' as TrainingType,
       title: 'Speed Training',
       description: 'Boost cognitive processing speed',
       icon: Zap,
@@ -34,6 +45,7 @@ const BrainTraining = ({ user, onBack }: BrainTrainingProps) => {
       exercises: ['Quick Math', 'Rapid Recognition', 'Speed Reading']
     },
     {
+      id: 'reaction' as TrainingType,
       title: 'Reaction Time',
       description: 'Test and improve your reaction speed',
       icon: Clock,
@@ -42,6 +54,29 @@ const BrainTraining = ({ user, onBack }: BrainTrainingProps) => {
     }
   ];
 
+  const handleStartTraining = (trainingType: TrainingType) => {
+    setCurrentTraining(trainingType);
+  };
+
+  const handleBackToMain = () => {
+    setCurrentTraining(null);
+  };
+
+  // Render specific training component
+  if (currentTraining === 'memory') {
+    return <MemoryTraining onBack={handleBackToMain} />;
+  }
+  if (currentTraining === 'focus') {
+    return <FocusTraining onBack={handleBackToMain} />;
+  }
+  if (currentTraining === 'speed') {
+    return <SpeedTraining onBack={handleBackToMain} />;
+  }
+  if (currentTraining === 'reaction') {
+    return <ReactionTraining onBack={handleBackToMain} />;
+  }
+
+  // Main brain training page
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <div className="container mx-auto px-4 py-8">
@@ -91,7 +126,12 @@ const BrainTraining = ({ user, onBack }: BrainTrainingProps) => {
                       </div>
                     ))}
                   </div>
-                  <Button className="w-full">Start Training</Button>
+                  <Button 
+                    className="w-full"
+                    onClick={() => handleStartTraining(category.id)}
+                  >
+                    Start Training
+                  </Button>
                 </CardContent>
               </Card>
             );
