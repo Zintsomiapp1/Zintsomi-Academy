@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, RotateCcw, Brain, User, Crown } from 'lucide-react';
 import { useGamingTime } from '@/hooks/useGamingTime';
+import { useUserRole } from '@/hooks/useUserRole';
 import GamingTimeDisplay from './GamingTimeDisplay';
 import TimePurchaseModal from './TimePurchaseModal';
 
@@ -22,6 +23,7 @@ type CheckersBoard = (CheckersPiece | null)[][];
 
 const CheckersGame = ({ onBack }: CheckersGameProps) => {
   const gamingTime = useGamingTime();
+  const { isAdmin } = useUserRole();
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
   const [selectedSquare, setSelectedSquare] = useState<[number, number] | null>(null);
   const [currentPlayer, setCurrentPlayer] = useState<PieceColor>('red');
@@ -29,6 +31,7 @@ const CheckersGame = ({ onBack }: CheckersGameProps) => {
   const [moveHistory, setMoveHistory] = useState<string[]>([]);
   const [validMoves, setValidMoves] = useState<[number, number][]>([]);
   const [draggedPiece, setDraggedPiece] = useState<{ piece: CheckersPiece; from: [number, number] } | null>(null);
+  const [isProcessingMove, setIsProcessingMove] = useState(false);
 
   // Initialize checkers board
   const initializeBoard = (): CheckersBoard => {
@@ -125,6 +128,8 @@ const CheckersGame = ({ onBack }: CheckersGameProps) => {
   };
 
   const makeAIMove = () => {
+    if (isProcessingMove) return;
+    
     const validAIMoves: Array<{ from: [number, number], to: [number, number], isCapture: boolean }> = [];
     
     for (let row = 0; row < 8; row++) {
@@ -146,19 +151,22 @@ const CheckersGame = ({ onBack }: CheckersGameProps) => {
     
     if (movesToConsider.length > 0) {
       const randomMove = movesToConsider[Math.floor(Math.random() * movesToConsider.length)];
-      makeMove(randomMove.from[0], randomMove.from[1], randomMove.to[0], randomMove.to[1]);
-      setMoveHistory(prev => [...prev, `Khalulu: ${String.fromCharCode(97 + randomMove.from[1])}${8 - randomMove.from[0]} to ${String.fromCharCode(97 + randomMove.to[1])}${8 - randomMove.to[0]}`]);
-      setCurrentPlayer('red');
+      if (makeMove(randomMove.from[0], randomMove.from[1], randomMove.to[0], randomMove.to[1])) {
+        setMoveHistory(prev => [...prev, `Khalulu: ${String.fromCharCode(97 + randomMove.from[1])}${8 - randomMove.from[0]} to ${String.fromCharCode(97 + randomMove.to[1])}${8 - randomMove.to[0]}`]);
+        setCurrentPlayer('red');
+      }
     }
+    setIsProcessingMove(false);
   };
 
   const handleSquareClick = (row: number, col: number) => {
-    if (!gamingTime.isPlaying || gamingTime.totalTimeRemaining <= 0) {
+    // Skip time check for admins
+    if (!isAdmin && (!gamingTime.isPlaying || gamingTime.totalTimeRemaining <= 0)) {
       setShowPurchaseModal(true);
       return;
     }
 
-    if (currentPlayer === 'black') return; // AI's turn
+    if (currentPlayer === 'black' || isProcessingMove) return; // AI's turn or processing
 
     if (selectedSquare) {
       const [fromRow, fromCol] = selectedSquare;
@@ -168,6 +176,7 @@ const CheckersGame = ({ onBack }: CheckersGameProps) => {
         setCurrentPlayer('black');
         setSelectedSquare(null);
         setValidMoves([]);
+        setIsProcessingMove(true);
         
         // AI move after a delay
         setTimeout(() => {
@@ -188,13 +197,14 @@ const CheckersGame = ({ onBack }: CheckersGameProps) => {
   };
 
   const handleDragStart = (e: React.DragEvent, row: number, col: number) => {
-    if (!gamingTime.isPlaying || gamingTime.totalTimeRemaining <= 0) {
+    // Skip time check for admins
+    if (!isAdmin && (!gamingTime.isPlaying || gamingTime.totalTimeRemaining <= 0)) {
       e.preventDefault();
       setShowPurchaseModal(true);
       return;
     }
 
-    if (currentPlayer === 'black') {
+    if (currentPlayer === 'black' || isProcessingMove) {
       e.preventDefault();
       return;
     }
@@ -217,12 +227,13 @@ const CheckersGame = ({ onBack }: CheckersGameProps) => {
   const handleDrop = (e: React.DragEvent, row: number, col: number) => {
     e.preventDefault();
     
-    if (draggedPiece) {
+    if (draggedPiece && !isProcessingMove) {
       const [fromRow, fromCol] = draggedPiece.from;
       
       if (makeMove(fromRow, fromCol, row, col)) {
         setMoveHistory(prev => [...prev, `You: ${String.fromCharCode(97 + fromCol)}${8 - fromRow} to ${String.fromCharCode(97 + col)}${8 - row}`]);
         setCurrentPlayer('black');
+        setIsProcessingMove(true);
         
         setTimeout(() => {
           makeAIMove();
@@ -242,17 +253,21 @@ const CheckersGame = ({ onBack }: CheckersGameProps) => {
     setMoveHistory([]);
     setValidMoves([]);
     setDraggedPiece(null);
+    setIsProcessingMove(false);
   };
 
   useEffect(() => {
-    if (gamingTime.totalTimeRemaining > 0) {
+    // Only start gaming time for non-admin users
+    if (!isAdmin && gamingTime.totalTimeRemaining > 0) {
       gamingTime.startPlaying();
     }
     
     return () => {
-      gamingTime.stopPlaying();
+      if (!isAdmin) {
+        gamingTime.stopPlaying();
+      }
     };
-  }, []);
+  }, [isAdmin]);
 
   const getSquareClass = (row: number, col: number) => {
     const isLight = (row + col) % 2 === 0;
@@ -317,13 +332,26 @@ const CheckersGame = ({ onBack }: CheckersGameProps) => {
         Back to Games
       </Button>
 
-      <GamingTimeDisplay
-        timeRemaining={gamingTime.totalTimeRemaining}
-        formatTime={gamingTime.formatTime}
-        getFreeTimeRemaining={gamingTime.getFreeTimeRemaining}
-        getTimeUntilReset={gamingTime.getTimeUntilReset}
-        onPurchaseClick={() => setShowPurchaseModal(true)}
-      />
+      {/* Only show gaming time display for non-admin users */}
+      {!isAdmin && (
+        <GamingTimeDisplay
+          timeRemaining={gamingTime.totalTimeRemaining}
+          formatTime={gamingTime.formatTime}
+          getFreeTimeRemaining={gamingTime.getFreeTimeRemaining}
+          getTimeUntilReset={gamingTime.getTimeUntilReset}
+          onPurchaseClick={() => setShowPurchaseModal(true)}
+        />
+      )}
+
+      {/* Show admin indicator */}
+      {isAdmin && (
+        <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-4 shadow-lg border border-purple-200">
+          <div className="flex items-center gap-2">
+            <Crown className="h-5 w-5 text-purple-600" />
+            <span className="font-semibold text-purple-800">Admin Mode - Unlimited Gaming Time</span>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
@@ -432,16 +460,19 @@ const CheckersGame = ({ onBack }: CheckersGameProps) => {
         </div>
       </div>
 
-      <TimePurchaseModal
-        isOpen={showPurchaseModal}
-        onClose={() => setShowPurchaseModal(false)}
-        onPurchase={() => {
-          gamingTime.purchaseTime();
-          setShowPurchaseModal(false);
-        }}
-        timeRemaining={gamingTime.totalTimeRemaining}
-        formatTime={gamingTime.formatTime}
-      />
+      {/* Only show purchase modal for non-admin users */}
+      {!isAdmin && (
+        <TimePurchaseModal
+          isOpen={showPurchaseModal}
+          onClose={() => setShowPurchaseModal(false)}
+          onPurchase={() => {
+            gamingTime.purchaseTime();
+            setShowPurchaseModal(false);
+          }}
+          timeRemaining={gamingTime.totalTimeRemaining}
+          formatTime={gamingTime.formatTime}
+        />
+      )}
     </div>
   );
 };
