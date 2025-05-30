@@ -28,7 +28,8 @@ const CheckersGame = ({ onBack }: CheckersGameProps) => {
   const [currentPlayer, setCurrentPlayer] = useState<PieceColor>('red');
   const [gameStatus, setGameStatus] = useState<'playing' | 'red-wins' | 'black-wins' | 'draw'>('playing');
   const [moveHistory, setMoveHistory] = useState<string[]>([]);
-  const [mustCapture, setMustCapture] = useState<[number, number][] | null>(null);
+  const [validMoves, setValidMoves] = useState<[number, number][]>([]);
+  const [draggedPiece, setDraggedPiece] = useState<{ piece: CheckersPiece; from: [number, number] } | null>(null);
 
   // Initialize checkers board
   const initializeBoard = (): CheckersBoard => {
@@ -57,73 +58,43 @@ const CheckersGame = ({ onBack }: CheckersGameProps) => {
 
   const [board, setBoard] = useState<CheckersBoard>(initializeBoard);
 
-  const isValidMove = (fromRow: number, fromCol: number, toRow: number, toCol: number): boolean => {
+  const getValidMovesForPiece = (fromRow: number, fromCol: number): [number, number][] => {
     const piece = board[fromRow][fromCol];
-    if (!piece) return false;
+    if (!piece) return [];
     
-    const rowDiff = toRow - fromRow;
-    const colDiff = Math.abs(toCol - fromCol);
+    const moves: [number, number][] = [];
+    const directions = piece.type === 'king' 
+      ? [[-1, -1], [-1, 1], [1, -1], [1, 1]] // Kings can move in all directions
+      : piece.color === 'red' 
+        ? [[-1, -1], [-1, 1]] // Red moves up
+        : [[1, -1], [1, 1]]; // Black moves down
     
-    // Must move diagonally
-    if (Math.abs(rowDiff) !== colDiff) return false;
-    
-    // Regular pieces can only move forward (except kings)
-    if (piece.type === 'regular') {
-      if (piece.color === 'red' && rowDiff > 0) return false;
-      if (piece.color === 'black' && rowDiff < 0) return false;
-    }
-    
-    // Check if destination is empty
-    if (board[toRow][toCol] !== null) return false;
-    
-    // Simple move (1 square diagonally)
-    if (Math.abs(rowDiff) === 1) {
-      return true;
-    }
-    
-    // Jump move (2 squares diagonally with capture)
-    if (Math.abs(rowDiff) === 2) {
-      const midRow = fromRow + rowDiff / 2;
-      const midCol = fromCol + (toCol - fromCol) / 2;
-      const middlePiece = board[midRow][midCol];
+    for (const [rowDir, colDir] of directions) {
+      // Simple move (1 square)
+      const newRow = fromRow + rowDir;
+      const newCol = fromCol + colDir;
       
-      return middlePiece !== null && middlePiece.color !== piece.color;
-    }
-    
-    return false;
-  };
-
-  const makeAIMove = () => {
-    // Simple AI: find all valid moves and pick randomly
-    const validMoves: Array<{ from: [number, number], to: [number, number], isCapture: boolean }> = [];
-    
-    for (let row = 0; row < 8; row++) {
-      for (let col = 0; col < 8; col++) {
-        const piece = board[row][col];
-        if (piece && piece.color === 'black') {
-          // Check all possible moves
-          for (let newRow = 0; newRow < 8; newRow++) {
-            for (let newCol = 0; newCol < 8; newCol++) {
-              if (isValidMove(row, col, newRow, newCol)) {
-                const isCapture = Math.abs(newRow - row) === 2;
-                validMoves.push({ from: [row, col], to: [newRow, newCol], isCapture });
-              }
-            }
-          }
-        }
+      if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8 && !board[newRow][newCol]) {
+        moves.push([newRow, newCol]);
+      }
+      
+      // Jump move (2 squares with capture)
+      const jumpRow = fromRow + rowDir * 2;
+      const jumpCol = fromCol + colDir * 2;
+      
+      if (jumpRow >= 0 && jumpRow < 8 && jumpCol >= 0 && jumpCol < 8 && 
+          board[newRow][newCol] && board[newRow][newCol]!.color !== piece.color && 
+          !board[jumpRow][jumpCol]) {
+        moves.push([jumpRow, jumpCol]);
       }
     }
     
-    // Prioritize captures
-    const captures = validMoves.filter(move => move.isCapture);
-    const movesToConsider = captures.length > 0 ? captures : validMoves;
-    
-    if (movesToConsider.length > 0) {
-      const randomMove = movesToConsider[Math.floor(Math.random() * movesToConsider.length)];
-      makeMove(randomMove.from[0], randomMove.from[1], randomMove.to[0], randomMove.to[1]);
-      setMoveHistory(prev => [...prev, `Khalulu: ${String.fromCharCode(97 + randomMove.from[1])}${8 - randomMove.from[0]} to ${String.fromCharCode(97 + randomMove.to[1])}${8 - randomMove.to[0]}`]);
-      setCurrentPlayer('red');
-    }
+    return moves;
+  };
+
+  const isValidMove = (fromRow: number, fromCol: number, toRow: number, toCol: number): boolean => {
+    const validMoves = getValidMovesForPiece(fromRow, fromCol);
+    return validMoves.some(([row, col]) => row === toRow && col === toCol);
   };
 
   const makeMove = (fromRow: number, fromCol: number, toRow: number, toCol: number) => {
@@ -154,6 +125,34 @@ const CheckersGame = ({ onBack }: CheckersGameProps) => {
     return true;
   };
 
+  const makeAIMove = () => {
+    const validAIMoves: Array<{ from: [number, number], to: [number, number], isCapture: boolean }> = [];
+    
+    for (let row = 0; row < 8; row++) {
+      for (let col = 0; col < 8; col++) {
+        const piece = board[row][col];
+        if (piece && piece.color === 'black') {
+          const moves = getValidMovesForPiece(row, col);
+          moves.forEach(([toRow, toCol]) => {
+            const isCapture = Math.abs(toRow - row) === 2;
+            validAIMoves.push({ from: [row, col], to: [toRow, toCol], isCapture });
+          });
+        }
+      }
+    }
+    
+    // Prioritize captures
+    const captures = validAIMoves.filter(move => move.isCapture);
+    const movesToConsider = captures.length > 0 ? captures : validAIMoves;
+    
+    if (movesToConsider.length > 0) {
+      const randomMove = movesToConsider[Math.floor(Math.random() * movesToConsider.length)];
+      makeMove(randomMove.from[0], randomMove.from[1], randomMove.to[0], randomMove.to[1]);
+      setMoveHistory(prev => [...prev, `Khalulu: ${String.fromCharCode(97 + randomMove.from[1])}${8 - randomMove.from[0]} to ${String.fromCharCode(97 + randomMove.to[1])}${8 - randomMove.to[0]}`]);
+      setCurrentPlayer('red');
+    }
+  };
+
   const handleSquareClick = (row: number, col: number) => {
     if (!gamingTime.isPlaying || gamingTime.totalTimeRemaining <= 0) {
       setShowPurchaseModal(true);
@@ -163,29 +162,76 @@ const CheckersGame = ({ onBack }: CheckersGameProps) => {
     if (currentPlayer === 'black') return; // AI's turn
 
     if (selectedSquare) {
-      // Try to move piece
       const [fromRow, fromCol] = selectedSquare;
-      const piece = board[fromRow][fromCol];
       
-      if (piece && piece.color === 'red') {
-        if (makeMove(fromRow, fromCol, row, col)) {
-          setMoveHistory(prev => [...prev, `You: ${String.fromCharCode(97 + fromCol)}${8 - fromRow} to ${String.fromCharCode(97 + col)}${8 - row}`]);
-          setCurrentPlayer('black');
-          
-          // AI move after a delay
-          setTimeout(() => {
-            makeAIMove();
-          }, 1000);
-        }
+      if (makeMove(fromRow, fromCol, row, col)) {
+        setMoveHistory(prev => [...prev, `You: ${String.fromCharCode(97 + fromCol)}${8 - fromRow} to ${String.fromCharCode(97 + col)}${8 - row}`]);
+        setCurrentPlayer('black');
+        setSelectedSquare(null);
+        setValidMoves([]);
+        
+        // AI move after a delay
+        setTimeout(() => {
+          makeAIMove();
+        }, 1000);
+      } else {
+        setSelectedSquare(null);
+        setValidMoves([]);
       }
-      
-      setSelectedSquare(null);
     } else {
       // Select piece
       const piece = board[row][col];
       if (piece && piece.color === 'red') {
         setSelectedSquare([row, col]);
+        setValidMoves(getValidMovesForPiece(row, col));
       }
+    }
+  };
+
+  const handleDragStart = (e: React.DragEvent, row: number, col: number) => {
+    if (!gamingTime.isPlaying || gamingTime.totalTimeRemaining <= 0) {
+      e.preventDefault();
+      setShowPurchaseModal(true);
+      return;
+    }
+
+    if (currentPlayer === 'black') {
+      e.preventDefault();
+      return;
+    }
+
+    const piece = board[row][col];
+    if (piece && piece.color === 'red') {
+      setDraggedPiece({ piece, from: [row, col] });
+      setValidMoves(getValidMovesForPiece(row, col));
+      e.dataTransfer.effectAllowed = 'move';
+    } else {
+      e.preventDefault();
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = (e: React.DragEvent, row: number, col: number) => {
+    e.preventDefault();
+    
+    if (draggedPiece) {
+      const [fromRow, fromCol] = draggedPiece.from;
+      
+      if (makeMove(fromRow, fromCol, row, col)) {
+        setMoveHistory(prev => [...prev, `You: ${String.fromCharCode(97 + fromCol)}${8 - fromRow} to ${String.fromCharCode(97 + col)}${8 - row}`]);
+        setCurrentPlayer('black');
+        
+        setTimeout(() => {
+          makeAIMove();
+        }, 1000);
+      }
+      
+      setDraggedPiece(null);
+      setValidMoves([]);
     }
   };
 
@@ -195,6 +241,8 @@ const CheckersGame = ({ onBack }: CheckersGameProps) => {
     setCurrentPlayer('red');
     setGameStatus('playing');
     setMoveHistory([]);
+    setValidMoves([]);
+    setDraggedPiece(null);
   };
 
   useEffect(() => {
@@ -210,27 +258,58 @@ const CheckersGame = ({ onBack }: CheckersGameProps) => {
   const getSquareClass = (row: number, col: number) => {
     const isLight = (row + col) % 2 === 0;
     const isSelected = selectedSquare && selectedSquare[0] === row && selectedSquare[1] === col;
+    const isValidMove = validMoves.some(([vRow, vCol]) => vRow === row && vCol === col);
     const piece = board[row][col];
     
-    let baseClass = "w-12 h-12 flex items-center justify-center cursor-pointer transition-colors ";
-    baseClass += isLight ? "bg-amber-100 " : "bg-amber-800 ";
+    let baseClass = "w-16 h-16 flex items-center justify-center cursor-pointer transition-all duration-300 transform hover:scale-105 relative ";
+    
+    if (isLight) {
+      baseClass += "bg-gradient-to-br from-amber-100 to-amber-200 shadow-inner ";
+    } else {
+      baseClass += "bg-gradient-to-br from-amber-700 to-amber-900 shadow-lg ";
+    }
+    
+    // Add 3D effect
+    baseClass += "border border-amber-300 shadow-md hover:shadow-xl ";
     
     if (isSelected) {
-      baseClass += "ring-2 ring-blue-500 ";
-    } else if (piece && piece.color === 'red' && currentPlayer === 'red') {
-      baseClass += "hover:bg-opacity-80 ";
+      baseClass += "ring-4 ring-blue-400 ring-opacity-75 shadow-blue-400/50 ";
+    }
+    
+    if (isValidMove) {
+      baseClass += "ring-2 ring-green-400 ring-opacity-60 ";
     }
     
     return baseClass;
   };
 
-  const renderPiece = (piece: CheckersPiece) => {
-    const baseClass = "w-8 h-8 rounded-full border-2 flex items-center justify-center ";
-    const colorClass = piece.color === 'red' ? "bg-red-500 border-red-700 " : "bg-gray-800 border-gray-900 ";
+  const renderPiece = (piece: CheckersPiece, row: number, col: number) => {
+    const baseClass = "w-12 h-12 rounded-full border-4 flex items-center justify-center transform transition-all duration-300 hover:scale-110 cursor-grab active:cursor-grabbing ";
+    let colorClass = "";
+    
+    if (piece.color === 'red') {
+      colorClass = "bg-gradient-to-br from-red-400 to-red-700 border-red-800 shadow-lg ";
+      colorClass += "drop-shadow-[0_4px_8px_rgba(220,38,38,0.6)] ";
+    } else {
+      colorClass = "bg-gradient-to-br from-gray-700 to-black border-gray-900 shadow-xl ";
+      colorClass += "drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] ";
+    }
     
     return (
-      <div className={baseClass + colorClass}>
-        {piece.type === 'king' && <Crown className="w-4 h-4 text-yellow-300" />}
+      <div
+        className={baseClass + colorClass}
+        draggable={piece.color === 'red' && currentPlayer === 'red'}
+        onDragStart={(e) => handleDragStart(e, row, col)}
+      >
+        {piece.type === 'king' && (
+          <Crown className="w-6 h-6 text-yellow-300 filter drop-shadow-lg" />
+        )}
+        {/* Add highlight dots for valid moves */}
+        {validMoves.some(([vRow, vCol]) => vRow === row && vCol === col) && !board[row][col] && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-4 h-4 bg-green-400 rounded-full opacity-70 animate-pulse"></div>
+          </div>
+        )}
       </div>
     );
   };
@@ -256,27 +335,36 @@ const CheckersGame = ({ onBack }: CheckersGameProps) => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <Card>
-            <CardHeader>
+          <Card className="shadow-2xl">
+            <CardHeader className="bg-gradient-to-r from-amber-50 to-amber-100">
               <CardTitle className="flex items-center justify-between">
-                <span>Checkers vs AI Khalulu</span>
-                <Button variant="outline" size="sm" onClick={resetGame}>
+                <span className="text-2xl font-bold bg-gradient-to-r from-red-600 to-black bg-clip-text text-transparent">
+                  Checkers vs AI Khalulu
+                </span>
+                <Button variant="outline" size="sm" onClick={resetGame} className="shadow-md">
                   <RotateCcw className="w-4 h-4 mr-2" />
                   New Game
                 </Button>
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="flex justify-center mb-4">
-                <div className="grid grid-cols-8 border-2 border-gray-800">
+            <CardContent className="p-8">
+              <div className="flex justify-center mb-6">
+                <div className="grid grid-cols-8 border-4 border-amber-400 shadow-2xl rounded-lg overflow-hidden transform perspective-1000">
                   {board.map((row, rowIndex) =>
                     row.map((piece, colIndex) => (
                       <div
                         key={`${rowIndex}-${colIndex}`}
                         className={getSquareClass(rowIndex, colIndex)}
                         onClick={() => handleSquareClick(rowIndex, colIndex)}
+                        onDragOver={handleDragOver}
+                        onDrop={(e) => handleDrop(e, rowIndex, colIndex)}
                       >
-                        {piece && renderPiece(piece)}
+                        {piece && renderPiece(piece, rowIndex, colIndex)}
+                        {validMoves.some(([vRow, vCol]) => vRow === rowIndex && vCol === colIndex) && !piece && (
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="w-4 h-4 bg-green-400 rounded-full opacity-60 animate-pulse"></div>
+                          </div>
+                        )}
                       </div>
                     ))
                   )}
@@ -284,37 +372,49 @@ const CheckersGame = ({ onBack }: CheckersGameProps) => {
               </div>
               
               <div className="text-center">
-                <div className="flex items-center justify-center gap-4 mb-2">
-                  <div className={`flex items-center gap-2 ${currentPlayer === 'red' ? 'font-bold text-red-600' : 'text-gray-500'}`}>
-                    <User className="w-4 h-4" />
+                <div className="flex items-center justify-center gap-6 mb-4">
+                  <div className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
+                    currentPlayer === 'red' 
+                      ? 'bg-red-100 text-red-800 font-bold shadow-md transform scale-105' 
+                      : 'text-gray-500'
+                  }`}>
+                    <User className="w-5 h-5" />
                     <span>Your Turn (Red)</span>
                   </div>
-                  <div className={`flex items-center gap-2 ${currentPlayer === 'black' ? 'font-bold text-gray-800' : 'text-gray-500'}`}>
-                    <Brain className="w-4 h-4" />
+                  <div className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
+                    currentPlayer === 'black' 
+                      ? 'bg-gray-100 text-gray-800 font-bold shadow-md transform scale-105' 
+                      : 'text-gray-500'
+                  }`}>
+                    <Brain className="w-5 h-5" />
                     <span>Khalulu (Black)</span>
                   </div>
                 </div>
-                <p className="text-sm text-gray-600">
-                  {selectedSquare ? 'Click a dark square to move your piece' : 'Click on your red piece to select it'}
-                </p>
+                <div className="bg-gradient-to-r from-red-50 to-gray-50 rounded-lg p-4 border border-red-200">
+                  <p className="text-sm text-gray-700">
+                    {selectedSquare || draggedPiece
+                      ? 'Drag your piece to a highlighted square or click to move' 
+                      : 'Click on your red piece to select it, or drag and drop to move'}
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
         <div className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Move History</CardTitle>
+          <Card className="shadow-lg">
+            <CardHeader className="bg-gradient-to-r from-amber-50 to-amber-100">
+              <CardTitle className="text-lg">Move History</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-1 max-h-40 overflow-y-auto">
+            <CardContent className="p-4">
+              <div className="space-y-2 max-h-60 overflow-y-auto">
                 {moveHistory.length === 0 ? (
-                  <p className="text-gray-500 text-sm">No moves yet</p>
+                  <p className="text-gray-500 text-sm italic">No moves yet - make your first move!</p>
                 ) : (
                   moveHistory.map((move, index) => (
-                    <div key={index} className="text-sm">
-                      {index + 1}. {move}
+                    <div key={index} className="text-sm p-2 rounded bg-gray-50 border-l-4 border-amber-200">
+                      <span className="font-medium text-gray-600">{index + 1}.</span> {move}
                     </div>
                   ))
                 )}
@@ -322,12 +422,13 @@ const CheckersGame = ({ onBack }: CheckersGameProps) => {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>How to Play</CardTitle>
+          <Card className="shadow-lg">
+            <CardHeader className="bg-gradient-to-r from-amber-50 to-amber-100">
+              <CardTitle className="text-lg">How to Play</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4">
               <div className="text-sm space-y-2">
+                <p>• Drag and drop or click to move pieces</p>
                 <p>• Move diagonally on dark squares only</p>
                 <p>• Jump over opponent pieces to capture</p>
                 <p>• Reach the opposite end to become a King</p>
