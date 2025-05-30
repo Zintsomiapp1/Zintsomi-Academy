@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Send, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -46,11 +45,21 @@ const AskKhalulu = () => {
     setIsTyping(true);
 
     try {
+      // Get the current session to ensure we have a valid token
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        throw new Error('No valid session found');
+      }
+
       const { data, error } = await supabase.functions.invoke('chat-with-khalulu', {
         body: {
           message: inputMessage,
           conversationId: conversationId
-        }
+        },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
       });
 
       if (error) throw error;
