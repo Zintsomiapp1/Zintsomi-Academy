@@ -24,6 +24,151 @@ const VRContent = () => {
     window.history.back();
   };
 
+  const vrSceneHTML = `
+    <a-scene
+      embedded
+      style="height: 100%; width: 100%;"
+      vr-mode-ui="enabled: true"
+      background="color: #87CEEB"
+    >
+      <!-- Assets -->
+      <a-assets>
+        <a-sound id="ambient-sound" src="https://cdn.freesound.org/previews/316/316847_4939433-lq.mp3" autoplay="true" loop="true" volume="0.3"></a-sound>
+      </a-assets>
+
+      <!-- Lighting -->
+      <a-light type="ambient" color="#404040"></a-light>
+      <a-light type="directional" position="1 1 1" color="#ffffff"></a-light>
+
+      <!-- Ground -->
+      <a-plane 
+        position="0 0 -4" 
+        rotation="-90 0 0" 
+        width="20" 
+        height="20" 
+        color="#7BC043"
+        shadow
+      ></a-plane>
+
+      <!-- Traditional African Hut -->
+      <a-cylinder 
+        position="-3 1 -6" 
+        radius="2" 
+        height="2" 
+        color="#8B4513"
+        shadow
+      ></a-cylinder>
+      <a-cone 
+        position="-3 3 -6" 
+        radius-bottom="2.5" 
+        radius-top="0.5" 
+        height="2" 
+        color="#DAA520"
+        shadow
+      ></a-cone>
+
+      <!-- Baobab Tree -->
+      <a-cylinder 
+        position="3 1.5 -8" 
+        radius="0.8" 
+        height="3" 
+        color="#8B4513"
+        shadow
+      ></a-cylinder>
+      <a-sphere 
+        position="3 4 -8" 
+        radius="2" 
+        color="#228B22"
+        shadow
+      ></a-sphere>
+
+      <!-- Storytelling Circle -->
+      <a-ring 
+        position="0 0.1 -5" 
+        radius-inner="2" 
+        radius-outer="3" 
+        color="#D2691E"
+        rotation="-90 0 0"
+      ></a-ring>
+
+      <!-- Interactive Story Stones -->
+      <a-box 
+        position="-1 0.5 -4" 
+        width="0.5" 
+        height="0.5" 
+        depth="0.5" 
+        color="#FF6B6B"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 10000"
+        class="clickable"
+        shadow
+      ></a-box>
+      <a-box 
+        position="1 0.5 -4" 
+        width="0.5" 
+        height="0.5" 
+        depth="0.5" 
+        color="#4ECDC4"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 8000"
+        class="clickable"
+        shadow
+      ></a-box>
+      <a-box 
+        position="0 0.5 -3" 
+        width="0.5" 
+        height="0.5" 
+        depth="0.5" 
+        color="#45B7D1"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 12000"
+        class="clickable"
+        shadow
+      ></a-box>
+
+      <!-- Floating Text -->
+      <a-text 
+        position="0 3 -5" 
+        value="Welcome to African Storytelling" 
+        align="center" 
+        color="#333"
+        width="8"
+        animation="property: position; to: 0 3.5 -5; loop: true; dir: alternate; dur: 3000"
+      ></a-text>
+
+      <!-- Khalulu mascot -->
+      <a-sphere 
+        position="0 2 -2" 
+        radius="0.3" 
+        color="#FFE4B5"
+        animation="property: position; to: 0.5 2.2 -2; loop: true; dir: alternate; dur: 2000"
+        shadow
+      ></a-sphere>
+      <a-text 
+        position="0 1.5 -2" 
+        value="Hi! I'm Khalulu!" 
+        align="center" 
+        color="#333"
+        width="4"
+      ></a-text>
+
+      <!-- Sky -->
+      <a-sky color="#87CEEB"></a-sky>
+
+      <!-- Camera with controls -->
+      <a-camera 
+        look-controls 
+        wasd-controls 
+        position="0 1.6 0"
+      >
+        <a-cursor
+          animation__click="property: scale; startEvents: click; from: 0.1 0.1 0.1; to: 1 1 1; dur: 150"
+          animation__fusing="property: scale; startEvents: fusing; from: 1 1 1; to: 0.1 0.1 0.1; dur: 1500"
+          raycaster="objects: .clickable"
+          geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
+          material="color: #FF6B6B; shader: flat"
+        ></a-cursor>
+      </a-camera>
+    </a-scene>
+  `;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
       <div className="container mx-auto px-4 py-8">
@@ -86,150 +231,11 @@ const VRContent = () => {
         {/* VR Scene */}
         <Card className="overflow-hidden">
           <CardContent className="p-0">
-            <div className="relative" style={{ height: '600px' }}>
-              <a-scene
-                embedded
-                style={{ height: '100%', width: '100%' }}
-                vr-mode-ui="enabled: true"
-                background="color: #87CEEB"
-              >
-                {/* Assets */}
-                <a-assets>
-                  <a-sound id="ambient-sound" src="https://cdn.freesound.org/previews/316/316847_4939433-lq.mp3" autoplay="true" loop="true" volume="0.3"></a-sound>
-                </a-assets>
-
-                {/* Lighting */}
-                <a-light type="ambient" color="#404040"></a-light>
-                <a-light type="directional" position="1 1 1" color="#ffffff"></a-light>
-
-                {/* Ground */}
-                <a-plane 
-                  position="0 0 -4" 
-                  rotation="-90 0 0" 
-                  width="20" 
-                  height="20" 
-                  color="#7BC043"
-                  shadow
-                ></a-plane>
-
-                {/* Traditional African Hut */}
-                <a-cylinder 
-                  position="-3 1 -6" 
-                  radius="2" 
-                  height="2" 
-                  color="#8B4513"
-                  shadow
-                ></a-cylinder>
-                <a-cone 
-                  position="-3 3 -6" 
-                  radius-bottom="2.5" 
-                  radius-top="0.5" 
-                  height="2" 
-                  color="#DAA520"
-                  shadow
-                ></a-cone>
-
-                {/* Baobab Tree */}
-                <a-cylinder 
-                  position="3 1.5 -8" 
-                  radius="0.8" 
-                  height="3" 
-                  color="#8B4513"
-                  shadow
-                ></a-cylinder>
-                <a-sphere 
-                  position="3 4 -8" 
-                  radius="2" 
-                  color="#228B22"
-                  shadow
-                ></a-sphere>
-
-                {/* Storytelling Circle */}
-                <a-ring 
-                  position="0 0.1 -5" 
-                  radius-inner="2" 
-                  radius-outer="3" 
-                  color="#D2691E"
-                  rotation="-90 0 0"
-                ></a-ring>
-
-                {/* Interactive Story Stones */}
-                <a-box 
-                  position="-1 0.5 -4" 
-                  width="0.5" 
-                  height="0.5" 
-                  depth="0.5" 
-                  color="#FF6B6B"
-                  animation="property: rotation; to: 0 360 0; loop: true; dur: 10000"
-                  class="clickable"
-                  shadow
-                ></a-box>
-                <a-box 
-                  position="1 0.5 -4" 
-                  width="0.5" 
-                  height="0.5" 
-                  depth="0.5" 
-                  color="#4ECDC4"
-                  animation="property: rotation; to: 0 360 0; loop: true; dur: 8000"
-                  class="clickable"
-                  shadow
-                ></a-box>
-                <a-box 
-                  position="0 0.5 -3" 
-                  width="0.5" 
-                  height="0.5" 
-                  depth="0.5" 
-                  color="#45B7D1"
-                  animation="property: rotation; to: 0 360 0; loop: true; dur: 12000"
-                  class="clickable"
-                  shadow
-                ></a-box>
-
-                {/* Floating Text */}
-                <a-text 
-                  position="0 3 -5" 
-                  value="Welcome to African Storytelling" 
-                  align="center" 
-                  color="#333"
-                  width="8"
-                  animation="property: position; to: 0 3.5 -5; loop: true; dir: alternate; dur: 3000"
-                ></a-text>
-
-                {/* Khalulu mascot */}
-                <a-sphere 
-                  position="0 2 -2" 
-                  radius="0.3" 
-                  color="#FFE4B5"
-                  animation="property: position; to: 0.5 2.2 -2; loop: true; dir: alternate; dur: 2000"
-                  shadow
-                ></a-sphere>
-                <a-text 
-                  position="0 1.5 -2" 
-                  value="Hi! I'm Khalulu!" 
-                  align="center" 
-                  color="#333"
-                  width="4"
-                ></a-text>
-
-                {/* Sky */}
-                <a-sky color="#87CEEB"></a-sky>
-
-                {/* Camera with controls */}
-                <a-camera 
-                  look-controls 
-                  wasd-controls 
-                  position="0 1.6 0"
-                >
-                  <a-cursor
-                    animation__click="property: scale; startEvents: click; from: 0.1 0.1 0.1; to: 1 1 1; dur: 150"
-                    animation__fusing="property: scale; startEvents: fusing; from: 1 1 1; to: 0.1 0.1 0.1; dur: 1500"
-                    raycaster="objects: .clickable"
-                    geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
-                    material="color: #FF6B6B; shader: flat"
-                  ></a-cursor>
-                </a-camera>
-              </a-scene>
-            </div>
+            <div 
+              className="relative" 
+              style={{ height: '600px' }}
+              dangerouslySetInnerHTML={{ __html: vrSceneHTML }}
+            />
           </CardContent>
         </Card>
 
