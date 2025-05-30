@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import { ArrowLeft, Headphones, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -13,40 +12,75 @@ declare global {
 
 const VRContent = () => {
   const [aframeLoaded, setAframeLoaded] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [debugInfo, setDebugInfo] = useState<string[]>([]);
   const sceneRef = useRef<HTMLDivElement>(null);
 
+  const addDebugInfo = (info: string) => {
+    console.log('VR Debug:', info);
+    setDebugInfo(prev => [...prev, `${new Date().toLocaleTimeString()}: ${info}`]);
+  };
+
   useEffect(() => {
+    addDebugInfo('Component mounted, checking for A-Frame');
+    
     // Check if A-Frame is already loaded
     if (window.AFRAME) {
-      console.log('A-Frame already loaded');
+      addDebugInfo('A-Frame already available');
       setAframeLoaded(true);
       return;
     }
 
+    // Check if script already exists
+    const existingScript = document.querySelector('script[src*="aframe"]');
+    if (existingScript) {
+      addDebugInfo('A-Frame script already exists, waiting for load');
+      const checkAFrame = setInterval(() => {
+        if (window.AFRAME) {
+          addDebugInfo('A-Frame became available');
+          setAframeLoaded(true);
+          clearInterval(checkAFrame);
+        }
+      }, 100);
+      return;
+    }
+
+    addDebugInfo('Loading A-Frame script');
     // Load A-Frame script
     const script = document.createElement('script');
     script.src = 'https://aframe.io/releases/1.4.0/aframe.min.js';
     script.async = true;
     
     script.onload = () => {
-      console.log('A-Frame loaded successfully');
+      addDebugInfo('A-Frame script loaded, waiting for initialization');
       // Wait for A-Frame to fully initialize
-      setTimeout(() => {
+      const checkAFrame = setInterval(() => {
         if (window.AFRAME) {
-          console.log('A-Frame fully initialized');
+          addDebugInfo('A-Frame fully initialized');
           setAframeLoaded(true);
+          clearInterval(checkAFrame);
         }
-      }, 1000);
+      }, 100);
+      
+      // Timeout after 10 seconds
+      setTimeout(() => {
+        if (!window.AFRAME) {
+          addDebugInfo('Timeout waiting for A-Frame');
+          setError('A-Frame failed to initialize');
+          clearInterval(checkAFrame);
+        }
+      }, 10000);
     };
 
-    script.onerror = () => {
-      console.error('Failed to load A-Frame');
+    script.onerror = (e) => {
+      addDebugInfo('Failed to load A-Frame script');
+      setError('Failed to load A-Frame');
+      console.error('A-Frame load error:', e);
     };
 
     document.head.appendChild(script);
 
     return () => {
-      // Cleanup
       if (document.head.contains(script)) {
         document.head.removeChild(script);
       }
@@ -55,155 +89,172 @@ const VRContent = () => {
 
   // Create the VR scene after A-Frame loads
   useEffect(() => {
-    if (aframeLoaded && sceneRef.current && !sceneRef.current.hasChildNodes()) {
-      console.log('Creating VR scene');
+    if (aframeLoaded && sceneRef.current) {
+      addDebugInfo('Creating VR scene');
       
-      const sceneHTML = `
-        <a-scene
-          embedded
-          style="height: 600px; width: 100%;"
-          vr-mode-ui="enabled: true"
-          background="color: #87CEEB"
-        >
-          <!-- Assets -->
-          <a-assets>
-            <a-sound id="ambient-sound" src="https://cdn.freesound.org/previews/316/316847_4939433-lq.mp3" loop="true" volume="0.3"></a-sound>
-          </a-assets>
-
-          <!-- Lighting -->
-          <a-light type="ambient" color="#404040"></a-light>
-          <a-light type="directional" position="1 1 1" color="#ffffff"></a-light>
-
-          <!-- Ground -->
-          <a-plane 
-            position="0 0 -4" 
-            rotation="-90 0 0" 
-            width="20" 
-            height="20" 
-            color="#7BC043"
-            shadow
-          ></a-plane>
-
-          <!-- Traditional African Hut -->
-          <a-cylinder 
-            position="-3 1 -6" 
-            radius="2" 
-            height="2" 
-            color="#8B4513"
-            shadow
-          ></a-cylinder>
-          <a-cone 
-            position="-3 3 -6" 
-            radius-bottom="2.5" 
-            radius-top="0.5" 
-            height="2" 
-            color="#DAA520"
-            shadow
-          ></a-cone>
-
-          <!-- Baobab Tree -->
-          <a-cylinder 
-            position="3 1.5 -8" 
-            radius="0.8" 
-            height="3" 
-            color="#8B4513"
-            shadow
-          ></a-cylinder>
-          <a-sphere 
-            position="3 4 -8" 
-            radius="2" 
-            color="#228B22"
-            shadow
-          ></a-sphere>
-
-          <!-- Storytelling Circle -->
-          <a-ring 
-            position="0 0.1 -5" 
-            radius-inner="2" 
-            radius-outer="3" 
-            color="#D2691E"
-            rotation="-90 0 0"
-          ></a-ring>
-
-          <!-- Interactive Story Stones -->
-          <a-box 
-            position="-1 0.5 -4" 
-            width="0.5" 
-            height="0.5" 
-            depth="0.5" 
-            color="#FF6B6B"
-            animation="property: rotation; to: 0 360 0; loop: true; dur: 10000"
-            class="clickable"
-            shadow
-          ></a-box>
-          <a-box 
-            position="1 0.5 -4" 
-            width="0.5" 
-            height="0.5" 
-            depth="0.5" 
-            color="#4ECDC4"
-            animation="property: rotation; to: 0 360 0; loop: true; dur: 8000"
-            class="clickable"
-            shadow
-          ></a-box>
-          <a-box 
-            position="0 0.5 -3" 
-            width="0.5" 
-            height="0.5" 
-            depth="0.5" 
-            color="#45B7D1"
-            animation="property: rotation; to: 0 360 0; loop: true; dur: 12000"
-            class="clickable"
-            shadow
-          ></a-box>
-
-          <!-- Floating Text -->
-          <a-text 
-            position="0 3 -5" 
-            value="Welcome to African Storytelling" 
-            align="center" 
-            color="#333"
-            width="8"
-            animation="property: position; to: 0 3.5 -5; loop: true; dir: alternate; dur: 3000"
-          ></a-text>
-
-          <!-- Khalulu mascot -->
-          <a-sphere 
-            position="0 2 -2" 
-            radius="0.3" 
-            color="#FFE4B5"
-            animation="property: position; to: 0.5 2.2 -2; loop: true; dir: alternate; dur: 2000"
-            shadow
-          ></a-sphere>
-          <a-text 
-            position="0 1.5 -2" 
-            value="Hi! I'm Khalulu!" 
-            align="center" 
-            color="#333"
-            width="4"
-          ></a-text>
-
-          <!-- Sky -->
-          <a-sky color="#87CEEB"></a-sky>
-
-          <!-- Camera with controls -->
-          <a-camera 
-            look-controls 
-            wasd-controls 
-            position="0 1.6 0"
+      // Clear any existing content
+      sceneRef.current.innerHTML = '';
+      
+      try {
+        const sceneHTML = `
+          <a-scene
+            embedded
+            style="height: 600px; width: 100%;"
+            vr-mode-ui="enabled: true"
+            background="color: #87CEEB"
           >
-            <a-cursor
-              animation__click="property: scale; startEvents: click; from: 0.1 0.1 0.1; to: 1 1 1; dur: 150"
-              animation__fusing="property: scale; startEvents: fusing; from: 1 1 1; to: 0.1 0.1 0.1; dur: 1500"
-              raycaster="objects: .clickable"
-              geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
-              material="color: #FF6B6B; shader: flat"
-            ></a-cursor>
-          </a-camera>
-        </a-scene>
-      `;
-      
-      sceneRef.current.innerHTML = sceneHTML;
+            <!-- Assets -->
+            <a-assets>
+              <!-- Removed audio to avoid autoplay issues -->
+            </a-assets>
+
+            <!-- Lighting -->
+            <a-light type="ambient" color="#404040"></a-light>
+            <a-light type="directional" position="1 1 1" color="#ffffff"></a-light>
+
+            <!-- Ground -->
+            <a-plane 
+              position="0 0 -4" 
+              rotation="-90 0 0" 
+              width="20" 
+              height="20" 
+              color="#7BC043"
+              shadow
+            ></a-plane>
+
+            <!-- Traditional African Hut -->
+            <a-cylinder 
+              position="-3 1 -6" 
+              radius="2" 
+              height="2" 
+              color="#8B4513"
+              shadow
+            ></a-cylinder>
+            <a-cone 
+              position="-3 3 -6" 
+              radius-bottom="2.5" 
+              radius-top="0.5" 
+              height="2" 
+              color="#DAA520"
+              shadow
+            ></a-cone>
+
+            <!-- Baobab Tree -->
+            <a-cylinder 
+              position="3 1.5 -8" 
+              radius="0.8" 
+              height="3" 
+              color="#8B4513"
+              shadow
+            ></a-cylinder>
+            <a-sphere 
+              position="3 4 -8" 
+              radius="2" 
+              color="#228B22"
+              shadow
+            ></a-sphere>
+
+            <!-- Storytelling Circle -->
+            <a-ring 
+              position="0 0.1 -5" 
+              radius-inner="2" 
+              radius-outer="3" 
+              color="#D2691E"
+              rotation="-90 0 0"
+            ></a-ring>
+
+            <!-- Interactive Story Stones -->
+            <a-box 
+              position="-1 0.5 -4" 
+              width="0.5" 
+              height="0.5" 
+              depth="0.5" 
+              color="#FF6B6B"
+              animation="property: rotation; to: 0 360 0; loop: true; dur: 10000"
+              class="clickable"
+              shadow
+            ></a-box>
+            <a-box 
+              position="1 0.5 -4" 
+              width="0.5" 
+              height="0.5" 
+              depth="0.5" 
+              color="#4ECDC4"
+              animation="property: rotation; to: 0 360 0; loop: true; dur: 8000"
+              class="clickable"
+              shadow
+            ></a-box>
+            <a-box 
+              position="0 0.5 -3" 
+              width="0.5" 
+              height="0.5" 
+              depth="0.5" 
+              color="#45B7D1"
+              animation="property: rotation; to: 0 360 0; loop: true; dur: 12000"
+              class="clickable"
+              shadow
+            ></a-box>
+
+            <!-- Floating Text -->
+            <a-text 
+              position="0 3 -5" 
+              value="Welcome to African Storytelling" 
+              align="center" 
+              color="#333"
+              width="8"
+              animation="property: position; to: 0 3.5 -5; loop: true; dir: alternate; dur: 3000"
+            ></a-text>
+
+            <!-- Khalulu mascot -->
+            <a-sphere 
+              position="0 2 -2" 
+              radius="0.3" 
+              color="#FFE4B5"
+              animation="property: position; to: 0.5 2.2 -2; loop: true; dir: alternate; dur: 2000"
+              shadow
+            ></a-sphere>
+            <a-text 
+              position="0 1.5 -2" 
+              value="Hi! I'm Khalulu!" 
+              align="center" 
+              color="#333"
+              width="4"
+            ></a-text>
+
+            <!-- Sky -->
+            <a-sky color="#87CEEB"></a-sky>
+
+            <!-- Camera with controls -->
+            <a-camera 
+              look-controls 
+              wasd-controls 
+              position="0 1.6 0"
+            >
+              <a-cursor
+                animation__click="property: scale; startEvents: click; from: 0.1 0.1 0.1; to: 1 1 1; dur: 150"
+                animation__fusing="property: scale; startEvents: fusing; from: 1 1 1; to: 0.1 0.1 0.1; dur: 1500"
+                raycaster="objects: .clickable"
+                geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
+                material="color: #FF6B6B; shader: flat"
+              ></a-cursor>
+            </a-camera>
+          </a-scene>
+        `;
+        
+        sceneRef.current.innerHTML = sceneHTML;
+        addDebugInfo('VR scene HTML injected successfully');
+        
+        // Check if scene was created
+        const sceneElement = sceneRef.current.querySelector('a-scene');
+        if (sceneElement) {
+          addDebugInfo('A-Scene element found in DOM');
+        } else {
+          addDebugInfo('A-Scene element NOT found in DOM');
+        }
+      } catch (e) {
+        addDebugInfo(`Error creating scene: ${e}`);
+        setError(`Failed to create VR scene: ${e}`);
+      }
     }
   }, [aframeLoaded]);
 
@@ -212,6 +263,17 @@ const VRContent = () => {
   };
 
   const renderVRScene = () => {
+    if (error) {
+      return (
+        <div className="flex items-center justify-center" style={{ height: '600px' }}>
+          <div className="text-center">
+            <div className="text-red-500 mb-4">❌ {error}</div>
+            <p className="text-gray-600">VR content failed to load</p>
+          </div>
+        </div>
+      );
+    }
+
     if (!aframeLoaded) {
       return (
         <div className="flex items-center justify-center" style={{ height: '600px' }}>
@@ -227,7 +289,7 @@ const VRContent = () => {
     return (
       <div 
         ref={sceneRef}
-        className="relative" 
+        className="relative border-2 border-gray-300" 
         style={{ height: '600px', width: '100%' }}
       />
     );
@@ -256,6 +318,38 @@ const VRContent = () => {
             </p>
           </div>
         </div>
+
+        {/* Debug Info */}
+        {debugInfo.length > 0 && (
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle className="text-sm">Debug Information</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-xs font-mono space-y-1 max-h-32 overflow-y-auto">
+                {debugInfo.map((info, index) => (
+                  <div key={index} className="text-gray-600">{info}</div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* VR Scene */}
+        <Card className="overflow-hidden">
+          <CardContent className="p-0">
+            {renderVRScene()}
+          </CardContent>
+        </Card>
+
+        {/* Status */}
+        {aframeLoaded && !error && (
+          <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+            <p className="text-green-800 text-sm">
+              ✅ A-Frame loaded successfully! The VR scene should be visible above.
+            </p>
+          </div>
+        )}
 
         {/* Instructions */}
         <Card className="mb-8">
@@ -291,22 +385,6 @@ const VRContent = () => {
             </div>
           </CardContent>
         </Card>
-
-        {/* VR Scene */}
-        <Card className="overflow-hidden">
-          <CardContent className="p-0">
-            {renderVRScene()}
-          </CardContent>
-        </Card>
-
-        {/* Debug Info */}
-        {aframeLoaded && (
-          <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-            <p className="text-green-800 text-sm">
-              ✅ A-Frame loaded successfully! You should see the VR scene above.
-            </p>
-          </div>
-        )}
 
         {/* Features */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
