@@ -1,10 +1,13 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Send, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
 
 interface Message {
   id: string;
@@ -14,6 +17,8 @@ interface Message {
 }
 
 const AskKhalulu = () => {
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -24,9 +29,10 @@ const AskKhalulu = () => {
   ]);
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [conversationId, setConversationId] = useState<string | null>(null);
 
   const handleSendMessage = async () => {
-    if (!inputMessage.trim()) return;
+    if (!inputMessage.trim() || !user) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -39,28 +45,49 @@ const AskKhalulu = () => {
     setInputMessage('');
     setIsTyping(true);
 
-    // Simulate AI response (replace with actual AI integration later)
-    setTimeout(() => {
-      const responses = [
-        "That's a great question! Let me help you with that.",
-        "I understand what you're asking. Here's what I think...",
-        "Thanks for asking! I'd be happy to explain that to you.",
-        "That's an interesting topic! Let me share some insights.",
-        "I love helping with learning questions like this!"
-      ];
+    try {
+      const { data, error } = await supabase.functions.invoke('chat-with-khalulu', {
+        body: {
+          message: inputMessage,
+          conversationId: conversationId
+        }
+      });
 
-      const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+      if (error) throw error;
 
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: randomResponse,
+        text: data.response,
         isUser: false,
         timestamp: new Date()
       };
 
       setMessages(prev => [...prev, aiMessage]);
+      
+      // Store conversation ID for future messages
+      if (data.conversationId && !conversationId) {
+        setConversationId(data.conversationId);
+      }
+
+    } catch (error) {
+      console.error('Error sending message:', error);
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again.",
+        variant: "destructive"
+      });
+      
+      // Add fallback message
+      const fallbackMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: "I'm sorry, I'm having trouble connecting right now. Please try again in a moment!",
+        isUser: false,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, fallbackMessage]);
+    } finally {
       setIsTyping(false);
-    }, 2000);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -69,6 +96,25 @@ const AskKhalulu = () => {
       handleSendMessage();
     }
   };
+
+  // Show login message if user is not authenticated
+  if (!user) {
+    return (
+      <Card className="w-full max-w-2xl mx-auto h-96">
+        <CardContent className="p-6 flex flex-col items-center justify-center h-full">
+          <img
+            src="/lovable-uploads/531e05b9-22e5-4b83-a3f4-953ecd13ff8f.png"
+            alt="Khalulu"
+            className="w-16 h-16 object-contain mb-4"
+          />
+          <h3 className="text-lg font-semibold mb-2">Please Sign In</h3>
+          <p className="text-gray-600 text-center">
+            You need to be logged in to chat with Khalulu, your AI learning companion.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="w-full max-w-2xl mx-auto h-96">
