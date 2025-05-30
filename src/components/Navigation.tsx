@@ -2,26 +2,13 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { 
-  Menu, 
-  X, 
-  Home, 
-  BookOpen, 
-  User, 
-  Brain,
-  Search,
-  LayoutDashboard,
-  Heart,
-  ShoppingCart,
-  Gamepad2,
-  LogOut,
-  Shield,
-  Trophy,
-  Eye
-} from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserRole } from '@/hooks/useUserRole';
+import NavigationItem from './navigation/NavigationItem';
+import AuthButtons from './navigation/AuthButtons';
+import MobileMenu from './navigation/MobileMenu';
+import { createNavItems } from './navigation/NavigationData';
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -29,24 +16,7 @@ const Navigation = () => {
   const { user, signOut } = useAuth();
   const { isAdmin } = useUserRole();
 
-  const navItems = [
-    { path: '/', label: 'Home', icon: Home, gradient: 'from-blue-500 to-purple-600' },
-    { path: '/courses', label: 'Courses', icon: BookOpen, gradient: 'from-green-500 to-blue-600' },
-    { path: '/advanced-courses', label: 'Discover', icon: Search, gradient: 'from-purple-500 to-pink-600' },
-    { path: '/games', label: 'Games', icon: Gamepad2, gradient: 'from-orange-500 to-red-600' },
-    { path: '/indigenous-games', label: 'Indigenous Games', icon: Trophy, gradient: 'from-yellow-500 to-orange-600' },
-    { path: '/vr-content', label: 'VR Experience', icon: Eye, gradient: 'from-red-500 to-pink-600' },
-    { path: '/brain-training', label: 'Brain Training', icon: Brain, gradient: 'from-indigo-500 to-purple-600' },
-    { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, gradient: 'from-gray-500 to-gray-700' },
-    { path: '/wishlist', label: 'Wishlist', icon: Heart, gradient: 'from-pink-500 to-red-600' },
-    { path: '/cart', label: 'Cart', icon: ShoppingCart, gradient: 'from-emerald-500 to-green-600' },
-  ];
-
-  // Add admin panel for admin users
-  if (isAdmin) {
-    navItems.push({ path: '/admin', label: 'Admin Panel', icon: Shield, gradient: 'from-red-600 to-red-800' });
-  }
-
+  const navItems = createNavItems(isAdmin);
   const isActive = (path: string) => location.pathname === path;
 
   const handleSignOut = async () => {
@@ -58,25 +28,8 @@ const Navigation = () => {
     }
   };
 
-  const getButtonClasses = (item: any) => {
-    const baseClasses = 'flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300';
-    
-    if (isActive(item.path)) {
-      return `${baseClasses} bg-gradient-to-r ${item.gradient} text-white shadow-lg transform scale-105`;
-    }
-    
-    return `${baseClasses} text-gray-600 hover:text-white hover:bg-gradient-to-r hover:${item.gradient} hover:shadow-md hover:transform hover:scale-102`;
-  };
-
-  const getMobileButtonClasses = (item: any) => {
-    const baseClasses = 'flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium transition-all duration-300 w-full';
-    
-    if (isActive(item.path)) {
-      return `${baseClasses} bg-gradient-to-r ${item.gradient} text-white shadow-lg`;
-    }
-    
-    return `${baseClasses} text-gray-600 hover:text-white hover:bg-gradient-to-r hover:${item.gradient} hover:shadow-md`;
-  };
+  const handleMenuToggle = () => setIsMenuOpen(!isMenuOpen);
+  const handleMenuClose = () => setIsMenuOpen(false);
 
   return (
     <nav className="bg-white shadow-sm border-b sticky top-0 z-50">
@@ -92,55 +45,22 @@ const Navigation = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={getButtonClasses(item)}
-                >
-                  <Icon className="h-4 w-4" />
-                  <span>{item.label}</span>
-                  {item.path === '/cart' && (
-                    <Badge variant="secondary" className="ml-1">2</Badge>
-                  )}
-                </Link>
-              );
-            })}
+            {navItems.map((item) => (
+              <NavigationItem
+                key={item.path}
+                item={item}
+                isActive={isActive(item.path)}
+                showCartBadge={true}
+              />
+            ))}
           </div>
 
-          {/* Auth Buttons */}
-          <div className="hidden md:flex items-center space-x-3">
-            {user ? (
-              <div className="flex items-center space-x-3">
-                <span className="text-sm text-gray-600">
-                  {user.user_metadata?.full_name || user.email?.split('@')[0]}
-                </span>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={handleSignOut}
-                  className="flex items-center space-x-1"
-                >
-                  <LogOut className="h-4 w-4" />
-                  <span>Sign Out</span>
-                </Button>
-              </div>
-            ) : (
-              <>
-                <Link to="/auth">
-                  <Button variant="outline" size="sm">
-                    Sign In
-                  </Button>
-                </Link>
-                <Link to="/auth">
-                  <Button size="sm" className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700">
-                    Get Started
-                  </Button>
-                </Link>
-              </>
-            )}
+          {/* Desktop Auth Buttons */}
+          <div className="hidden md:flex">
+            <AuthButtons 
+              user={user}
+              onSignOut={handleSignOut}
+            />
           </div>
 
           {/* Mobile menu button */}
@@ -148,7 +68,7 @@ const Navigation = () => {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              onClick={handleMenuToggle}
               className="p-2"
             >
               {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -157,59 +77,17 @@ const Navigation = () => {
         </div>
 
         {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden border-t bg-white">
-            <div className="px-2 pt-2 pb-3 space-y-1">
-              {navItems.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    onClick={() => setIsMenuOpen(false)}
-                    className={getMobileButtonClasses(item)}
-                  >
-                    <Icon className="h-5 w-5" />
-                    <span>{item.label}</span>
-                  </Link>
-                );
-              })}
-              <div className="pt-4 border-t space-y-2">
-                {user ? (
-                  <div className="space-y-2">
-                    <div className="px-3 py-2 text-sm text-gray-600">
-                      {user.user_metadata?.full_name || user.email?.split('@')[0]}
-                    </div>
-                    <Button 
-                      variant="outline" 
-                      className="w-full" 
-                      onClick={handleSignOut}
-                    >
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Sign Out
-                    </Button>
-                  </div>
-                ) : (
-                  <>
-                    <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-                      <Button variant="outline" className="w-full">
-                        Sign In
-                      </Button>
-                    </Link>
-                    <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-                      <Button className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700">
-                        Get Started
-                      </Button>
-                    </Link>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
+        <MobileMenu
+          isOpen={isMenuOpen}
+          navItems={navItems}
+          isActive={isActive}
+          onItemClick={handleMenuClose}
+          user={user}
+          onSignOut={handleSignOut}
+        />
       </div>
     </nav>
   );
-}
+};
 
 export default Navigation;
