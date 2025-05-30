@@ -1,168 +1,154 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { Trophy, Clock, BookOpen, Star, Settings, Shield, User } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
+import { 
+  BookOpen, 
+  Clock, 
+  Trophy, 
+  Target,
+  User,
+  Settings,
+  Heart,
+  ShoppingCart
+} from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { useUserRole } from '@/hooks/useUserRole';
 
 const UserDashboard = () => {
   const { user } = useAuth();
-  const { isAdmin } = useUserRole();
 
-  const enrolledCourses = [
-    { id: 1, title: 'African Storytelling Basics', progress: 75, timeSpent: '8h 30m' },
-    { id: 2, title: 'Advanced Xhosa Literature', progress: 45, timeSpent: '5h 15m' },
-    { id: 3, title: 'Digital Marketing', progress: 90, timeSpent: '12h 45m' },
+  const stats = [
+    { label: 'Courses Completed', value: '3', icon: Trophy, color: 'text-yellow-600' },
+    { label: 'Hours Learned', value: '24', icon: Clock, color: 'text-blue-600' },
+    { label: 'Current Streak', value: '7 days', icon: Target, color: 'text-green-600' },
+    { label: 'Certificates', value: '2', icon: BookOpen, color: 'text-purple-600' }
   ];
 
-  const achievements = [
-    { id: 1, title: 'First Course Completed', icon: Trophy, earned: true },
-    { id: 2, title: 'Study Streak - 7 Days', icon: Clock, earned: true },
-    { id: 3, title: 'Knowledge Seeker', icon: BookOpen, earned: false },
+  const recentCourses = [
+    { title: 'IsiZulu Storytelling', progress: 75, thumbnail: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=60&fit=crop' },
+    { title: 'Advanced Narratives', progress: 45, thumbnail: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=100&h=60&fit=crop' },
+    { title: 'Digital Storytelling', progress: 90, thumbnail: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=100&h=60&fit=crop' }
   ];
 
   return (
     <div className="space-y-6">
-      {/* User Profile Section */}
+      {/* Welcome Section */}
       <Card>
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Avatar className="w-16 h-16">
-                <AvatarImage src={user?.user_metadata?.avatar_url} alt={user?.user_metadata?.full_name} />
-                <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-lg">
-                  {user?.user_metadata?.full_name?.charAt(0) || user?.email?.charAt(0) || 'U'}
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <h2 className="text-xl font-semibold">
-                  {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User'}
-                </h2>
-                <p className="text-gray-600">{user?.email}</p>
-                {isAdmin && (
-                  <Badge className="mt-1 bg-gradient-to-r from-yellow-500 to-orange-500">
-                    <Shield className="w-3 h-3 mr-1" />
-                    Admin
-                  </Badge>
-                )}
-              </div>
+            <div>
+              <h2 className="text-2xl font-bold mb-2">
+                Welcome back, {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Learner'}!
+              </h2>
+              <p className="text-gray-600">Continue your learning journey</p>
             </div>
             <div className="flex gap-2">
-              <Button
-                variant="outline"
-                onClick={() => window.location.href = '/profile-settings'}
-                className="flex items-center gap-2"
-              >
-                <Settings className="w-4 h-4" />
-                Profile Settings
-              </Button>
-              {isAdmin && (
-                <Button
-                  onClick={() => window.location.href = '/admin'}
-                  className="flex items-center gap-2 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600"
-                >
-                  <Shield className="w-4 h-4" />
-                  Admin Panel
+              <Link to="/profile-settings">
+                <Button variant="outline" size="sm">
+                  <Settings className="w-4 h-4 mr-2" />
+                  Settings
                 </Button>
-              )}
+              </Link>
+              <Link to="/wishlist">
+                <Button variant="outline" size="sm">
+                  <Heart className="w-4 h-4 mr-2" />
+                  Wishlist
+                </Button>
+              </Link>
+              <Link to="/cart">
+                <Button variant="outline" size="sm">
+                  <ShoppingCart className="w-4 h-4 mr-2" />
+                  Cart
+                </Button>
+              </Link>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Courses Enrolled</p>
-                <p className="text-2xl font-bold">3</p>
-              </div>
-              <BookOpen className="h-8 w-8 text-blue-500" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Hours Learned</p>
-                <p className="text-2xl font-bold">26h</p>
-              </div>
-              <Clock className="h-8 w-8 text-green-500" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Certificates Earned</p>
-                <p className="text-2xl font-bold">1</p>
-              </div>
-              <Trophy className="h-8 w-8 text-yellow-500" />
-            </div>
-          </CardContent>
-        </Card>
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {stats.map((stat, index) => {
+          const Icon = stat.icon;
+          return (
+            <Card key={index}>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <Icon className={`w-8 h-8 ${stat.color}`} />
+                  <div>
+                    <p className="text-2xl font-bold">{stat.value}</p>
+                    <p className="text-sm text-gray-600">{stat.label}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
-      {/* Continue Learning Section */}
+      {/* Recent Courses */}
       <Card>
         <CardHeader>
           <CardTitle>Continue Learning</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {enrolledCourses.map((course) => (
-              <div key={course.id} className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="flex-1">
-                  <h3 className="font-medium">{course.title}</h3>
-                  <div className="flex items-center gap-4 mt-2">
-                    <Progress value={course.progress} className="w-32" />
-                    <span className="text-sm text-gray-600">{course.progress}% complete</span>
-                    <span className="text-sm text-gray-600">{course.timeSpent}</span>
-                  </div>
+        <CardContent className="space-y-4">
+          {recentCourses.map((course, index) => (
+            <div key={index} className="flex items-center gap-4 p-4 border rounded-lg">
+              <img 
+                src={course.thumbnail} 
+                alt={course.title}
+                className="w-16 h-10 object-cover rounded"
+              />
+              <div className="flex-1">
+                <h4 className="font-medium">{course.title}</h4>
+                <div className="flex items-center gap-2 mt-1">
+                  <Progress value={course.progress} className="flex-1" />
+                  <span className="text-sm text-gray-600">{course.progress}%</span>
                 </div>
-                <Badge variant="outline">Continue</Badge>
               </div>
-            ))}
-          </div>
+              <Button size="sm">Continue</Button>
+            </div>
+          ))}
         </CardContent>
       </Card>
 
-      {/* Achievements Section */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Achievements</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {achievements.map((achievement) => (
-              <div
-                key={achievement.id}
-                className={`p-4 border rounded-lg text-center ${
-                  achievement.earned ? 'bg-yellow-50 border-yellow-200' : 'bg-gray-50 border-gray-200'
-                }`}
-              >
-                <achievement.icon
-                  className={`h-8 w-8 mx-auto mb-2 ${
-                    achievement.earned ? 'text-yellow-500' : 'text-gray-400'
-                  }`}
-                />
-                <p className="text-sm font-medium">{achievement.title}</p>
-                {achievement.earned && <Badge className="mt-2">Earned</Badge>}
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      {/* Quick Actions */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card>
+          <CardContent className="p-6 text-center">
+            <BookOpen className="w-12 h-12 mx-auto mb-4 text-blue-600" />
+            <h3 className="font-semibold mb-2">Browse Courses</h3>
+            <p className="text-sm text-gray-600 mb-4">Discover new learning opportunities</p>
+            <Link to="/courses">
+              <Button className="w-full">Explore Courses</Button>
+            </Link>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6 text-center">
+            <Target className="w-12 h-12 mx-auto mb-4 text-green-600" />
+            <h3 className="font-semibold mb-2">Brain Training</h3>
+            <p className="text-sm text-gray-600 mb-4">Exercise your cognitive abilities</p>
+            <Link to="/brain-training">
+              <Button className="w-full" variant="outline">Start Training</Button>
+            </Link>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6 text-center">
+            <User className="w-12 h-12 mx-auto mb-4 text-purple-600" />
+            <h3 className="font-semibold mb-2">Profile</h3>
+            <p className="text-sm text-gray-600 mb-4">Manage your account settings</p>
+            <Link to="/profile-settings">
+              <Button className="w-full" variant="outline">View Profile</Button>
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
