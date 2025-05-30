@@ -2,15 +2,15 @@
 import React, { useState } from 'react';
 import Welcome from './Welcome';
 import Auth from './Auth';
-import Courses from './Courses';
 import { useAuth } from '@/hooks/useAuth';
+import UserDashboard from '@/components/user/UserDashboard';
 
 const Index = () => {
-  const [currentPage, setCurrentPage] = useState<'welcome' | 'auth' | 'courses'>('welcome');
+  const [currentPage, setCurrentPage] = useState<'welcome' | 'auth' | 'dashboard'>('welcome');
   const { user, loading } = useAuth();
 
   const handleLogin = (userData: { name: string; email: string }) => {
-    setCurrentPage('courses');
+    setCurrentPage('dashboard');
   };
 
   const handleLogout = () => {
@@ -41,11 +41,13 @@ const Index = () => {
     );
   }
 
-  // If user is authenticated, show courses directly
-  if (user && currentPage !== 'auth') {
+  // If user is authenticated, show user dashboard
+  if (user) {
     return (
       <div className="min-h-screen bg-background">
-        <Courses />
+        <div className="container mx-auto px-4 py-8">
+          <UserDashboard />
+        </div>
       </div>
     );
   }

@@ -11,12 +11,14 @@ export const useUserRole = () => {
   useEffect(() => {
     const checkUserRole = async () => {
       if (!user) {
+        console.log('No user found, setting admin to false');
         setIsAdmin(false);
         setLoading(false);
         return;
       }
 
       try {
+        console.log('Checking admin role for user:', user.id);
         const { data, error } = await supabase
           .from('user_roles')
           .select('role')
@@ -28,7 +30,9 @@ export const useUserRole = () => {
           console.error('Error checking user role:', error);
         }
 
-        setIsAdmin(!!data);
+        const hasAdminRole = !!data;
+        console.log('User admin status:', hasAdminRole);
+        setIsAdmin(hasAdminRole);
       } catch (error) {
         console.error('Error checking user role:', error);
         setIsAdmin(false);
