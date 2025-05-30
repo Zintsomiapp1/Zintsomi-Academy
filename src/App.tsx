@@ -1,3 +1,4 @@
+
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -17,6 +18,7 @@ import AdvancedCourses from "@/pages/AdvancedCourses";
 import Wishlist from "@/pages/Wishlist";
 import Cart from "@/pages/Cart";
 import Games from "@/pages/Games";
+import Stories from "@/pages/Stories";
 import IndigenousGames from "@/pages/IndigenousGames";
 import IndigenousInstruments from "@/pages/IndigenousInstruments";
 import ProfileSettings from "@/pages/ProfileSettings";
@@ -47,6 +49,7 @@ function App() {
                     <Route path="/" element={<Index />} />
                     <Route path="/courses" element={<Courses />} />
                     <Route path="/advanced-courses" element={<AdvancedCourses />} />
+                    <Route path="/stories" element={<Stories />} />
                     <Route path="/games" element={<Games />} />
                     <Route path="/indigenous-games" element={<IndigenousGames />} />
                     <Route path="/indigenous-instruments" element={<IndigenousInstruments />} />

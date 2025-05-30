@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -19,41 +20,6 @@ const Games = () => {
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
   const gamingTime = useGamingTime();
   const { isAdmin, loading } = useUserRole();
-
-  const gameCategories = [
-    {
-      title: 'Strategy Games',
-      description: 'Classic board games against AI Khalulu',
-      icon: Crown,
-      games: ['Chess vs Khalulu', 'Checkers vs Khalulu', 'Tic-Tac-Toe'],
-      color: 'bg-purple-500',
-      gameIds: ['chess', 'checkers'] as GameType[]
-    },
-    {
-      title: 'Puzzle Games',
-      description: 'Challenge your problem-solving skills',
-      icon: Puzzle,
-      games: ['Sudoku', 'Word Puzzles', 'Logic Grid'],
-      color: 'bg-blue-500',
-      gameIds: ['sudoku'] as GameType[]
-    },
-    {
-      title: 'Eye Tests',
-      description: 'Test and improve your visual acuity',
-      icon: Eye,
-      games: ['Visual Acuity', 'Color Blind Test', 'Reaction Time'],
-      color: 'bg-green-500',
-      gameIds: ['eye-test'] as GameType[]
-    },
-    {
-      title: 'IQ Challenges',
-      description: 'Test your cognitive abilities',
-      icon: Brain,
-      games: ['Pattern Recognition', 'Number Sequences', 'Spatial Reasoning'],
-      color: 'bg-orange-500',
-      gameIds: ['iq-quiz'] as GameType[]
-    }
-  ];
 
   const handleGameStart = (gameId: GameType) => {
     // Skip time check for admins
@@ -168,108 +134,224 @@ const Games = () => {
           </div>
         </div>
 
-        {/* Game Categories Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          {gameCategories.map((category, index) => {
-            const Icon = category.icon;
-            return (
-              <Card key={index} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <div className={`p-3 rounded-lg ${category.color} text-white`}>
-                      <Icon className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-xl">{category.title}</CardTitle>
-                      <p className="text-gray-600 text-sm">{category.description}</p>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2 mb-4">
-                    {category.games.map((game, idx) => (
-                      <div key={idx} className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                        <span className="text-sm text-gray-700">{game}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="space-y-2">
-                    {category.gameIds.map((gameId, idx) => (
-                      <Button 
-                        key={idx}
-                        className="w-full" 
-                        onClick={() => handleGameStart(gameId)}
-                        disabled={gameId === null}
-                      >
-                        {gameId === 'chess' && 'Play Chess vs Khalulu'}
-                        {gameId === 'checkers' && 'Play Checkers vs Khalulu'}
-                        {gameId === 'sudoku' && 'Play Sudoku'}
-                        {gameId === 'eye-test' && 'Start Eye Test'}
-                        {gameId === 'iq-quiz' && 'Take IQ Quiz'}
-                        {gameId === null && 'Coming Soon'}
-                      </Button>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
+        {/* Featured Games - Easy Access */}
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => handleGameStart('chess')}>
+            <CardContent className="p-6 text-center">
+              <Crown className="w-12 h-12 mx-auto mb-3 text-purple-600" />
+              <h3 className="font-semibold text-lg mb-2">Chess vs Khalulu</h3>
+              <p className="text-sm text-gray-600 mb-4">Strategic board game</p>
+              <Button className="w-full">Play Now</Button>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => handleGameStart('checkers')}>
+            <CardContent className="p-6 text-center">
+              <Target className="w-12 h-12 mx-auto mb-3 text-red-600" />
+              <h3 className="font-semibold text-lg mb-2">Checkers vs Khalulu</h3>
+              <p className="text-sm text-gray-600 mb-4">Classic strategy game</p>
+              <Button className="w-full">Play Now</Button>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => handleGameStart('sudoku')}>
+            <CardContent className="p-6 text-center">
+              <Puzzle className="w-12 h-12 mx-auto mb-3 text-blue-600" />
+              <h3 className="font-semibold text-lg mb-2">Sudoku</h3>
+              <p className="text-sm text-gray-600 mb-4">Number puzzle challenge</p>
+              <Button className="w-full">Play Now</Button>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => handleGameStart('eye-test')}>
+            <CardContent className="p-6 text-center">
+              <Eye className="w-12 h-12 mx-auto mb-3 text-green-600" />
+              <h3 className="font-semibold text-lg mb-2">Eye Test</h3>
+              <p className="text-sm text-gray-600 mb-4">Visual acuity test</p>
+              <Button className="w-full">Play Now</Button>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => handleGameStart('iq-quiz')}>
+            <CardContent className="p-6 text-center">
+              <Brain className="w-12 h-12 mx-auto mb-3 text-orange-600" />
+              <h3 className="font-semibold text-lg mb-2">IQ Quiz</h3>
+              <p className="text-sm text-gray-600 mb-4">Cognitive challenge</p>
+              <Button className="w-full">Play Now</Button>
+            </CardContent>
+          </Card>
         </div>
 
-        {/* Quick Play Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Timer className="w-5 h-5" />
-              Quick Play
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              <Button 
-                variant="outline" 
-                className="h-20 flex flex-col gap-2"
-                onClick={() => handleGameStart('chess')}
-              >
-                <Crown className="w-6 h-6" />
-                <span>Chess</span>
-              </Button>
-              <Button 
-                variant="outline" 
-                className="h-20 flex flex-col gap-2"
-                onClick={() => handleGameStart('checkers')}
-              >
-                <Target className="w-6 h-6" />
-                <span>Checkers</span>
-              </Button>
-              <Button 
-                variant="outline" 
-                className="h-20 flex flex-col gap-2"
-                onClick={() => handleGameStart('sudoku')}
-              >
-                <Puzzle className="w-6 h-6" />
-                <span>Sudoku</span>
-              </Button>
-              <Button 
-                variant="outline" 
-                className="h-20 flex flex-col gap-2"
-                onClick={() => handleGameStart('eye-test')}
-              >
-                <Eye className="w-6 h-6" />
-                <span>Eye Test</span>
-              </Button>
-              <Button 
-                variant="outline" 
-                className="h-20 flex flex-col gap-2"
-                onClick={() => handleGameStart('iq-quiz')}
-              >
-                <Brain className="w-6 h-6" />
-                <span>IQ Quiz</span>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Game Categories - More Detailed */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-lg bg-purple-500 text-white">
+                  <Crown className="w-6 h-6" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl">Strategy Games</CardTitle>
+                  <p className="text-gray-600 text-sm">Classic board games against AI Khalulu</p>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <Button 
+                  className="w-full justify-start" 
+                  variant="outline"
+                  onClick={() => handleGameStart('chess')}
+                >
+                  <Crown className="w-4 h-4 mr-2" />
+                  Chess vs Khalulu - Master Strategy
+                </Button>
+                <Button 
+                  className="w-full justify-start" 
+                  variant="outline"
+                  onClick={() => handleGameStart('checkers')}
+                >
+                  <Target className="w-4 h-4 mr-2" />
+                  Checkers vs Khalulu - Quick Tactics
+                </Button>
+                <Button 
+                  className="w-full justify-start" 
+                  variant="outline"
+                  disabled
+                >
+                  <Timer className="w-4 h-4 mr-2" />
+                  Tic-Tac-Toe - Coming Soon
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-lg bg-blue-500 text-white">
+                  <Puzzle className="w-6 h-6" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl">Puzzle Games</CardTitle>
+                  <p className="text-gray-600 text-sm">Challenge your problem-solving skills</p>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <Button 
+                  className="w-full justify-start" 
+                  variant="outline"
+                  onClick={() => handleGameStart('sudoku')}
+                >
+                  <Puzzle className="w-4 h-4 mr-2" />
+                  Sudoku - Number Logic Puzzle
+                </Button>
+                <Button 
+                  className="w-full justify-start" 
+                  variant="outline"
+                  disabled
+                >
+                  <Brain className="w-4 h-4 mr-2" />
+                  Word Puzzles - Coming Soon
+                </Button>
+                <Button 
+                  className="w-full justify-start" 
+                  variant="outline"
+                  disabled
+                >
+                  <Puzzle className="w-4 h-4 mr-2" />
+                  Logic Grid - Coming Soon
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-lg bg-green-500 text-white">
+                  <Eye className="w-6 h-6" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl">Eye Tests</CardTitle>
+                  <p className="text-gray-600 text-sm">Test and improve your visual acuity</p>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <Button 
+                  className="w-full justify-start" 
+                  variant="outline"
+                  onClick={() => handleGameStart('eye-test')}
+                >
+                  <Eye className="w-4 h-4 mr-2" />
+                  Visual Acuity Test
+                </Button>
+                <Button 
+                  className="w-full justify-start" 
+                  variant="outline"
+                  disabled
+                >
+                  <Eye className="w-4 h-4 mr-2" />
+                  Color Blind Test - Coming Soon
+                </Button>
+                <Button 
+                  className="w-full justify-start" 
+                  variant="outline"
+                  disabled
+                >
+                  <Timer className="w-4 h-4 mr-2" />
+                  Reaction Time - Coming Soon
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-lg bg-orange-500 text-white">
+                  <Brain className="w-6 h-6" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl">IQ Challenges</CardTitle>
+                  <p className="text-gray-600 text-sm">Test your cognitive abilities</p>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <Button 
+                  className="w-full justify-start" 
+                  variant="outline"
+                  onClick={() => handleGameStart('iq-quiz')}
+                >
+                  <Brain className="w-4 h-4 mr-2" />
+                  IQ Pattern Recognition
+                </Button>
+                <Button 
+                  className="w-full justify-start" 
+                  variant="outline"
+                  disabled
+                >
+                  <Brain className="w-4 h-4 mr-2" />
+                  Number Sequences - Coming Soon
+                </Button>
+                <Button 
+                  className="w-full justify-start" 
+                  variant="outline"
+                  disabled
+                >
+                  <Brain className="w-4 h-4 mr-2" />
+                  Spatial Reasoning - Coming Soon
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
       {/* Only show purchase modal for non-admin users */}
