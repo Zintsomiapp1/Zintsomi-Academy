@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Play, Star, Users, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -17,7 +16,7 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
         <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
           <div className="text-center">
             <img
-              src="/lovable-uploads/e153d080-0e68-4853-b008-897623780941.png"
+              src="/lovable-uploads/5951c4f5-f2f4-4cac-afd0-55dcf1c9c0cb.png"
               alt="Khalulu the Owl"
               className="w-24 h-24 object-contain mx-auto mb-8 animate-bounce"
             />
