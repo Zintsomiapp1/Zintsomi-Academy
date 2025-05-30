@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Gamepad2, Puzzle, Eye, Brain, Target, Timer, Crown, Zap } from 'lucide-react';
@@ -63,20 +63,6 @@ const Games = () => {
     }
     setCurrentGame(gameId);
   };
-
-  useEffect(() => {
-    // Only start gaming time for non-admin users and only after admin status is determined
-    if (!loading && !isAdmin && gamingTime.totalTimeRemaining > 0) {
-      gamingTime.startPlaying();
-    }
-    
-    return () => {
-      // Only stop gaming time for non-admin users
-      if (!loading && !isAdmin) {
-        gamingTime.stopPlaying();
-      }
-    };
-  }, [isAdmin, loading]);
 
   if (currentGame === 'chess') {
     return <ChessGame onBack={() => setCurrentGame(null)} />;
