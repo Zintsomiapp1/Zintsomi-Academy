@@ -19,9 +19,9 @@ const ChessBoard = ({ board, selectedSquare, validMoves, onSquareClick }: ChessB
     let baseClass = "w-16 h-16 flex items-center justify-center text-3xl cursor-pointer transition-all duration-300 transform hover:scale-105 relative ";
     
     if (isLight) {
-      baseClass += "bg-gradient-to-br from-yellow-200 to-yellow-300 shadow-inner ";
+      baseClass += "bg-red-500 ";
     } else {
-      baseClass += "bg-gradient-to-br from-blue-200 to-blue-300 shadow-lg ";
+      baseClass += "bg-black ";
     }
     
     // Add 3D effect
