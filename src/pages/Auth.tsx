@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -26,6 +27,7 @@ const Auth = ({ onLogin, onBack }: AuthProps) => {
     const urlParams = new URLSearchParams(window.location.search);
     const error = urlParams.get('error');
     const errorDescription = urlParams.get('error_description');
+    const verified = urlParams.get('verified');
     
     if (error) {
       toast({
@@ -38,6 +40,17 @@ const Auth = ({ onLogin, onBack }: AuthProps) => {
     }
 
     // Check if this is a successful verification
+    if (verified === 'true') {
+      toast({
+        title: "Email Verified!",
+        description: "Your email has been verified successfully. You can now sign in.",
+      });
+      setIsLogin(true);
+      // Clear the URL parameters
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    // Handle direct verification tokens
     const token = urlParams.get('token');
     const type = urlParams.get('type');
     
