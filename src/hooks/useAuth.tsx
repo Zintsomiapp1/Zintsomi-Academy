@@ -74,7 +74,7 @@ export const useAuth = () => {
           username,
           full_name: fullName,
         },
-        emailRedirectTo: `${window.location.origin}/auth?verified=true`
+        emailRedirectTo: `${window.location.origin}/`
       },
     });
     return { data, error };

@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Target } from 'lucide-react';
 import AttentionGrid from './exercises/AttentionGrid';
+import FocusFlow from './exercises/FocusFlow';
 
 interface FocusTrainingProps {
   onBack: () => void;
@@ -23,12 +24,16 @@ const FocusTraining = ({ onBack }: FocusTrainingProps) => {
       id: 'focus-flow', 
       name: 'Focus Flow', 
       description: 'Maintain concentration while distractions appear',
-      status: 'Coming Soon'
+      status: 'Available'
     }
   ];
 
   if (currentExercise === 'attention') {
     return <AttentionGrid onBack={() => setCurrentExercise(null)} />;
+  }
+
+  if (currentExercise === 'focus-flow') {
+    return <FocusFlow onBack={() => setCurrentExercise(null)} />;
   }
 
   return (

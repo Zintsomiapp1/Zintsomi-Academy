@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Zap } from 'lucide-react';
 import QuickMath from './exercises/QuickMath';
+import RapidRecognition from './exercises/RapidRecognition';
 
 interface SpeedTrainingProps {
   onBack: () => void;
@@ -23,12 +24,16 @@ const SpeedTraining = ({ onBack }: SpeedTrainingProps) => {
       id: 'rapid-recognition', 
       name: 'Rapid Recognition', 
       description: 'Quickly identify patterns and objects',
-      status: 'Coming Soon'
+      status: 'Available'
     }
   ];
 
   if (currentExercise === 'quick-math') {
     return <QuickMath onBack={() => setCurrentExercise(null)} />;
+  }
+
+  if (currentExercise === 'rapid-recognition') {
+    return <RapidRecognition onBack={() => setCurrentExercise(null)} />;
   }
 
   return (

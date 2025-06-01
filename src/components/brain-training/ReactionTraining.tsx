@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Clock } from 'lucide-react';
 import ReactionTimeTest from './exercises/ReactionTimeTest';
+import ChoiceReaction from './exercises/ChoiceReaction';
+import GoNoGo from './exercises/GoNoGo';
 
 interface ReactionTrainingProps {
   onBack: () => void;
@@ -23,18 +25,26 @@ const ReactionTraining = ({ onBack }: ReactionTrainingProps) => {
       id: 'choice', 
       name: 'Choice Reaction', 
       description: 'Choose the correct response from multiple options',
-      status: 'Coming Soon'
+      status: 'Available'
     },
     { 
       id: 'go-no-go', 
       name: 'Go/No-Go', 
       description: 'Decide whether to react or withhold response',
-      status: 'Coming Soon'
+      status: 'Available'
     }
   ];
 
   if (currentExercise === 'simple') {
     return <ReactionTimeTest onBack={() => setCurrentExercise(null)} />;
+  }
+
+  if (currentExercise === 'choice') {
+    return <ChoiceReaction onBack={() => setCurrentExercise(null)} />;
+  }
+
+  if (currentExercise === 'go-no-go') {
+    return <GoNoGo onBack={() => setCurrentExercise(null)} />;
   }
 
   return (
