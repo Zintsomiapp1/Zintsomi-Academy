@@ -5,7 +5,6 @@ import {
   User, 
   Brain,
   Search,
-  LayoutDashboard,
   Heart,
   ShoppingCart,
   Gamepad2,
@@ -25,7 +24,6 @@ export const createNavItems = (isAdmin: boolean) => {
     { path: '/indigenous-games', label: 'Indigenous Games', icon: Trophy, gradient: 'from-yellow-500 to-orange-600' },
     { path: '/indigenous-instruments', label: 'Indigenous Instruments', icon: Music, gradient: 'from-green-500 to-teal-600' },
     { path: '/brain-training', label: 'Brain Training', icon: Brain, gradient: 'from-indigo-500 to-purple-600' },
-    { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, gradient: 'from-gray-500 to-gray-700' },
     { path: '/wishlist', label: 'Wishlist', icon: Heart, gradient: 'from-pink-500 to-red-600' },
     { path: '/cart', label: 'Cart', icon: ShoppingCart, gradient: 'from-emerald-500 to-green-600' },
   ];

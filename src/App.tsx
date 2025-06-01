@@ -16,7 +16,6 @@ const CoursePlayer = React.lazy(() => import("@/pages/CoursePlayer"));
 const Auth = React.lazy(() => import("@/pages/Auth"));
 const Welcome = React.lazy(() => import("@/pages/Welcome"));
 const BrainTraining = React.lazy(() => import("@/pages/BrainTraining"));
-const Dashboard = React.lazy(() => import("@/pages/Dashboard"));
 const AdvancedCourses = React.lazy(() => import("@/pages/AdvancedCourses"));
 const Wishlist = React.lazy(() => import("@/pages/Wishlist"));
 const Cart = React.lazy(() => import("@/pages/Cart"));
@@ -90,7 +89,6 @@ function App() {
                           />
                         } 
                       />
-                      <Route path="/dashboard" element={<Dashboard />} />
                       <Route path="/wishlist" element={<Wishlist />} />
                       <Route path="/cart" element={<Cart />} />
                       <Route path="*" element={<NotFound />} />
