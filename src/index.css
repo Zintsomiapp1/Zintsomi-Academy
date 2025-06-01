@@ -86,6 +86,15 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', sans-serif;
+    /* Improve text rendering performance */
+    text-rendering: optimizeSpeed;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Performance optimizations */
+  img {
+    content-visibility: auto;
   }
 
   /* Mobile-specific improvements */
@@ -99,11 +108,22 @@
       font-size: 16px; /* Prevents zoom on iOS */
     }
   }
+
+  /* Reduce motion for better performance on lower-end devices */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
 
 @layer utilities {
   .animate-fade-in {
-    animation: fadeIn 1s ease-in-out;
+    animation: fadeIn 0.3s ease-in-out;
   }
   
   .line-clamp-2 {
@@ -127,12 +147,29 @@
   .safe-area-bottom {
     padding-bottom: env(safe-area-inset-bottom);
   }
+
+  /* Performance utility classes */
+  .will-change-transform {
+    will-change: transform;
+  }
+
+  .will-change-auto {
+    will-change: auto;
+  }
+
+  .contain-layout {
+    contain: layout;
+  }
+
+  .contain-paint {
+    contain: paint;
+  }
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -145,5 +182,33 @@
   .mobile-scroll {
     -webkit-overflow-scrolling: touch;
     overflow-scrolling: touch;
+  }
+}
+
+/* Optimize animations for performance */
+@media (prefers-reduced-motion: no-preference) {
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+  
+  .animate-bounce {
+    animation: bounce 1s infinite;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: none;
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
   }
 }

@@ -13,20 +13,29 @@ const LoadingSpinner = ({
   fullScreen = false 
 }: LoadingSpinnerProps) => {
   const sizeClasses = {
-    sm: 'h-8 w-8',
-    md: 'h-12 w-12',
-    lg: 'h-16 w-16'
+    sm: 'h-6 w-6',
+    md: 'h-8 w-8',
+    lg: 'h-12 w-12'
   };
 
   const containerClasses = fullScreen 
-    ? 'min-h-screen bg-gray-50 flex items-center justify-center'
+    ? 'min-h-screen bg-gradient-to-br from-blue-200 via-blue-300 to-blue-400 flex items-center justify-center px-4'
     : 'flex items-center justify-center py-8';
 
   return (
     <div className={containerClasses}>
       <div className="text-center">
-        <div className={`animate-spin rounded-full border-b-2 border-blue-600 mx-auto mb-4 ${sizeClasses[size]}`}></div>
-        <p className="text-gray-600">{message}</p>
+        {fullScreen && (
+          <img
+            src="/lovable-uploads/531e05b9-22e5-4b83-a3f4-953ecd13ff8f.png"
+            alt="Khalulu the storyteller"
+            className="w-12 h-12 sm:w-16 sm:h-16 object-contain mx-auto mb-4 animate-bounce"
+          />
+        )}
+        <div className={`animate-spin rounded-full border-2 border-transparent border-t-white border-r-white mx-auto mb-3 ${sizeClasses[size]} ${fullScreen ? 'border-t-white border-r-white' : 'border-t-blue-600 border-r-blue-600'}`}></div>
+        <p className={`font-medium ${fullScreen ? 'text-white text-sm sm:text-base' : 'text-gray-600 text-sm'}`}>
+          {message}
+        </p>
       </div>
     </div>
   );
