@@ -87,6 +87,18 @@
     @apply bg-background text-foreground;
     font-family: 'Inter', sans-serif;
   }
+
+  /* Mobile-specific improvements */
+  @media (max-width: 768px) {
+    body {
+      -webkit-text-size-adjust: 100%;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+    
+    input, textarea, select {
+      font-size: 16px; /* Prevents zoom on iOS */
+    }
+  }
 }
 
 @layer utilities {
@@ -100,6 +112,21 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+
+  /* Touch-friendly button sizing */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Safe area for mobile devices */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
 }
 
 @keyframes fadeIn {
@@ -110,5 +137,13 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Mobile-specific scroll improvements */
+@media (max-width: 768px) {
+  .mobile-scroll {
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
   }
 }

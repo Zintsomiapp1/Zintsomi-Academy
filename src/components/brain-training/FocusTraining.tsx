@@ -37,36 +37,36 @@ const FocusTraining = ({ onBack }: FocusTrainingProps) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-2 sm:p-4">
       <div className="max-w-4xl mx-auto">
         <Button
           variant="ghost"
           onClick={onBack}
-          className="mb-6 text-gray-600 hover:text-gray-900"
+          className="mb-4 sm:mb-6 text-gray-600 hover:text-gray-900 text-sm sm:text-base"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Brain Training
         </Button>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-3">
-              <div className="p-3 rounded-lg bg-green-500 text-white">
-                <Target className="w-6 h-6" />
+        <Card className="shadow-lg">
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="flex items-center gap-3 text-lg sm:text-xl">
+              <div className="p-2 sm:p-3 rounded-lg bg-green-500 text-white">
+                <Target className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
               Focus & Attention Training
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
+          <CardContent className="p-4 sm:p-6">
+            <div className="space-y-3 sm:space-y-4">
               {exercises.map((exercise) => (
-                <Card key={exercise.id} className="p-4">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <h4 className="font-medium text-lg">{exercise.name}</h4>
-                      <p className="text-gray-600 text-sm">{exercise.description}</p>
+                <Card key={exercise.id} className="p-3 sm:p-4 hover:shadow-md transition-shadow">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                    <div className="flex-1">
+                      <h4 className="font-medium text-base sm:text-lg">{exercise.name}</h4>
+                      <p className="text-gray-600 text-xs sm:text-sm mt-1">{exercise.description}</p>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-between sm:justify-end gap-2">
                       <span className={`text-xs px-2 py-1 rounded-full ${
                         exercise.status === 'Available' 
                           ? 'bg-green-100 text-green-800' 
@@ -78,6 +78,7 @@ const FocusTraining = ({ onBack }: FocusTrainingProps) => {
                         size="sm"
                         disabled={exercise.status !== 'Available'}
                         onClick={() => setCurrentExercise(exercise.id)}
+                        className="min-h-[36px] text-xs sm:text-sm"
                       >
                         {exercise.status === 'Available' ? 'Start Exercise' : 'Coming Soon'}
                       </Button>

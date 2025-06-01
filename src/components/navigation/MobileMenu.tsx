@@ -28,18 +28,20 @@ const MobileMenu = ({
   if (!isOpen) return null;
 
   return (
-    <div className="md:hidden border-t bg-white">
-      <div className="px-2 pt-2 pb-3 space-y-1">
+    <div className="md:hidden border-t bg-white fixed top-16 left-0 right-0 z-50 shadow-lg max-h-screen overflow-y-auto">
+      <div className="px-4 pt-4 pb-6 space-y-3">
         {navItems.map((item) => (
-          <div key={item.path} onClick={onItemClick}>
-            <NavigationItem
-              item={item}
-              isActive={isActive(item.path)}
-              showCartBadge={true}
-            />
+          <div key={item.path} onClick={onItemClick} className="w-full">
+            <div className="w-full p-3 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-colors">
+              <NavigationItem
+                item={item}
+                isActive={isActive(item.path)}
+                showCartBadge={true}
+              />
+            </div>
           </div>
         ))}
-        <div className="pt-4 border-t space-y-2">
+        <div className="pt-4 border-t space-y-3">
           <AuthButtons 
             user={user}
             onSignOut={onSignOut}
