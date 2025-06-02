@@ -29,7 +29,7 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
             </div>
             <h1 className="text-4xl md:text-6xl font-bold mb-6 text-slate-900">
               Welcome to{' '}
-              <span className="text-blue-600 font-extrabold">
+              <span className="text-red-600 font-extrabold">
                 Zintsomi College
               </span>
             </h1>
@@ -41,7 +41,7 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
               <Button 
                 size="lg" 
                 onClick={onSignUp}
-                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-3 font-semibold"
+                className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-8 py-3 font-semibold"
               >
                 Get Started Free
               </Button>
@@ -49,7 +49,7 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
                 variant="outline" 
                 size="lg" 
                 onClick={onLogin}
-                className="px-8 py-3 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white border-2"
+                className="px-8 py-3 border-red-600 text-red-600 hover:bg-red-600 hover:text-white border-2"
               >
                 Sign In
               </Button>
@@ -81,8 +81,8 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <Card className="text-center p-6 hover:shadow-lg transition-shadow bg-white border border-gray-200">
               <CardContent className="pt-6">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <BookOpen className="w-6 h-6 text-blue-600" />
+                <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <BookOpen className="w-6 h-6 text-red-600" />
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-2">Interactive Stories</h3>
                 <p className="text-gray-600 text-sm">
@@ -131,18 +131,18 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
       </div>
 
       {/* CTA Section */}
-      <div className="py-16 bg-blue-600">
+      <div className="py-16 bg-red-600">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-white mb-4">
             Ready to Begin Your Journey?
           </h2>
-          <p className="text-blue-100 mb-8 text-lg">
+          <p className="text-red-100 mb-8 text-lg">
             Join thousands of learners exploring African storytelling traditions through modern technology
           </p>
           <Button 
             size="lg" 
             onClick={onSignUp}
-            className="bg-white text-blue-600 hover:bg-gray-50 px-8 py-3 font-semibold"
+            className="bg-white text-red-600 hover:bg-gray-50 px-8 py-3 font-semibold"
           >
             Start Learning Today
           </Button>
