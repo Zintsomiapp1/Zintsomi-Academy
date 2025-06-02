@@ -94,7 +94,7 @@ const UserDashboard = () => {
             {progress.coursesInProgress.map((course) => (
               <div key={course.id} className="flex items-center gap-4 p-4 border rounded-lg">
                 <img
-                  src={course.thumbnail || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=225&fit=crop'}
+                  src={course.thumbnail || '/lovable-uploads/531e05b9-22e5-4b83-a3f4-953ecd13ff8f.png'}
                   alt={course.title}
                   className="w-16 h-16 object-cover rounded"
                 />
