@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Play, Star, Users, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -27,7 +26,7 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
                 className="w-20 h-20 object-contain animate-bounce"
               />
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-slate-900">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-red-600">
               Welcome to{' '}
               <span className="text-red-600 font-extrabold">
                 Zintsomi College
