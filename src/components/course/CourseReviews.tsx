@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Star } from 'lucide-react';
+import { Star, Upload } from 'lucide-react';
 
 interface Review {
   id: number;
@@ -18,23 +18,7 @@ interface CourseReviewsProps {
 }
 
 const CourseReviews = ({ courseId }: CourseReviewsProps) => {
-  const [reviews] = useState<Review[]>([
-    {
-      id: 1,
-      userName: 'Sarah Johnson',
-      rating: 5,
-      comment: 'Excellent course! The storytelling techniques are really helpful.',
-      date: '2024-01-15'
-    },
-    {
-      id: 2,
-      userName: 'Mike Chen',
-      rating: 4,
-      comment: 'Good content, but could use more interactive elements.',
-      date: '2024-01-10'
-    }
-  ]);
-
+  const [reviews] = useState<Review[]>([]); // Empty reviews
   const [newReview, setNewReview] = useState('');
   const [rating, setRating] = useState(0);
 
@@ -50,33 +34,24 @@ const CourseReviews = ({ courseId }: CourseReviewsProps) => {
     ));
   };
 
-  const averageRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
-
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle>Course Reviews</CardTitle>
           <div className="flex items-center gap-2">
-            <div className="flex">{renderStars(Math.round(averageRating))}</div>
-            <span className="text-lg font-semibold">{averageRating.toFixed(1)}</span>
-            <span className="text-gray-600">({reviews.length} reviews)</span>
+            <div className="flex">{renderStars(0)}</div>
+            <span className="text-lg font-semibold">0.0</span>
+            <span className="text-gray-600">(0 reviews)</span>
           </div>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {reviews.map((review) => (
-              <div key={review.id} className="border-b pb-4">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium">{review.userName}</span>
-                    <div className="flex">{renderStars(review.rating)}</div>
-                  </div>
-                  <span className="text-sm text-gray-500">{review.date}</span>
-                </div>
-                <p className="text-gray-700">{review.comment}</p>
-              </div>
-            ))}
+          <div className="text-center py-8">
+            <div className="bg-gray-100 rounded-lg p-8">
+              <Upload className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+              <p className="text-gray-600">No reviews yet</p>
+              <p className="text-sm text-gray-500">Be the first to review this course</p>
+            </div>
           </div>
         </CardContent>
       </Card>

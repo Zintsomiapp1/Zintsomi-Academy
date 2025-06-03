@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { BookOpen, Eye, Headphones, Play, Star, Heart, MessageCircle, Zap } from 'lucide-react';
+import { BookOpen, Eye, Headphones, Play, Star, Heart, MessageCircle, Zap, Upload } from 'lucide-react';
 
 const Stories = () => {
   const [activeCategory, setActiveCategory] = useState('All');
@@ -17,84 +17,7 @@ const Stories = () => {
   ];
 
   const stories = [
-    {
-      id: '1',
-      title: 'Virtual Reality African Heritage Tour',
-      creator: 'VR Studios Africa',
-      thumbnail: '/lovable-uploads/531e05b9-22e5-4b83-a3f4-953ecd13ff8f.png',
-      likes: 567,
-      comments: 89,
-      isPremium: true,
-      rating: 4.9,
-      category: 'VR Experiences',
-      duration: '2 hours',
-      description: 'Immerse yourself in African heritage through virtual reality'
-    },
-    {
-      id: '2',
-      title: 'Immersive Zulu Village Experience',
-      creator: 'Cultural VR Lab',
-      thumbnail: '/lovable-uploads/531e05b9-22e5-4b83-a3f4-953ecd13ff8f.png',
-      likes: 234,
-      comments: 45,
-      isPremium: true,
-      rating: 4.7,
-      category: 'VR Experiences',
-      duration: '1.5 hours',
-      description: 'Experience traditional Zulu village life in virtual reality'
-    },
-    {
-      id: '3',
-      title: 'Interactive Historical Artifacts',
-      creator: 'Museum AR',
-      thumbnail: '/lovable-uploads/531e05b9-22e5-4b83-a3f4-953ecd13ff8f.png',
-      likes: 445,
-      comments: 78,
-      isPremium: true,
-      rating: 4.8,
-      category: 'Digital Stories',
-      duration: '3 hours',
-      description: 'Explore historical artifacts through interactive storytelling'
-    },
-    {
-      id: '4',
-      title: 'Digital Folklore Collection',
-      creator: 'Digital Storytellers',
-      thumbnail: '/lovable-uploads/9590d14c-cac3-4988-906f-219122e570aa.png',
-      likes: 342,
-      comments: 67,
-      isPremium: false,
-      rating: 4.6,
-      category: 'Digital Stories',
-      duration: '45 minutes',
-      description: 'Traditional folklore brought to life through digital media'
-    },
-    {
-      id: '5',
-      title: 'Ancient Voices Audio Experience',
-      creator: 'Heritage Audio',
-      thumbnail: '/lovable-uploads/531e05b9-22e5-4b83-a3f4-953ecd13ff8f.png',
-      likes: 189,
-      comments: 34,
-      isPremium: false,
-      rating: 4.5,
-      category: 'Audio Stories',
-      duration: '2 hours',
-      description: 'Listen to ancient stories narrated by traditional storytellers'
-    },
-    {
-      id: '6',
-      title: 'Choose Your Adventure: African Legends',
-      creator: 'Interactive Media Lab',
-      thumbnail: '/lovable-uploads/531e05b9-22e5-4b83-a3f4-953ecd13ff8f.png',
-      likes: 423,
-      comments: 92,
-      isPremium: true,
-      rating: 4.8,
-      category: 'Interactive Tales',
-      duration: '1 hour',
-      description: 'Make choices that shape your journey through African legends'
-    }
+    // Empty array - ready for real content
   ];
 
   const filteredStories = activeCategory === 'All' 
@@ -143,73 +66,16 @@ const Stories = () => {
           ))}
         </div>
 
-        {/* Stories Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredStories.map((story) => (
-            <Card key={story.id} className="group hover:shadow-lg transition-all duration-300 overflow-hidden rounded-2xl cursor-pointer">
-              <div className="relative aspect-video overflow-hidden">
-                <img
-                  src={story.thumbnail}
-                  alt={story.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                  <Play className="w-12 h-12 text-white" />
-                </div>
-                {story.isPremium && (
-                  <Badge className="absolute top-2 right-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white">
-                    Premium
-                  </Badge>
-                )}
-                <div className="absolute top-2 left-2">
-                  {story.category === 'VR Experiences' && <Eye className="w-6 h-6 text-white" />}
-                  {story.category === 'Audio Stories' && <Headphones className="w-6 h-6 text-white" />}
-                  {story.category === 'Digital Stories' && <BookOpen className="w-6 h-6 text-white" />}
-                </div>
-              </div>
-              
-              <CardContent className="p-4">
-                <div className="space-y-2">
-                  <h3 className="font-semibold text-gray-800 line-clamp-2 leading-tight">
-                    {story.title}
-                  </h3>
-                  
-                  <p className="text-sm text-gray-600">{story.creator}</p>
-                  <p className="text-xs text-gray-500 line-clamp-2">{story.description}</p>
-                  
-                  <div className="flex items-center justify-between text-sm text-gray-500">
-                    <span className="text-purple-600 font-medium">{story.category}</span>
-                    <span>{story.duration}</span>
-                  </div>
-                  
-                  {story.rating && (
-                    <div className="flex items-center space-x-1">
-                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                      <span className="text-sm text-gray-600">{story.rating}</span>
-                    </div>
-                  )}
-                  
-                  <div className="flex items-center justify-between pt-2">
-                    <div className="flex items-center space-x-4">
-                      <button className="flex items-center space-x-1 text-gray-500 hover:text-red-500 transition-colors">
-                        <Heart className="w-4 h-4" />
-                        <span className="text-sm">{story.likes}</span>
-                      </button>
-                      
-                      <button className="flex items-center space-x-1 text-gray-500 hover:text-blue-500 transition-colors">
-                        <MessageCircle className="w-4 h-4" />
-                        <span className="text-sm">{story.comments}</span>
-                      </button>
-                    </div>
-                    
-                    <Button size="sm">
-                      Experience
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+        {/* Empty State */}
+        <div className="text-center py-16">
+          <div className="bg-gray-100 rounded-lg p-12 max-w-md mx-auto">
+            <Upload className="w-16 h-16 mx-auto mb-4 text-gray-400" />
+            <h3 className="text-xl font-semibold text-gray-700 mb-2">No Stories Available</h3>
+            <p className="text-gray-500 mb-4">Ready for new content to be added</p>
+            <div className="bg-white border-2 border-dashed border-gray-300 rounded-lg h-32 flex items-center justify-center">
+              <span className="text-gray-400">Upload Image</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
