@@ -49,7 +49,7 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
                 variant="outline" 
                 size="lg" 
                 onClick={onLogin}
-                className="px-8 py-3 border-sky-600 text-sky-600 hover:bg-sky-600 hover:text-white border-2"
+                className="px-8 py-3 bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white border-0"
               >
                 Sign In
               </Button>
@@ -57,7 +57,7 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
                 variant="outline" 
                 size="lg" 
                 onClick={handleVRDemo}
-                className="px-8 py-3 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white border-2"
+                className="px-8 py-3 bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white border-0"
               >
                 Try VR Demo
               </Button>
