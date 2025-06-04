@@ -43,7 +43,7 @@ const AuthButtons = ({ user, onSignOut, isMobile = false }: AuthButtonsProps) =>
         <Button 
           variant="outline" 
           size="sm" 
-          className={`bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white border-0 ${isMobile ? 'w-full' : ''}`}
+          className={`bg-gradient-to-r from-sky-400 to-sky-500 hover:from-sky-500 hover:to-sky-600 text-white border-0 ${isMobile ? 'w-full' : ''}`}
         >
           Sign In
         </Button>
