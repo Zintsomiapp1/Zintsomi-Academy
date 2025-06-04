@@ -21,6 +21,7 @@ const Wishlist = React.lazy(() => import("@/pages/Wishlist"));
 const Cart = React.lazy(() => import("@/pages/Cart"));
 const Games = React.lazy(() => import("@/pages/Games"));
 const Stories = React.lazy(() => import("@/pages/Stories"));
+const Indigenous = React.lazy(() => import("@/pages/Indigenous"));
 const IndigenousGames = React.lazy(() => import("@/pages/IndigenousGames"));
 const IndigenousInstruments = React.lazy(() => import("@/pages/IndigenousInstruments"));
 const ProfileSettings = React.lazy(() => import("@/pages/ProfileSettings"));
@@ -55,6 +56,7 @@ function App() {
                       <Route path="/courses" element={<Courses />} />
                       <Route path="/advanced-courses" element={<AdvancedCourses />} />
                       <Route path="/stories" element={<Stories />} />
+                      <Route path="/indigenous" element={<Indigenous />} />
                       <Route path="/games" element={<Games />} />
                       <Route path="/indigenous-games" element={<IndigenousGames />} />
                       <Route path="/indigenous-instruments" element={<IndigenousInstruments />} />

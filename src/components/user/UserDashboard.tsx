@@ -23,7 +23,7 @@ const UserDashboard = () => {
 
   const stats = [
     { label: 'Courses Completed', value: '0', icon: Trophy, color: 'text-yellow-600' },
-    { label: 'Hours Learned', value: '0', icon: Clock, color: 'text-red-600' },
+    { label: 'Hours Learned', value: '0', icon: Clock, color: 'text-sky-600' },
     { label: 'Current Streak', value: '0 days', icon: Target, color: 'text-green-600' },
     { label: 'Certificates', value: '0', icon: BookOpen, color: 'text-purple-600' }
   ];
@@ -94,7 +94,7 @@ const UserDashboard = () => {
           <h3 className="text-lg font-medium text-gray-900 mb-2">No courses started yet</h3>
           <p className="text-gray-600 mb-6">Begin your learning journey by exploring our course catalog</p>
           <Link to="/courses">
-            <Button className="bg-red-600 hover:bg-red-700">Browse Courses</Button>
+            <Button className="bg-sky-600 hover:bg-sky-700">Browse Courses</Button>
           </Link>
         </CardContent>
       </Card>
@@ -103,11 +103,11 @@ const UserDashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardContent className="p-6 text-center">
-            <BookOpen className="w-12 h-12 mx-auto mb-4 text-red-600" />
+            <BookOpen className="w-12 h-12 mx-auto mb-4 text-sky-600" />
             <h3 className="font-semibold mb-2">Browse Courses</h3>
             <p className="text-sm text-gray-600 mb-4">Discover new learning opportunities</p>
             <Link to="/courses">
-              <Button className="w-full bg-red-600 hover:bg-red-700">Explore Courses</Button>
+              <Button className="w-full bg-sky-600 hover:bg-sky-700">Explore Courses</Button>
             </Link>
           </CardContent>
         </Card>

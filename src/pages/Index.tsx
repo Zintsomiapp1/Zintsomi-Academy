@@ -29,7 +29,7 @@ const Index = () => {
   // Show loading state while checking auth
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-200 via-red-300 to-red-400 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gradient-to-br from-sky-200 via-sky-300 to-sky-400 flex items-center justify-center px-4">
         <div className="text-center">
           <img
             src="/lovable-uploads/531e05b9-22e5-4b83-a3f4-953ecd13ff8f.png"
@@ -45,7 +45,7 @@ const Index = () => {
   // If user is authenticated, show user dashboard with Ask Khalulu prominently
   if (user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-gray-50">
+      <div className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-gray-50">
         <div className="container mx-auto px-4 py-4 sm:py-8 max-w-7xl">
           {/* Ask Khalulu Section - Prominently positioned */}
           <div className="mb-6 sm:mb-8">
