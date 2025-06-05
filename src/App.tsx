@@ -1,110 +1,78 @@
 
-import React, { Suspense } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { CartProvider } from "@/contexts/CartContext";
-import ErrorBoundary from "@/components/ErrorBoundary";
 import Navigation from "@/components/Navigation";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import Index from "./pages/Index";
+import Welcome from "./pages/Welcome";
+import Auth from "./pages/Auth";
+import Courses from "./pages/Courses";
+import Library from "./pages/Library";
+import Community from "./pages/Community";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdvancedCourses from "./pages/AdvancedCourses";
+import Stories from "./pages/Stories";
+import Indigenous from "./pages/Indigenous";
+import IndigenousInstruments from "./pages/IndigenousInstruments";
+import IndigenousGames from "./pages/IndigenousGames";
+import Games from "./pages/Games";
+import BrainTraining from "./pages/BrainTraining";
+import Wishlist from "./pages/Wishlist";
+import Cart from "./pages/Cart";
+import CoursePlayer from "./pages/CoursePlayer";
+import VRContent from "./pages/VRContent";
+import AdminPanel from "./pages/AdminPanel";
+import ProfileSettings from "./pages/ProfileSettings";
+import NotFound from "./pages/NotFound";
+import ErrorBoundary from "./components/ErrorBoundary";
 
-// Lazy load components for better performance
-const Index = React.lazy(() => import("@/pages/Index"));
-const Courses = React.lazy(() => import("@/pages/Courses"));
-const CoursePlayer = React.lazy(() => import("@/pages/CoursePlayer"));
-const Auth = React.lazy(() => import("@/pages/Auth"));
-const Welcome = React.lazy(() => import("@/pages/Welcome"));
-const BrainTraining = React.lazy(() => import("@/pages/BrainTraining"));
-const AdvancedCourses = React.lazy(() => import("@/pages/AdvancedCourses"));
-const Wishlist = React.lazy(() => import("@/pages/Wishlist"));
-const Cart = React.lazy(() => import("@/pages/Cart"));
-const Games = React.lazy(() => import("@/pages/Games"));
-const Stories = React.lazy(() => import("@/pages/Stories"));
-const Indigenous = React.lazy(() => import("@/pages/Indigenous"));
-const IndigenousGames = React.lazy(() => import("@/pages/IndigenousGames"));
-const IndigenousInstruments = React.lazy(() => import("@/pages/IndigenousInstruments"));
-const ProfileSettings = React.lazy(() => import("@/pages/ProfileSettings"));
-const AdminPanel = React.lazy(() => import("@/pages/AdminPanel"));
-const VRContent = React.lazy(() => import("@/pages/VRContent"));
-const NotFound = React.lazy(() => import("@/pages/NotFound"));
+const queryClient = new QueryClient();
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      refetchOnWindowFocus: false,
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      gcTime: 10 * 60 * 1000, // 10 minutes
-    },
-  },
-});
-
-function App() {
-  return (
-    <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider>
-          <CartProvider>
-            <Router>
-              <div className="flex flex-col min-h-screen">
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <ThemeProvider>
+      <CartProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <ErrorBoundary>
+              <div className="min-h-screen bg-background">
                 <Navigation />
-                <main className="flex-grow">
-                  <Suspense fallback={<LoadingSpinner fullScreen={true} message="Loading..." />}>
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/courses" element={<Courses />} />
-                      <Route path="/advanced-courses" element={<AdvancedCourses />} />
-                      <Route path="/stories" element={<Stories />} />
-                      <Route path="/indigenous" element={<Indigenous />} />
-                      <Route path="/games" element={<Games />} />
-                      <Route path="/indigenous-games" element={<IndigenousGames />} />
-                      <Route path="/indigenous-instruments" element={<IndigenousInstruments />} />
-                      <Route path="/vr-content" element={<VRContent />} />
-                      <Route path="/course/:id" element={<CoursePlayer />} />
-                      <Route path="/profile-settings" element={<ProfileSettings />} />
-                      <Route path="/admin" element={<AdminPanel />} />
-                      <Route 
-                        path="/auth" 
-                        element={
-                          <Auth 
-                            onLogin={() => {}} 
-                            onBack={() => window.history.back()} 
-                          />
-                        } 
-                      />
-                      <Route 
-                        path="/welcome" 
-                        element={
-                          <Welcome 
-                            onLogin={() => window.location.href = '/auth'} 
-                            onSignUp={() => window.location.href = '/auth'} 
-                          />
-                        } 
-                      />
-                      <Route 
-                        path="/brain-training" 
-                        element={
-                          <BrainTraining 
-                            user={{ name: 'User', email: 'user@example.com' }} 
-                            onBack={() => window.history.back()} 
-                          />
-                        } 
-                      />
-                      <Route path="/wishlist" element={<Wishlist />} />
-                      <Route path="/cart" element={<Cart />} />
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </Suspense>
-                </main>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/welcome" element={<Welcome onLogin={() => {}} onSignUp={() => {}} />} />
+                  <Route path="/auth" element={<Auth onLogin={() => {}} onBack={() => {}} />} />
+                  <Route path="/courses" element={<Courses />} />
+                  <Route path="/library" element={<Library />} />
+                  <Route path="/community" element={<Community />} />
+                  <Route path="/admin-dashboard" element={<AdminDashboard />} />
+                  <Route path="/advanced-courses" element={<AdvancedCourses />} />
+                  <Route path="/stories" element={<Stories />} />
+                  <Route path="/indigenous" element={<Indigenous />} />
+                  <Route path="/indigenous/instruments" element={<IndigenousInstruments />} />
+                  <Route path="/indigenous/games" element={<IndigenousGames />} />
+                  <Route path="/games" element={<Games />} />
+                  <Route path="/brain-training" element={<BrainTraining />} />
+                  <Route path="/wishlist" element={<Wishlist />} />
+                  <Route path="/cart" element={<Cart />} />
+                  <Route path="/course/:id" element={<CoursePlayer />} />
+                  <Route path="/vr-content" element={<VRContent />} />
+                  <Route path="/admin" element={<AdminPanel />} />
+                  <Route path="/settings" element={<ProfileSettings />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
               </div>
-              <Toaster />
-            </Router>
-          </CartProvider>
-        </ThemeProvider>
-      </QueryClientProvider>
-    </ErrorBoundary>
-  );
-}
+            </ErrorBoundary>
+          </BrowserRouter>
+        </TooltipProvider>
+      </CartProvider>
+    </ThemeProvider>
+  </QueryClientProvider>
+);
 
 export default App;

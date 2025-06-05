@@ -5,6 +5,7 @@ import Auth from './Auth';
 import { useAuth } from '@/hooks/useAuth';
 import UserDashboard from '@/components/user/UserDashboard';
 import AskKhalulu from '@/components/AskKhalulu';
+import ZAcademyCourses from '@/components/academy/ZAcademyCourses';
 
 const Index = () => {
   const [currentPage, setCurrentPage] = useState<'welcome' | 'auth' | 'dashboard'>('welcome');
@@ -42,7 +43,7 @@ const Index = () => {
     );
   }
 
-  // If user is authenticated, show user dashboard with Ask Khalulu prominently
+  // If user is authenticated, show user dashboard with enhanced features
   if (user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-gray-50">
@@ -60,6 +61,11 @@ const Index = () => {
             <div className="px-2">
               <AskKhalulu />
             </div>
+          </div>
+
+          {/* Z Academy Courses Section */}
+          <div className="mb-8 sm:mb-12">
+            <ZAcademyCourses />
           </div>
           
           <div className="px-2">
