@@ -1,24 +1,11 @@
 
 import React, { useState } from 'react';
-import { Book, Clock, Star, Trophy, Filter } from 'lucide-react';
+import { Book, Clock, Star, Trophy, Filter, Plus } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useCourses } from '@/hooks/useCourses';
 import { useUserProgress } from '@/hooks/useUserProgress';
-
-interface Course {
-  id: string;
-  title: string;
-  description?: string;
-  thumbnail?: string;
-  category: string;
-  creator: string;
-  isPremium?: boolean;
-  rating?: number;
-  duration?: string;
-  totalLessons?: number;
-}
 
 const ZAcademyCourses = () => {
   const { courses, loading } = useCourses();
@@ -79,84 +66,99 @@ const ZAcademyCourses = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {filteredCourses.map((course) => (
-          <Card key={course.id} className="group hover:shadow-lg transition-all duration-200 border-0 shadow-md bg-white rounded-xl overflow-hidden">
-            <div className="aspect-video bg-gradient-to-br from-sky-100 to-teal-100 relative">
-              {course.thumbnail ? (
-                <img 
-                  src={course.thumbnail} 
-                  alt={course.title}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <Book className="w-12 h-12 text-sky-400" />
-                </div>
-              )}
-              {course.isPremium && (
-                <Badge className="absolute top-2 right-2 bg-yellow-500 hover:bg-yellow-600">
-                  Premium
-                </Badge>
-              )}
-            </div>
-            
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-semibold line-clamp-2 group-hover:text-sky-600 transition-colors">
-                {course.title}
-              </CardTitle>
-              <div className="flex items-center space-x-2 text-sm text-gray-500">
-                <span>{course.creator}</span>
-                {course.rating && (
-                  <div className="flex items-center">
-                    <Star className="w-3 h-3 fill-yellow-400 text-yellow-400 mr-1" />
-                    <span>{course.rating}</span>
+      {filteredCourses.length === 0 ? (
+        <Card className="bg-gradient-to-br from-sky-50 to-teal-50 border-0 shadow-sm">
+          <CardContent className="p-12 text-center">
+            <Book className="w-16 h-16 text-sky-400 mx-auto mb-6" />
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">No Courses Available Yet</h3>
+            <p className="text-gray-600 max-w-md mx-auto mb-4">
+              Our educational courses will appear here once they are added by the admin team.
+            </p>
+            <p className="text-sm text-gray-500">
+              Check back soon for exciting storytelling and cultural learning content!
+            </p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filteredCourses.map((course) => (
+            <Card key={course.id} className="group hover:shadow-lg transition-all duration-200 border-0 shadow-md bg-white rounded-xl overflow-hidden">
+              <div className="aspect-video bg-gradient-to-br from-sky-100 to-teal-100 relative">
+                {course.thumbnail ? (
+                  <img 
+                    src={course.thumbnail} 
+                    alt={course.title}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Book className="w-12 h-12 text-sky-400" />
                   </div>
                 )}
+                {course.isPremium && (
+                  <Badge className="absolute top-2 right-2 bg-yellow-500 hover:bg-yellow-600">
+                    Premium
+                  </Badge>
+                )}
               </div>
-            </CardHeader>
-
-            <CardContent className="pt-0">
-              <p className="text-sm text-gray-600 line-clamp-2 mb-4">
-                {course.description || 'Enhance your storytelling skills with this comprehensive course.'}
-              </p>
               
-              <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
-                <div className="flex items-center">
-                  <Clock className="w-3 h-3 mr-1" />
-                  <span>{course.duration || '2-3 hours'}</span>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg font-semibold line-clamp-2 group-hover:text-sky-600 transition-colors">
+                  {course.title}
+                </CardTitle>
+                <div className="flex items-center space-x-2 text-sm text-gray-500">
+                  <span>{course.creator}</span>
+                  {course.rating && (
+                    <div className="flex items-center">
+                      <Star className="w-3 h-3 fill-yellow-400 text-yellow-400 mr-1" />
+                      <span>{course.rating}</span>
+                    </div>
+                  )}
                 </div>
-                <div className="flex items-center">
-                  <Trophy className="w-3 h-3 mr-1" />
-                  <span>{course.totalLessons || 5} lessons</span>
-                </div>
-              </div>
+              </CardHeader>
 
-              <div className="space-y-3">
-                <div>
-                  <div className="flex justify-between text-xs mb-1">
-                    <span className="text-gray-600">Progress</span>
-                    <span className="text-gray-600">{getProgressText(course.id)}</span>
+              <CardContent className="pt-0">
+                <p className="text-sm text-gray-600 line-clamp-2 mb-4">
+                  {course.description || 'Enhance your storytelling skills with this comprehensive course.'}
+                </p>
+                
+                <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
+                  <div className="flex items-center">
+                    <Clock className="w-3 h-3 mr-1" />
+                    <span>{course.duration || '2-3 hours'}</span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      className="bg-gradient-to-r from-sky-400 to-teal-500 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${getCourseProgress(course.id)}%` }}
-                    ></div>
+                  <div className="flex items-center">
+                    <Trophy className="w-3 h-3 mr-1" />
+                    <span>{course.totalLessons || 5} lessons</span>
                   </div>
                 </div>
 
-                <Button 
-                  className="w-full bg-gradient-to-r from-sky-400 to-teal-500 hover:from-sky-500 hover:to-teal-600 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
-                  size="sm"
-                >
-                  {getCourseProgress(course.id) > 0 ? 'Continue Learning' : 'Start Course'}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+                <div className="space-y-3">
+                  <div>
+                    <div className="flex justify-between text-xs mb-1">
+                      <span className="text-gray-600">Progress</span>
+                      <span className="text-gray-600">{getProgressText(course.id)}</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="bg-gradient-to-r from-sky-400 to-teal-500 h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${getCourseProgress(course.id)}%` }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  <Button 
+                    className="w-full bg-gradient-to-r from-sky-400 to-teal-500 hover:from-sky-500 hover:to-teal-600 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
+                    size="sm"
+                  >
+                    {getCourseProgress(course.id) > 0 ? 'Continue Learning' : 'Start Course'}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

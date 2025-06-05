@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Heart, MessageCircle, Play, Star } from 'lucide-react';
+import { Heart, MessageCircle, Play, Star, BookOpen } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
@@ -42,11 +42,17 @@ const CourseCard = ({ course, onLike, onComment }: CourseCardProps) => {
   return (
     <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden rounded-2xl cursor-pointer" onClick={handleCardClick}>
       <div className="relative aspect-video overflow-hidden">
-        <img
-          src={course.thumbnail}
-          alt={course.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-        />
+        {course.thumbnail ? (
+          <img
+            src={course.thumbnail}
+            alt={course.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-sky-100 to-teal-100 flex items-center justify-center">
+            <BookOpen className="w-12 h-12 text-sky-400" />
+          </div>
+        )}
         <div className="absolute inset-0 bg-black bg-opacity-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
           <Play className="w-12 h-12 text-white" />
         </div>
