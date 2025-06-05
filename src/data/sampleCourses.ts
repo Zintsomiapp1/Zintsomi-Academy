@@ -10,6 +10,8 @@ export interface Course {
   rating?: number;
   category: string;
   duration?: string;
+  description?: string;
+  totalLessons?: number;
 }
 
 export const sampleCourses: Course[] = [

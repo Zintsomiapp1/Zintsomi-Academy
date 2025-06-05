@@ -2,22 +2,19 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Brain, ArrowLeft, Zap, Target, Clock } from 'lucide-react';
+import { Brain, Zap, Target, Clock } from 'lucide-react';
 import KhaluluOwl from '@/components/KhaluluOwl';
 import MemoryTraining from '@/components/brain-training/MemoryTraining';
 import FocusTraining from '@/components/brain-training/FocusTraining';
 import SpeedTraining from '@/components/brain-training/SpeedTraining';
 import ReactionTraining from '@/components/brain-training/ReactionTraining';
-
-interface BrainTrainingProps {
-  user: { name: string; email: string };
-  onBack: () => void;
-}
+import { useAuth } from '@/hooks/useAuth';
 
 type TrainingType = 'memory' | 'focus' | 'speed' | 'reaction' | null;
 
-const BrainTraining = ({ user, onBack }: BrainTrainingProps) => {
+const BrainTraining = () => {
   const [currentTraining, setCurrentTraining] = useState<TrainingType>(null);
+  const { user } = useAuth();
 
   const trainingCategories = [
     {
@@ -80,19 +77,10 @@ const BrainTraining = ({ user, onBack }: BrainTrainingProps) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <div className="container mx-auto px-4 py-8">
-        <Button
-          variant="ghost"
-          onClick={onBack}
-          className="mb-6 text-gray-600 hover:text-gray-900"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back
-        </Button>
-
         <div className="text-center mb-8">
           <KhaluluOwl 
-            message={`Welcome to Brain Training, ${user.name}! Let's exercise your mind with fun cognitive challenges.`}
-            userName={user.name}
+            message={`Welcome to Brain Training${user ? `, ${user.user_metadata?.full_name || 'friend'}` : ''}! Let's exercise your mind with fun cognitive challenges.`}
+            userName={user?.user_metadata?.full_name || 'friend'}
             className="mb-6"
           />
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Brain Training</h1>

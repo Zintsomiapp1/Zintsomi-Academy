@@ -1,111 +1,87 @@
 
 import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from './useAuth';
 
-interface UserProgress {
-  coursesCompleted: number;
-  hoursLearned: number;
-  currentStreak: number;
-  certificates: number;
-  coursesInProgress: Array<{
-    id: string;
-    title: string;
-    progress: number;
-    thumbnail: string;
-  }>;
+interface CourseProgress {
+  id: string;
+  progress: number;
 }
 
-const PROGRESS_STORAGE_KEY = 'zintsomi_user_progress';
+interface UserProgress {
+  coursesInProgress: CourseProgress[];
+  completedCourses: string[];
+  totalCoursesEnrolled: number;
+}
 
 export const useUserProgress = () => {
   const [progress, setProgress] = useState<UserProgress>({
-    coursesCompleted: 0,
-    hoursLearned: 0,
-    currentStreak: 0,
-    certificates: 0,
     coursesInProgress: [],
+    completedCourses: [],
+    totalCoursesEnrolled: 0,
   });
+  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
-  // Load progress from localStorage on mount
   useEffect(() => {
-    try {
-      const savedProgress = localStorage.getItem(PROGRESS_STORAGE_KEY);
-      if (savedProgress) {
-        const parsedProgress = JSON.parse(savedProgress);
-        setProgress(parsedProgress);
+    const fetchUserProgress = async () => {
+      if (!user) {
+        setLoading(false);
+        return;
       }
-    } catch (error) {
-      console.error('Error loading user progress from localStorage:', error);
-    }
-  }, []);
 
-  // Save progress to localStorage whenever it changes
-  useEffect(() => {
-    try {
-      localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(progress));
-    } catch (error) {
-      console.error('Error saving user progress to localStorage:', error);
-    }
-  }, [progress]);
+      try {
+        // Fetch user enrollments and progress
+        const { data: enrollments, error: enrollmentsError } = await supabase
+          .from('user_enrollments')
+          .select(`
+            course_id,
+            completed_at,
+            courses:course_id(title)
+          `)
+          .eq('user_id', user.id);
 
-  const startCourse = (courseId: string, title: string, thumbnail: string) => {
-    setProgress(prev => {
-      const existingCourse = prev.coursesInProgress.find(c => c.id === courseId);
-      if (existingCourse) return prev;
-      
-      return {
-        ...prev,
-        coursesInProgress: [
-          ...prev.coursesInProgress,
-          { id: courseId, title, progress: 0, thumbnail }
-        ]
-      };
-    });
-  };
+        if (enrollmentsError) throw enrollmentsError;
 
-  const updateCourseProgress = (courseId: string, progressPercentage: number) => {
-    setProgress(prev => ({
-      ...prev,
-      coursesInProgress: prev.coursesInProgress.map(course =>
-        course.id === courseId
-          ? { ...course, progress: progressPercentage }
-          : course
-      )
-    }));
-  };
+        // Fetch progress for each course
+        const { data: progressData, error: progressError } = await supabase
+          .from('user_progress')
+          .select('course_id, progress_percentage, completed')
+          .eq('user_id', user.id);
 
-  const completeCourse = (courseId: string, hoursSpent: number = 1) => {
-    setProgress(prev => ({
-      ...prev,
-      coursesCompleted: prev.coursesCompleted + 1,
-      hoursLearned: prev.hoursLearned + hoursSpent,
-      certificates: prev.certificates + 1,
-      coursesInProgress: prev.coursesInProgress.filter(c => c.id !== courseId)
-    }));
-  };
+        if (progressError) throw progressError;
 
-  const updateStreak = (days: number) => {
-    setProgress(prev => ({
-      ...prev,
-      currentStreak: days
-    }));
-  };
+        // Calculate progress by course
+        const courseProgressMap = new Map<string, number>();
+        const completedCourseIds = new Set<string>();
 
-  const resetProgress = () => {
-    setProgress({
-      coursesCompleted: 0,
-      hoursLearned: 0,
-      currentStreak: 0,
-      certificates: 0,
-      coursesInProgress: [],
-    });
-  };
+        progressData?.forEach(p => {
+          const currentProgress = courseProgressMap.get(p.course_id) || 0;
+          courseProgressMap.set(p.course_id, Math.max(currentProgress, p.progress_percentage || 0));
+          
+          if (p.completed) {
+            completedCourseIds.add(p.course_id);
+          }
+        });
 
-  return {
-    progress,
-    startCourse,
-    updateCourseProgress,
-    completeCourse,
-    updateStreak,
-    resetProgress,
-  };
+        const coursesInProgress = Array.from(courseProgressMap.entries())
+          .filter(([courseId, progress]) => progress > 0 && progress < 100)
+          .map(([courseId, progress]) => ({ id: courseId, progress }));
+
+        setProgress({
+          coursesInProgress,
+          completedCourses: Array.from(completedCourseIds),
+          totalCoursesEnrolled: enrollments?.length || 0,
+        });
+      } catch (err) {
+        console.error('Error fetching user progress:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserProgress();
+  }, [user]);
+
+  return { progress, loading };
 };
