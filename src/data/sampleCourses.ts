@@ -14,9 +14,8 @@ export interface Course {
   totalLessons?: number;
 }
 
-export const sampleCourses: Course[] = [
-  // Empty array - ready for real content
-];
+// Empty array - ready for real courses to be added via admin panel
+export const sampleCourses: Course[] = [];
 
 export const categories = [
   'All',
