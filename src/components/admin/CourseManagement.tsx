@@ -1,38 +1,214 @@
 
 import React, { useState } from 'react';
-import { Plus, Edit, Trash2, Eye, Users, Clock } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, Users, Clock, Upload } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 import { useCourses } from '@/hooks/useCourses';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+
+interface CourseFormData {
+  title: string;
+  description: string;
+  creator: string;
+  category: string;
+  duration: string;
+  is_premium: boolean;
+  price: number;
+  rating: number;
+}
 
 const CourseManagement = () => {
   const { courses, loading } = useCourses();
+  const { toast } = useToast();
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingCourse, setEditingCourse] = useState<any>(null);
+  const [formData, setFormData] = useState<CourseFormData>({
+    title: '',
+    description: '',
+    creator: '',
+    category: 'storytelling',
+    duration: '',
+    is_premium: false,
+    price: 0,
+    rating: 0
+  });
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  const categories = [
+    'storytelling',
+    'folklore', 
+    'vr_lessons',
+    'creative_writing'
+  ];
 
   const handleEdit = (course: any) => {
     setEditingCourse(course);
+    setFormData({
+      title: course.title || '',
+      description: course.description || '',
+      creator: course.creator || '',
+      category: course.category || 'storytelling',
+      duration: course.duration || '',
+      is_premium: course.isPremium || false,
+      price: course.price || 0,
+      rating: course.rating || 0
+    });
     setShowCreateForm(true);
   };
 
-  const handleDelete = (courseId: string) => {
+  const handleDelete = async (courseId: string) => {
     if (window.confirm('Are you sure you want to delete this course?')) {
-      console.log('Deleting course:', courseId);
-      // In real implementation, this would delete from the database
+      try {
+        const { error } = await supabase
+          .from('courses')
+          .delete()
+          .eq('id', courseId);
+
+        if (error) throw error;
+
+        toast({
+          title: "Success",
+          description: "Course deleted successfully!",
+        });
+
+        // Refresh the page to show updated data
+        window.location.reload();
+      } catch (error) {
+        console.error('Error deleting course:', error);
+        toast({
+          title: "Error",
+          description: "Failed to delete course.",
+          variant: "destructive",
+        });
+      }
     }
   };
 
-  const handleSubmitForm = () => {
-    console.log('Submitting form for:', editingCourse ? 'edit' : 'create');
-    setShowCreateForm(false);
-    setEditingCourse(null);
-    // In real implementation, this would update/create in the database
+  const handleThumbnailUpload = async (file: File): Promise<string> => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `courses/${Date.now()}.${fileExt}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('course-assets')
+      .upload(fileName, file);
+
+    if (uploadError) throw uploadError;
+
+    const { data } = supabase.storage
+      .from('course-assets')
+      .getPublicUrl(fileName);
+
+    return data.publicUrl;
+  };
+
+  const handleSubmitForm = async () => {
+    if (!formData.title || !formData.creator || !formData.category) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setSaving(true);
+
+    try {
+      let thumbnailUrl = editingCourse?.thumbnail || '';
+      if (thumbnailFile) {
+        thumbnailUrl = await handleThumbnailUpload(thumbnailFile);
+      }
+
+      const courseData = {
+        title: formData.title,
+        description: formData.description,
+        creator: formData.creator,
+        category: formData.category,
+        duration: formData.duration,
+        is_premium: formData.is_premium,
+        price: formData.price,
+        rating: formData.rating,
+        thumbnail: thumbnailUrl
+      };
+
+      if (editingCourse) {
+        // Update existing course
+        const { error } = await supabase
+          .from('courses')
+          .update(courseData)
+          .eq('id', editingCourse.id);
+
+        if (error) throw error;
+
+        toast({
+          title: "Success",
+          description: "Course updated successfully!",
+        });
+      } else {
+        // Create new course
+        const { error } = await supabase
+          .from('courses')
+          .insert(courseData);
+
+        if (error) throw error;
+
+        toast({
+          title: "Success",
+          description: "Course created successfully!",
+        });
+      }
+
+      setShowCreateForm(false);
+      setEditingCourse(null);
+      setFormData({
+        title: '',
+        description: '',
+        creator: '',
+        category: 'storytelling',
+        duration: '',
+        is_premium: false,
+        price: 0,
+        rating: 0
+      });
+      setThumbnailFile(null);
+
+      // Refresh the page to show updated data
+      window.location.reload();
+
+    } catch (error) {
+      console.error('Error saving course:', error);
+      toast({
+        title: "Error",
+        description: `Failed to ${editingCourse ? 'update' : 'create'} course.`,
+        variant: "destructive",
+      });
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleCancelForm = () => {
     setShowCreateForm(false);
     setEditingCourse(null);
+    setFormData({
+      title: '',
+      description: '',
+      creator: '',
+      category: 'storytelling',
+      duration: '',
+      is_premium: false,
+      price: 0,
+      rating: 0
+    });
+    setThumbnailFile(null);
   };
 
   if (loading) {
@@ -54,7 +230,7 @@ const CourseManagement = () => {
         </div>
         <Button 
           onClick={() => setShowCreateForm(true)}
-          className="bg-gradient-to-r from-sky-400 to-teal-500 hover:from-sky-500 hover:to-teal-600 text-white"
+          className="bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600 text-white"
         >
           <Plus className="w-4 h-4 mr-2" />
           Create Course
@@ -140,69 +316,138 @@ const CourseManagement = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Course Title</label>
-                <input 
-                  type="text" 
+                <Label htmlFor="title">Course Title *</Label>
+                <Input 
+                  id="title"
+                  value={formData.title}
+                  onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                   placeholder="Enter course title..."
-                  defaultValue={editingCourse?.title || ''}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                <textarea 
+                <Label htmlFor="description">Description</Label>
+                <Textarea 
+                  id="description"
+                  value={formData.description}
+                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                   placeholder="Course description..."
                   rows={3}
-                  defaultValue={editingCourse?.description || ''}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
                 />
               </div>
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                  <select 
-                    defaultValue={editingCourse?.category || 'storytelling'}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
-                  >
-                    <option value="storytelling">Storytelling</option>
-                    <option value="folklore">Folklore</option>
-                    <option value="vr_lessons">VR Lessons</option>
-                    <option value="creative_writing">Creative Writing</option>
-                  </select>
+                  <Label htmlFor="creator">Creator *</Label>
+                  <Input 
+                    id="creator"
+                    value={formData.creator}
+                    onChange={(e) => setFormData(prev => ({ ...prev, creator: e.target.value }))}
+                    placeholder="Creator name"
+                  />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Duration</label>
-                  <input 
-                    type="text" 
+                  <Label htmlFor="duration">Duration</Label>
+                  <Input 
+                    id="duration"
+                    value={formData.duration}
+                    onChange={(e) => setFormData(prev => ({ ...prev, duration: e.target.value }))}
                     placeholder="e.g., 2-3 hours"
-                    defaultValue={editingCourse?.duration || ''}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                  />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="category">Category *</Label>
+                  <Select 
+                    value={formData.category}
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories.map((category) => (
+                        <SelectItem key={category} value={category}>
+                          {category.charAt(0).toUpperCase() + category.slice(1).replace('_', ' ')}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <Label htmlFor="rating">Rating (0-5)</Label>
+                  <Input 
+                    id="rating"
+                    type="number"
+                    min="0"
+                    max="5"
+                    step="0.1"
+                    value={formData.rating}
+                    onChange={(e) => setFormData(prev => ({ ...prev, rating: parseFloat(e.target.value) || 0 }))}
+                    placeholder="4.5"
                   />
                 </div>
               </div>
               
               <div className="flex items-center space-x-4">
-                <label className="flex items-center">
-                  <input 
-                    type="checkbox" 
-                    className="mr-2" 
-                    defaultChecked={editingCourse?.isPremium || false}
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="is_premium"
+                    checked={formData.is_premium}
+                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_premium: checked }))}
                   />
-                  <span className="text-sm">Premium Course</span>
-                </label>
+                  <Label htmlFor="is_premium">Premium Course</Label>
+                </div>
+                
+                {formData.is_premium && (
+                  <div>
+                    <Label htmlFor="price">Price (ZAR)</Label>
+                    <Input 
+                      id="price"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={formData.price}
+                      onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) || 0 }))}
+                      placeholder="99.99"
+                    />
+                  </div>
+                )}
+              </div>
+              
+              <div>
+                <Label htmlFor="thumbnail">Course Thumbnail</Label>
+                <Input
+                  id="thumbnail"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setThumbnailFile(e.target.files?.[0] || null)}
+                  className="mt-1"
+                />
               </div>
               
               <div className="flex space-x-3 pt-4">
                 <Button 
                   onClick={handleSubmitForm}
-                  className="bg-gradient-to-r from-sky-400 to-teal-500 hover:from-sky-500 hover:to-teal-600 text-white"
+                  disabled={saving}
+                  className="bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600 text-white"
                 >
-                  {editingCourse ? 'Update Course' : 'Create Course'}
+                  {saving ? (
+                    <>
+                      <Upload className="w-4 h-4 mr-2 animate-spin" />
+                      {editingCourse ? 'Updating...' : 'Creating...'}
+                    </>
+                  ) : (
+                    <>
+                      {editingCourse ? 'Update Course' : 'Create Course'}
+                    </>
+                  )}
                 </Button>
-                <Button variant="outline" onClick={handleCancelForm}>
+                <Button variant="outline" onClick={handleCancelForm} disabled={saving}>
                   Cancel
                 </Button>
               </div>

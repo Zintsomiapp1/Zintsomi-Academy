@@ -47,7 +47,7 @@ const ZAcademyCourses = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Z Academy Courses</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Storytelling College Courses</h2>
           <p className="text-gray-600">Enhance your storytelling skills with our curated courses</p>
         </div>
         <div className="flex items-center space-x-2">
@@ -67,9 +67,9 @@ const ZAcademyCourses = () => {
       </div>
 
       {filteredCourses.length === 0 ? (
-        <Card className="bg-gradient-to-br from-sky-50 to-teal-50 border-0 shadow-sm">
+        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-0 shadow-sm">
           <CardContent className="p-12 text-center">
-            <Book className="w-16 h-16 text-sky-400 mx-auto mb-6" />
+            <Book className="w-16 h-16 text-blue-400 mx-auto mb-6" />
             <h3 className="text-xl font-semibold text-gray-900 mb-2">No Courses Available Yet</h3>
             <p className="text-gray-600 max-w-md mx-auto mb-4">
               Our educational courses will appear here once they are added by the admin team.
@@ -83,18 +83,10 @@ const ZAcademyCourses = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredCourses.map((course) => (
             <Card key={course.id} className="group hover:shadow-lg transition-all duration-200 border-0 shadow-md bg-white rounded-xl overflow-hidden">
-              <div className="aspect-video bg-gradient-to-br from-sky-100 to-teal-100 relative">
-                {course.thumbnail ? (
-                  <img 
-                    src={course.thumbnail} 
-                    alt={course.title}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <Book className="w-12 h-12 text-sky-400" />
-                  </div>
-                )}
+              <div className="aspect-video bg-gradient-to-br from-blue-100 to-blue-200 relative">
+                <div className="w-full h-full flex items-center justify-center">
+                  <Book className="w-12 h-12 text-blue-400" />
+                </div>
                 {course.isPremium && (
                   <Badge className="absolute top-2 right-2 bg-yellow-500 hover:bg-yellow-600">
                     Premium
@@ -103,7 +95,7 @@ const ZAcademyCourses = () => {
               </div>
               
               <CardHeader className="pb-2">
-                <CardTitle className="text-lg font-semibold line-clamp-2 group-hover:text-sky-600 transition-colors">
+                <CardTitle className="text-lg font-semibold line-clamp-2 group-hover:text-blue-600 transition-colors">
                   {course.title}
                 </CardTitle>
                 <div className="flex items-center space-x-2 text-sm text-gray-500">
@@ -141,14 +133,14 @@ const ZAcademyCourses = () => {
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div 
-                        className="bg-gradient-to-r from-sky-400 to-teal-500 h-2 rounded-full transition-all duration-300"
+                        className="bg-gradient-to-r from-blue-400 to-blue-500 h-2 rounded-full transition-all duration-300"
                         style={{ width: `${getCourseProgress(course.id)}%` }}
                       ></div>
                     </div>
                   </div>
 
                   <Button 
-                    className="w-full bg-gradient-to-r from-sky-400 to-teal-500 hover:from-sky-500 hover:to-teal-600 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
+                    className="w-full bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
                     size="sm"
                   >
                     {getCourseProgress(course.id) > 0 ? 'Continue Learning' : 'Start Course'}

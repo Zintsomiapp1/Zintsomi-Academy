@@ -18,7 +18,7 @@ const AdminPanel = () => {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sky-500 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
           <p className="text-gray-600">Checking permissions...</p>
         </div>
       </div>
@@ -44,7 +44,7 @@ const AdminPanel = () => {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Panel</h1>
-          <p className="text-gray-600">Manage Zintsomi Academy content and users</p>
+          <p className="text-gray-600">Manage Storytelling College content and users</p>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
@@ -73,16 +73,16 @@ const AdminPanel = () => {
 
           <TabsContent value="overview" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card className="bg-gradient-to-br from-blue-50 to-sky-100 border-0">
+              <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-0">
                 <CardHeader className="pb-2">
-                  <CardTitle className="flex items-center space-x-2 text-sky-700">
+                  <CardTitle className="flex items-center space-x-2 text-blue-700">
                     <BookOpen className="w-5 h-5" />
                     <span>Total Courses</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-sky-800">24</div>
-                  <p className="text-sm text-sky-600">+3 this month</p>
+                  <div className="text-2xl font-bold text-blue-800">24</div>
+                  <p className="text-sm text-blue-600">+3 this month</p>
                 </CardContent>
               </Card>
 
@@ -133,7 +133,7 @@ const AdminPanel = () => {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <Button 
-                    className="w-full justify-start bg-gradient-to-r from-sky-400 to-teal-500 hover:from-sky-500 hover:to-teal-600 text-white"
+                    className="w-full justify-start bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600 text-white"
                     onClick={() => setActiveTab('courses')}
                   >
                     <Plus className="w-4 h-4 mr-2" />
