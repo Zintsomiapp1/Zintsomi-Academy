@@ -81,8 +81,8 @@ const AdminPanel = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-blue-800">24</div>
-                  <p className="text-sm text-blue-600">+3 this month</p>
+                  <div className="text-2xl font-bold text-blue-800">0</div>
+                  <p className="text-sm text-blue-600">No courses yet</p>
                 </CardContent>
               </Card>
 
@@ -94,8 +94,8 @@ const AdminPanel = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-emerald-800">1,248</div>
-                  <p className="text-sm text-emerald-600">+89 this week</p>
+                  <div className="text-2xl font-bold text-emerald-800">1</div>
+                  <p className="text-sm text-emerald-600">Admin user</p>
                 </CardContent>
               </Card>
 
@@ -107,8 +107,8 @@ const AdminPanel = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-purple-800">156</div>
-                  <p className="text-sm text-purple-600">+12 this month</p>
+                  <div className="text-2xl font-bold text-purple-800">0</div>
+                  <p className="text-sm text-purple-600">No resources yet</p>
                 </CardContent>
               </Card>
 
@@ -120,8 +120,8 @@ const AdminPanel = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-orange-800">47</div>
-                  <p className="text-sm text-orange-600">+5 pending review</p>
+                  <div className="text-2xl font-bold text-orange-800">0</div>
+                  <p className="text-sm text-orange-600">No testimonials yet</p>
                 </CardContent>
               </Card>
             </div>
@@ -163,23 +163,12 @@ const AdminPanel = () => {
                   <CardTitle>Recent Activity</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-3 text-sm">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      <span>New user enrolled in "African Folklore Basics"</span>
+                  <div className="text-center py-8">
+                    <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <MessageSquare className="w-6 h-6 text-gray-400" />
                     </div>
-                    <div className="flex items-center space-x-3 text-sm">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                      <span>Course "VR Storytelling" was completed by 3 users</span>
-                    </div>
-                    <div className="flex items-center space-x-3 text-sm">
-                      <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                      <span>New testimonial submitted for review</span>
-                    </div>
-                    <div className="flex items-center space-x-3 text-sm">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                      <span>Library resource "Voice Techniques" was downloaded 25 times</span>
-                    </div>
+                    <h4 className="text-lg font-medium text-gray-900 mb-2">No activity yet</h4>
+                    <p className="text-gray-600 text-sm">Activity will appear here as users interact with your platform</p>
                   </div>
                 </CardContent>
               </Card>
