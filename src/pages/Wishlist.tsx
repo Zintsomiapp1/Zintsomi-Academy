@@ -1,8 +1,8 @@
 
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Heart, Upload } from 'lucide-react';
+import { Heart } from 'lucide-react';
 
 const Wishlist = () => {
   const wishlistItems = []; // Empty wishlist
@@ -23,14 +23,11 @@ const Wishlist = () => {
         <Card>
           <CardContent className="p-12 text-center">
             <div className="bg-gray-100 rounded-lg p-8 max-w-md mx-auto">
-              <Upload className="w-16 h-16 mx-auto mb-4 text-gray-400" />
+              <Heart className="w-16 h-16 mx-auto mb-4 text-gray-400" />
               <h2 className="text-xl font-semibold mb-2">Your wishlist is empty</h2>
               <p className="text-gray-600 mb-6">
                 Browse our courses and add your favorites to your wishlist
               </p>
-              <div className="bg-white border-2 border-dashed border-gray-300 rounded-lg h-32 flex items-center justify-center mb-4">
-                <span className="text-gray-400">Upload Image</span>
-              </div>
               <Button>Browse Courses</Button>
             </div>
           </CardContent>
