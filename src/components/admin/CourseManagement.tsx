@@ -1,65 +1,28 @@
+
 import React, { useState } from 'react';
-import { Plus, Edit, Trash2, Eye, Users, Clock, Upload, FileText, Video, Music } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
 import { useAdminCourses } from '@/hooks/useAdminCourses';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-
-interface CourseFormData {
-  title: string;
-  description: string;
-  creator: string;
-  category: string;
-  duration: string;
-  is_premium: boolean;
-  price: number;
-  rating: number;
-  status: string;
-  featured: boolean;
-}
+import CourseForm from './course/CourseForm';
+import AdminCourseList from './course/AdminCourseList';
+import { CourseFormData, defaultFormData } from './course/CourseFormData';
+import { useCourseFileUpload } from './course/useCourseFileUpload';
 
 const CourseManagement = () => {
   const { courses, loading } = useAdminCourses();
   const { toast } = useToast();
+  const { handleFileUpload } = useCourseFileUpload();
+  
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingCourse, setEditingCourse] = useState<any>(null);
-  const [formData, setFormData] = useState<CourseFormData>({
-    title: '',
-    description: '',
-    creator: '',
-    category: 'storytelling',
-    duration: '',
-    is_premium: false,
-    price: 0,
-    rating: 0,
-    status: 'published',
-    featured: false
-  });
+  const [formData, setFormData] = useState<CourseFormData>(defaultFormData);
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
-
-  const categories = [
-    'storytelling',
-    'folklore', 
-    'vr_lessons',
-    'creative_writing'
-  ];
-
-  const statusOptions = [
-    'draft',
-    'published',
-    'archived'
-  ];
 
   const handleEdit = (course: any) => {
     setEditingCourse(course);
@@ -93,7 +56,6 @@ const CourseManagement = () => {
           description: "Course deleted successfully!",
         });
 
-        // Refresh the page to show updated data
         window.location.reload();
       } catch (error) {
         console.error('Error deleting course:', error);
@@ -104,23 +66,6 @@ const CourseManagement = () => {
         });
       }
     }
-  };
-
-  const handleFileUpload = async (file: File, folder: string): Promise<string> => {
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${folder}/${Date.now()}.${fileExt}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from('course-assets')
-      .upload(fileName, file);
-
-    if (uploadError) throw uploadError;
-
-    const { data } = supabase.storage
-      .from('course-assets')
-      .getPublicUrl(fileName);
-
-    return data.publicUrl;
   };
 
   const handleSubmitForm = async () => {
@@ -141,7 +86,6 @@ const CourseManagement = () => {
       let videoUrl = editingCourse?.video_url || '';
       let audioUrl = editingCourse?.audio_url || '';
 
-      // Upload files if provided
       if (thumbnailFile) {
         thumbnailUrl = await handleFileUpload(thumbnailFile, 'thumbnails');
       }
@@ -173,7 +117,6 @@ const CourseManagement = () => {
       };
 
       if (editingCourse) {
-        // Update existing course
         const { error } = await supabase
           .from('courses')
           .update(courseData)
@@ -186,7 +129,6 @@ const CourseManagement = () => {
           description: "Course updated successfully!",
         });
       } else {
-        // Create new course
         const { error } = await supabase
           .from('courses')
           .insert(courseData);
@@ -199,26 +141,7 @@ const CourseManagement = () => {
         });
       }
 
-      setShowCreateForm(false);
-      setEditingCourse(null);
-      setFormData({
-        title: '',
-        description: '',
-        creator: '',
-        category: 'storytelling',
-        duration: '',
-        is_premium: false,
-        price: 0,
-        rating: 0,
-        status: 'published',
-        featured: false
-      });
-      setThumbnailFile(null);
-      setPdfFile(null);
-      setVideoFile(null);
-      setAudioFile(null);
-
-      // Refresh the page to show updated data
+      handleCancelForm();
       window.location.reload();
 
     } catch (error) {
@@ -236,18 +159,7 @@ const CourseManagement = () => {
   const handleCancelForm = () => {
     setShowCreateForm(false);
     setEditingCourse(null);
-    setFormData({
-      title: '',
-      description: '',
-      creator: '',
-      category: 'storytelling',
-      duration: '',
-      is_premium: false,
-      price: 0,
-      rating: 0,
-      status: 'published',
-      featured: false
-    });
+    setFormData(defaultFormData);
     setThumbnailFile(null);
     setPdfFile(null);
     setVideoFile(null);
@@ -280,319 +192,25 @@ const CourseManagement = () => {
         </Button>
       </div>
 
-      {/* Course List */}
-      <div className="space-y-4">
-        {courses.length === 0 ? (
-          <Card>
-            <CardContent className="p-8 text-center">
-              <div className="text-gray-400 mb-4">
-                <Plus className="w-12 h-12 mx-auto" />
-              </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No courses yet</h3>
-              <p className="text-gray-600">Create your first course to get started</p>
-            </CardContent>
-          </Card>
-        ) : (
-          courses.map((course) => (
-            <Card key={course.id} className="hover:shadow-md transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-3 mb-2">
-                      <h3 className="text-lg font-semibold text-gray-900">{course.title}</h3>
-                      {course.isPremium && (
-                        <Badge className="bg-yellow-500 hover:bg-yellow-600">Premium</Badge>
-                      )}
-                      <Badge variant="outline">{course.category}</Badge>
-                      <Badge variant={course.status === 'published' ? 'default' : 'secondary'}>
-                        {course.status}
-                      </Badge>
-                      {course.featured && (
-                        <Badge className="bg-purple-500 hover:bg-purple-600">Featured</Badge>
-                      )}
-                    </div>
-                    
-                    <p className="text-gray-600 mb-3">Created by {course.creator}</p>
-                    
-                    <div className="flex items-center space-x-6 text-sm text-gray-500">
-                      <div className="flex items-center">
-                        <Users className="w-4 h-4 mr-1" />
-                        <span>24 enrolled</span>
-                      </div>
-                      <div className="flex items-center">
-                        <Clock className="w-4 h-4 mr-1" />
-                        <span>{course.duration || '2-3 hours'}</span>
-                      </div>
-                      <div className="flex items-center">
-                        <Eye className="w-4 h-4 mr-1" />
-                        <span>156 views</span>
-                      </div>
-                      {course.pdf_url && (
-                        <div className="flex items-center">
-                          <FileText className="w-4 h-4 mr-1" />
-                          <span>PDF</span>
-                        </div>
-                      )}
-                      {course.video_url && (
-                        <div className="flex items-center">
-                          <Video className="w-4 h-4 mr-1" />
-                          <span>Video</span>
-                        </div>
-                      )}
-                      {course.audio_url && (
-                        <div className="flex items-center">
-                          <Music className="w-4 h-4 mr-1" />
-                          <span>Audio</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center space-x-2">
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => handleEdit(course)}
-                    >
-                      <Edit className="w-4 h-4 mr-1" />
-                      Edit
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="text-red-600 hover:text-red-700"
-                      onClick={() => handleDelete(course.id)}
-                    >
-                      <Trash2 className="w-4 h-4 mr-1" />
-                      Delete
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))
-        )}
-      </div>
+      <AdminCourseList
+        courses={courses}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
 
-      {/* Create/Edit Course Form Modal */}
-      {showCreateForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <Card className="w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-            <CardHeader>
-              <CardTitle>{editingCourse ? 'Edit Course' : 'Create New Course'}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="title">Course Title *</Label>
-                  <Input 
-                    id="title"
-                    value={formData.title}
-                    onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                    placeholder="Enter course title..."
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="creator">Creator *</Label>
-                  <Input 
-                    id="creator"
-                    value={formData.creator}
-                    onChange={(e) => setFormData(prev => ({ ...prev, creator: e.target.value }))}
-                    placeholder="Creator name"
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <Label htmlFor="description">Description</Label>
-                <Textarea 
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  placeholder="Course description..."
-                  rows={3}
-                />
-              </div>
-              
-              <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <Label htmlFor="category">Category *</Label>
-                  <Select 
-                    value={formData.category}
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories.map((category) => (
-                        <SelectItem key={category} value={category}>
-                          {category.charAt(0).toUpperCase() + category.slice(1).replace('_', ' ')}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <Label htmlFor="duration">Duration</Label>
-                  <Input 
-                    id="duration"
-                    value={formData.duration}
-                    onChange={(e) => setFormData(prev => ({ ...prev, duration: e.target.value }))}
-                    placeholder="e.g., 2-3 hours"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="status">Status</Label>
-                  <Select 
-                    value={formData.status}
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, status: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {statusOptions.map((status) => (
-                        <SelectItem key={status} value={status}>
-                          {status.charAt(0).toUpperCase() + status.slice(1)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="rating">Rating (0-5)</Label>
-                  <Input 
-                    id="rating"
-                    type="number"
-                    min="0"
-                    max="5"
-                    step="0.1"
-                    value={formData.rating}
-                    onChange={(e) => setFormData(prev => ({ ...prev, rating: parseFloat(e.target.value) || 0 }))}
-                    placeholder="4.5"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="price">Price (ZAR)</Label>
-                  <Input 
-                    id="price"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={formData.price}
-                    onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) || 0 }))}
-                    placeholder="99.99"
-                    disabled={!formData.is_premium}
-                  />
-                </div>
-              </div>
-              
-              <div className="flex items-center space-x-6">
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    id="is_premium"
-                    checked={formData.is_premium}
-                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_premium: checked }))}
-                  />
-                  <Label htmlFor="is_premium">Premium Course</Label>
-                </div>
-                
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    id="featured"
-                    checked={formData.featured}
-                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, featured: checked }))}
-                  />
-                  <Label htmlFor="featured">Featured Course</Label>
-                </div>
-              </div>
-              
-              {/* File Uploads */}
-              <div className="space-y-4 border-t pt-4">
-                <h4 className="font-medium text-gray-900">File Uploads</h4>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="thumbnail">Course Thumbnail</Label>
-                    <Input
-                      id="thumbnail"
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => setThumbnailFile(e.target.files?.[0] || null)}
-                      className="mt-1"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="pdf">PDF Document</Label>
-                    <Input
-                      id="pdf"
-                      type="file"
-                      accept=".pdf"
-                      onChange={(e) => setPdfFile(e.target.files?.[0] || null)}
-                      className="mt-1"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="video">Video File</Label>
-                    <Input
-                      id="video"
-                      type="file"
-                      accept="video/*"
-                      onChange={(e) => setVideoFile(e.target.files?.[0] || null)}
-                      className="mt-1"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="audio">Audio File</Label>
-                    <Input
-                      id="audio"
-                      type="file"
-                      accept="audio/*"
-                      onChange={(e) => setAudioFile(e.target.files?.[0] || null)}
-                      className="mt-1"
-                    />
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex space-x-3 pt-4">
-                <Button 
-                  onClick={handleSubmitForm}
-                  disabled={saving}
-                  className="bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600 text-white"
-                >
-                  {saving ? (
-                    <>
-                      <Upload className="w-4 h-4 mr-2 animate-spin" />
-                      {editingCourse ? 'Updating...' : 'Creating...'}
-                    </>
-                  ) : (
-                    <>
-                      {editingCourse ? 'Update Course' : 'Create Course'}
-                    </>
-                  )}
-                </Button>
-                <Button variant="outline" onClick={handleCancelForm} disabled={saving}>
-                  Cancel
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+      <CourseForm
+        isVisible={showCreateForm}
+        editingCourse={editingCourse}
+        formData={formData}
+        saving={saving}
+        onFormDataChange={setFormData}
+        onThumbnailChange={setThumbnailFile}
+        onPdfChange={setPdfFile}
+        onVideoChange={setVideoFile}
+        onAudioChange={setAudioFile}
+        onSubmit={handleSubmitForm}
+        onCancel={handleCancelForm}
+      />
     </div>
   );
 };
