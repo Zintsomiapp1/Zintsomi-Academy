@@ -1,29 +1,9 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { Course } from './useCourses';
 
-export interface Course {
-  id: string;
-  title: string;
-  description?: string;
-  thumbnail?: string;
-  category: string;
-  creator: string;
-  isPremium?: boolean;
-  rating?: number;
-  duration?: string;
-  totalLessons?: number;
-  price?: number;
-  created_at?: string;
-  updated_at?: string;
-  pdf_url?: string;
-  video_url?: string;
-  audio_url?: string;
-  status?: string;
-  featured?: boolean;
-}
-
-export const useCourses = () => {
+export const useAdminCourses = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -53,7 +33,6 @@ export const useCourses = () => {
             featured,
             lessons:lessons(count)
           `)
-          .eq('status', 'published')
           .order('created_at', { ascending: false });
 
         if (error) throw error;

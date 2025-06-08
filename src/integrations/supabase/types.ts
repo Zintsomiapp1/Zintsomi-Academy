@@ -67,46 +67,61 @@ export type Database = {
       }
       courses: {
         Row: {
+          audio_url: string | null
           category: string
           created_at: string
           creator: string
           description: string | null
           duration: string | null
+          featured: boolean | null
           id: string
           is_premium: boolean | null
+          pdf_url: string | null
           price: number | null
           rating: number | null
+          status: string | null
           thumbnail: string | null
           title: string
           updated_at: string
+          video_url: string | null
         }
         Insert: {
+          audio_url?: string | null
           category: string
           created_at?: string
           creator: string
           description?: string | null
           duration?: string | null
+          featured?: boolean | null
           id?: string
           is_premium?: boolean | null
+          pdf_url?: string | null
           price?: number | null
           rating?: number | null
+          status?: string | null
           thumbnail?: string | null
           title: string
           updated_at?: string
+          video_url?: string | null
         }
         Update: {
+          audio_url?: string | null
           category?: string
           created_at?: string
           creator?: string
           description?: string | null
           duration?: string | null
+          featured?: boolean | null
           id?: string
           is_premium?: boolean | null
+          pdf_url?: string | null
           price?: number | null
           rating?: number | null
+          status?: string | null
           thumbnail?: string | null
           title?: string
           updated_at?: string
+          video_url?: string | null
         }
         Relationships: []
       }

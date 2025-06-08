@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { Plus, Edit, Trash2, Eye, Users, Clock, Upload } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, Users, Clock, Upload, FileText, Video, Music } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -9,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { useCourses } from '@/hooks/useCourses';
+import { useAdminCourses } from '@/hooks/useAdminCourses';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -22,10 +21,12 @@ interface CourseFormData {
   is_premium: boolean;
   price: number;
   rating: number;
+  status: string;
+  featured: boolean;
 }
 
 const CourseManagement = () => {
-  const { courses, loading } = useCourses();
+  const { courses, loading } = useAdminCourses();
   const { toast } = useToast();
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingCourse, setEditingCourse] = useState<any>(null);
@@ -37,9 +38,14 @@ const CourseManagement = () => {
     duration: '',
     is_premium: false,
     price: 0,
-    rating: 0
+    rating: 0,
+    status: 'published',
+    featured: false
   });
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [audioFile, setAudioFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
 
   const categories = [
@@ -47,6 +53,12 @@ const CourseManagement = () => {
     'folklore', 
     'vr_lessons',
     'creative_writing'
+  ];
+
+  const statusOptions = [
+    'draft',
+    'published',
+    'archived'
   ];
 
   const handleEdit = (course: any) => {
@@ -59,7 +71,9 @@ const CourseManagement = () => {
       duration: course.duration || '',
       is_premium: course.isPremium || false,
       price: course.price || 0,
-      rating: course.rating || 0
+      rating: course.rating || 0,
+      status: course.status || 'published',
+      featured: course.featured || false
     });
     setShowCreateForm(true);
   };
@@ -92,9 +106,9 @@ const CourseManagement = () => {
     }
   };
 
-  const handleThumbnailUpload = async (file: File): Promise<string> => {
+  const handleFileUpload = async (file: File, folder: string): Promise<string> => {
     const fileExt = file.name.split('.').pop();
-    const fileName = `courses/${Date.now()}.${fileExt}`;
+    const fileName = `${folder}/${Date.now()}.${fileExt}`;
 
     const { error: uploadError } = await supabase.storage
       .from('course-assets')
@@ -123,8 +137,22 @@ const CourseManagement = () => {
 
     try {
       let thumbnailUrl = editingCourse?.thumbnail || '';
+      let pdfUrl = editingCourse?.pdf_url || '';
+      let videoUrl = editingCourse?.video_url || '';
+      let audioUrl = editingCourse?.audio_url || '';
+
+      // Upload files if provided
       if (thumbnailFile) {
-        thumbnailUrl = await handleThumbnailUpload(thumbnailFile);
+        thumbnailUrl = await handleFileUpload(thumbnailFile, 'thumbnails');
+      }
+      if (pdfFile) {
+        pdfUrl = await handleFileUpload(pdfFile, 'pdfs');
+      }
+      if (videoFile) {
+        videoUrl = await handleFileUpload(videoFile, 'videos');
+      }
+      if (audioFile) {
+        audioUrl = await handleFileUpload(audioFile, 'audio');
       }
 
       const courseData = {
@@ -136,7 +164,12 @@ const CourseManagement = () => {
         is_premium: formData.is_premium,
         price: formData.price,
         rating: formData.rating,
-        thumbnail: thumbnailUrl
+        status: formData.status,
+        featured: formData.featured,
+        thumbnail: thumbnailUrl,
+        pdf_url: pdfUrl,
+        video_url: videoUrl,
+        audio_url: audioUrl
       };
 
       if (editingCourse) {
@@ -176,9 +209,14 @@ const CourseManagement = () => {
         duration: '',
         is_premium: false,
         price: 0,
-        rating: 0
+        rating: 0,
+        status: 'published',
+        featured: false
       });
       setThumbnailFile(null);
+      setPdfFile(null);
+      setVideoFile(null);
+      setAudioFile(null);
 
       // Refresh the page to show updated data
       window.location.reload();
@@ -206,9 +244,14 @@ const CourseManagement = () => {
       duration: '',
       is_premium: false,
       price: 0,
-      rating: 0
+      rating: 0,
+      status: 'published',
+      featured: false
     });
     setThumbnailFile(null);
+    setPdfFile(null);
+    setVideoFile(null);
+    setAudioFile(null);
   };
 
   if (loading) {
@@ -226,7 +269,7 @@ const CourseManagement = () => {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Course Management</h2>
-          <p className="text-gray-600">Create, edit, and manage educational courses</p>
+          <p className="text-gray-600">Create, edit, and manage educational courses with file uploads</p>
         </div>
         <Button 
           onClick={() => setShowCreateForm(true)}
@@ -261,6 +304,12 @@ const CourseManagement = () => {
                         <Badge className="bg-yellow-500 hover:bg-yellow-600">Premium</Badge>
                       )}
                       <Badge variant="outline">{course.category}</Badge>
+                      <Badge variant={course.status === 'published' ? 'default' : 'secondary'}>
+                        {course.status}
+                      </Badge>
+                      {course.featured && (
+                        <Badge className="bg-purple-500 hover:bg-purple-600">Featured</Badge>
+                      )}
                     </div>
                     
                     <p className="text-gray-600 mb-3">Created by {course.creator}</p>
@@ -278,6 +327,24 @@ const CourseManagement = () => {
                         <Eye className="w-4 h-4 mr-1" />
                         <span>156 views</span>
                       </div>
+                      {course.pdf_url && (
+                        <div className="flex items-center">
+                          <FileText className="w-4 h-4 mr-1" />
+                          <span>PDF</span>
+                        </div>
+                      )}
+                      {course.video_url && (
+                        <div className="flex items-center">
+                          <Video className="w-4 h-4 mr-1" />
+                          <span>Video</span>
+                        </div>
+                      )}
+                      {course.audio_url && (
+                        <div className="flex items-center">
+                          <Music className="w-4 h-4 mr-1" />
+                          <span>Audio</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                   
@@ -310,19 +377,31 @@ const CourseManagement = () => {
       {/* Create/Edit Course Form Modal */}
       {showCreateForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+          <Card className="w-full max-w-4xl max-h-[90vh] overflow-y-auto">
             <CardHeader>
               <CardTitle>{editingCourse ? 'Edit Course' : 'Create New Course'}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="title">Course Title *</Label>
-                <Input 
-                  id="title"
-                  value={formData.title}
-                  onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                  placeholder="Enter course title..."
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="title">Course Title *</Label>
+                  <Input 
+                    id="title"
+                    value={formData.title}
+                    onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                    placeholder="Enter course title..."
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="creator">Creator *</Label>
+                  <Input 
+                    id="creator"
+                    value={formData.creator}
+                    onChange={(e) => setFormData(prev => ({ ...prev, creator: e.target.value }))}
+                    placeholder="Creator name"
+                  />
+                </div>
               </div>
               
               <div>
@@ -336,29 +415,7 @@ const CourseManagement = () => {
                 />
               </div>
               
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="creator">Creator *</Label>
-                  <Input 
-                    id="creator"
-                    value={formData.creator}
-                    onChange={(e) => setFormData(prev => ({ ...prev, creator: e.target.value }))}
-                    placeholder="Creator name"
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="duration">Duration</Label>
-                  <Input 
-                    id="duration"
-                    value={formData.duration}
-                    onChange={(e) => setFormData(prev => ({ ...prev, duration: e.target.value }))}
-                    placeholder="e.g., 2-3 hours"
-                  />
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-3 gap-4">
                 <div>
                   <Label htmlFor="category">Category *</Label>
                   <Select 
@@ -379,6 +436,37 @@ const CourseManagement = () => {
                 </div>
                 
                 <div>
+                  <Label htmlFor="duration">Duration</Label>
+                  <Input 
+                    id="duration"
+                    value={formData.duration}
+                    onChange={(e) => setFormData(prev => ({ ...prev, duration: e.target.value }))}
+                    placeholder="e.g., 2-3 hours"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="status">Status</Label>
+                  <Select 
+                    value={formData.status}
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, status: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {statusOptions.map((status) => (
+                        <SelectItem key={status} value={status}>
+                          {status.charAt(0).toUpperCase() + status.slice(1)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
                   <Label htmlFor="rating">Rating (0-5)</Label>
                   <Input 
                     id="rating"
@@ -391,9 +479,23 @@ const CourseManagement = () => {
                     placeholder="4.5"
                   />
                 </div>
+
+                <div>
+                  <Label htmlFor="price">Price (ZAR)</Label>
+                  <Input 
+                    id="price"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={formData.price}
+                    onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) || 0 }))}
+                    placeholder="99.99"
+                    disabled={!formData.is_premium}
+                  />
+                </div>
               </div>
               
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-6">
                 <div className="flex items-center space-x-2">
                   <Switch
                     id="is_premium"
@@ -403,31 +505,67 @@ const CourseManagement = () => {
                   <Label htmlFor="is_premium">Premium Course</Label>
                 </div>
                 
-                {formData.is_premium && (
-                  <div>
-                    <Label htmlFor="price">Price (ZAR)</Label>
-                    <Input 
-                      id="price"
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      value={formData.price}
-                      onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) || 0 }))}
-                      placeholder="99.99"
-                    />
-                  </div>
-                )}
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="featured"
+                    checked={formData.featured}
+                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, featured: checked }))}
+                  />
+                  <Label htmlFor="featured">Featured Course</Label>
+                </div>
               </div>
               
-              <div>
-                <Label htmlFor="thumbnail">Course Thumbnail</Label>
-                <Input
-                  id="thumbnail"
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setThumbnailFile(e.target.files?.[0] || null)}
-                  className="mt-1"
-                />
+              {/* File Uploads */}
+              <div className="space-y-4 border-t pt-4">
+                <h4 className="font-medium text-gray-900">File Uploads</h4>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="thumbnail">Course Thumbnail</Label>
+                    <Input
+                      id="thumbnail"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setThumbnailFile(e.target.files?.[0] || null)}
+                      className="mt-1"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="pdf">PDF Document</Label>
+                    <Input
+                      id="pdf"
+                      type="file"
+                      accept=".pdf"
+                      onChange={(e) => setPdfFile(e.target.files?.[0] || null)}
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="video">Video File</Label>
+                    <Input
+                      id="video"
+                      type="file"
+                      accept="video/*"
+                      onChange={(e) => setVideoFile(e.target.files?.[0] || null)}
+                      className="mt-1"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="audio">Audio File</Label>
+                    <Input
+                      id="audio"
+                      type="file"
+                      accept="audio/*"
+                      onChange={(e) => setAudioFile(e.target.files?.[0] || null)}
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
               </div>
               
               <div className="flex space-x-3 pt-4">
