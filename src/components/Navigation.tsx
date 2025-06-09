@@ -35,11 +35,13 @@ const Navigation = () => {
     <nav className="bg-gradient-to-r from-sky-500 to-sky-600 shadow-sm border-b sticky top-0 z-50">
       <div className="container mx-auto px-2 sm:px-4">
         <div className="flex items-center justify-between h-16">
-          {/* Khalulu Link */}
+          {/* Zintsomi Logo */}
           <Link to="/chat" className="flex items-center space-x-2">
-            <span className="font-bold text-sm sm:text-base text-white">
-              Khalulu
-            </span>
+            <img
+              src="/lovable-uploads/ce92272b-21bf-4b75-85ba-01c8889a21f0.png"
+              alt="Zintsomi Logo"
+              className="w-8 h-8 object-contain"
+            />
           </Link>
 
           {/* Desktop Navigation */}
