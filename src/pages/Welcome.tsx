@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Play, Star, Users, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -30,7 +29,7 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-sky-600 leading-tight">
               Welcome to{' '}
               <span className="text-sky-600 font-extrabold block sm:inline">
-                Zintsomi Storytelling
+                Zintsomi Storytelling{' '}
               </span>
               <span className="text-sky-600 font-extrabold block sm:inline">
                 College of South Africa
