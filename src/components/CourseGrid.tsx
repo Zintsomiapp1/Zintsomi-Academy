@@ -1,19 +1,7 @@
 
 import React from 'react';
 import CourseCard from './CourseCard';
-
-interface Course {
-  id: string;
-  title: string;
-  creator: string;
-  thumbnail: string;
-  likes: number;
-  comments: number;
-  isPremium: boolean;
-  rating?: number;
-  category: string;
-  duration?: string;
-}
+import { Course } from '@/hooks/useCourses';
 
 interface CourseGridProps {
   courses: Course[];

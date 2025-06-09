@@ -4,20 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { Heart, MessageCircle, Play, Star, BookOpen } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Course } from '@/hooks/useCourses';
 
 interface CourseCardProps {
-  course: {
-    id: string;
-    title: string;
-    creator: string;
-    thumbnail: string;
-    likes: number;
-    comments: number;
-    isPremium: boolean;
-    rating?: number;
-    category: string;
-    duration?: string;
-  };
+  course: Course;
   onLike?: (courseId: string) => void;
   onComment?: (courseId: string) => void;
 }
