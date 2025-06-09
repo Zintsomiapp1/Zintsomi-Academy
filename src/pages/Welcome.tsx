@@ -30,10 +30,10 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-sky-600 leading-tight">
               Welcome to{' '}
               <span className="text-sky-600 font-extrabold block sm:inline">
-                Zintsomi Storytelling College
+                Zintsomi Storytelling
               </span>
               <span className="text-sky-600 font-extrabold block sm:inline">
-                of South Africa
+                College of South Africa
               </span>
             </h1>
             <p className="text-lg sm:text-xl text-gray-600 mb-8 max-w-3xl mx-auto font-medium">

@@ -37,8 +37,8 @@ const Navigation = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 min-w-0">
-            <span className="font-bold text-sm sm:text-base lg:text-xl text-white leading-tight">
-              Zintsomi Storytelling College of South Africa
+            <span className="font-bold text-sm sm:text-base lg:text-lg text-white leading-tight">
+              Zintsomi College
             </span>
           </Link>
 
