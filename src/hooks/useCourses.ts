@@ -21,6 +21,8 @@ export interface Course {
   audio_url?: string;
   status?: string;
   featured?: boolean;
+  likes: number;
+  comments: number;
 }
 
 export const useCourses = () => {
@@ -77,6 +79,8 @@ export const useCourses = () => {
           audio_url: course.audio_url,
           status: course.status,
           featured: course.featured,
+          likes: 0, // Default value for likes
+          comments: 0, // Default value for comments
         })) || [];
 
         setCourses(coursesWithLessons);

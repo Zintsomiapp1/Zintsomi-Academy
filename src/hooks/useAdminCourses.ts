@@ -56,6 +56,8 @@ export const useAdminCourses = () => {
           audio_url: course.audio_url,
           status: course.status,
           featured: course.featured,
+          likes: 0, // Default value for likes
+          comments: 0, // Default value for comments
         })) || [];
 
         setCourses(coursesWithLessons);
