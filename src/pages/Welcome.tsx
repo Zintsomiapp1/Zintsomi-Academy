@@ -27,13 +27,16 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
                 className="w-20 h-20 object-contain animate-bounce"
               />
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-sky-600">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-sky-600 leading-tight">
               Welcome to{' '}
-              <span className="text-sky-600 font-extrabold">
-                Zintsomi College
+              <span className="text-sky-600 font-extrabold block sm:inline">
+                Zintsomi Storytelling College
+              </span>
+              <span className="text-sky-600 font-extrabold block sm:inline">
+                of South Africa
               </span>
             </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto font-medium">
+            <p className="text-lg sm:text-xl text-gray-600 mb-8 max-w-3xl mx-auto font-medium">
               Discover the magic of storytelling through AI-powered courses, immersive VR experiences, 
               and interactive learning in multiple African languages.
             </p>

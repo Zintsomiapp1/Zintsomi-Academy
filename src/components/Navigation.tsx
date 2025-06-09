@@ -33,11 +33,13 @@ const Navigation = () => {
 
   return (
     <nav className="bg-gradient-to-r from-sky-500 to-sky-600 shadow-sm border-b sticky top-0 z-50">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-2 sm:px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3">
-            <span className="font-bold text-xl text-white">Zintsomi College</span>
+          <Link to="/" className="flex items-center space-x-2 min-w-0">
+            <span className="font-bold text-sm sm:text-base lg:text-xl text-white leading-tight">
+              Zintsomi Storytelling College of South Africa
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
