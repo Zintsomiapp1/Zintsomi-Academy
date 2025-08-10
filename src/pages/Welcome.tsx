@@ -20,11 +20,11 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
         <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="flex items-center justify-center mb-8">
-              <img
-                src="/lovable-uploads/531e05b9-22e5-4b83-a3f4-953ecd13ff8f.png"
-                alt="Khalulu the storyteller"
-                className="w-20 h-20 object-contain animate-bounce"
-              />
+            <img
+              src="/lovable-uploads/3c8a256a-babc-45a4-bf11-fb10887a065e.png"
+              alt="Mjolo logo"
+              className="w-20 h-20 object-contain animate-bounce"
+            />
             </div>
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-sky-600 leading-tight">
               Welcome to{' '}

@@ -24,8 +24,8 @@ const AskKhalulu = () => {
       <Card className="w-full max-w-2xl mx-auto h-96">
         <CardContent className="p-6 flex flex-col items-center justify-center h-full">
           <img
-            src="/lovable-uploads/531e05b9-22e5-4b83-a3f4-953ecd13ff8f.png"
-            alt="Khalulu the Storyteller"
+            src="/lovable-uploads/3c8a256a-babc-45a4-bf11-fb10887a065e.png"
+            alt="Mjolo logo"
             className="w-16 h-16 object-contain mb-4"
           />
           <h3 className="text-lg font-semibold mb-2">Please Sign In</h3>

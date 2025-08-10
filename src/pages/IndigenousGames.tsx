@@ -21,8 +21,8 @@ const IndigenousGames = () => {
         {/* Header */}
         <div className="text-center mb-12">
           <img
-            src="/lovable-uploads/531e05b9-22e5-4b83-a3f4-953ecd13ff8f.png"
-            alt="Khalulu"
+            src="/lovable-uploads/3c8a256a-babc-45a4-bf11-fb10887a065e.png"
+            alt="Mjolo logo"
             className="w-20 h-20 object-contain mx-auto mb-6 animate-bounce"
           />
           <h1 className="text-4xl font-bold text-gray-900 mb-4">

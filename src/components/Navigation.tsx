@@ -32,14 +32,14 @@ const Navigation = () => {
   const handleMenuClose = () => setIsMenuOpen(false);
 
   return (
-    <nav className="bg-gradient-to-r from-sky-500 to-sky-600 shadow-sm border-b sticky top-0 z-50">
+    <nav className="bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--accent))] shadow-sm border-b sticky top-0 z-50">
       <div className="container mx-auto px-2 sm:px-4">
         <div className="flex items-center justify-between h-16">
           {/* Zintsomi Logo */}
           <Link to="/chat" className="flex items-center space-x-2">
             <img
-              src="/lovable-uploads/ce92272b-21bf-4b75-85ba-01c8889a21f0.png"
-              alt="Zintsomi Logo"
+              src="/lovable-uploads/3c8a256a-babc-45a4-bf11-fb10887a065e.png"
+              alt="Mjolo Logo"
               className="w-8 h-8 object-contain"
             />
           </Link>

@@ -22,6 +22,6 @@ if ('requestIdleCallback' in window) {
   requestIdleCallback(() => {
     // Preload images that are likely to be used
     const img = new Image();
-    img.src = '/lovable-uploads/531e05b9-22e5-4b83-a3f4-953ecd13ff8f.png';
+    img.src = '/lovable-uploads/3c8a256a-babc-45a4-bf11-fb10887a065e.png';
   });
 }
