@@ -35,8 +35,8 @@ const Navigation = () => {
     <nav className="bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--accent))] shadow-sm border-b sticky top-0 z-50">
       <div className="container mx-auto px-2 sm:px-4">
         <div className="flex items-center justify-between h-16">
-          {/* Zintsomi Logo */}
-          <Link to="/chat" className="flex items-center space-x-2">
+          {/* MJOLO Logo */}
+          <Link to="/" className="flex items-center space-x-2">
             <img
               src="/lovable-uploads/3c8a256a-babc-45a4-bf11-fb10887a065e.png"
               alt="Mjolo Logo"

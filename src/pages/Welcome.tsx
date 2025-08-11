@@ -29,15 +29,11 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-sky-600 leading-tight">
               Welcome to{' '}
               <span className="text-sky-600 font-extrabold block sm:inline">
-                Zintsomi Storytelling{' '}
-              </span>
-              <span className="text-sky-600 font-extrabold block sm:inline">
-                College of South Africa
+                MJOLO
               </span>
             </h1>
             <p className="text-lg sm:text-xl text-gray-600 mb-8 max-w-3xl mx-auto font-medium">
-              Discover the magic of storytelling through AI-powered courses, immersive VR experiences, 
-              and interactive learning in multiple African languages.
+              Meet people, match, and chat across Africa. MJOLO uses smart features to help you connect authentically and safely.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
