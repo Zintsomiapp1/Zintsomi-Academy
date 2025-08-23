@@ -20,6 +20,7 @@ import {
 export const createNavItems = (isAdmin: boolean) => {
   const baseItems = [
     { path: '/', label: 'Home', icon: Home, gradient: 'from-sky-500 to-blue-600' },
+    { path: '/mjolo', label: 'Mjolo', icon: Heart, gradient: 'from-pink-500 to-red-600' },
     { path: '/courses', label: 'Courses', icon: BookOpen, gradient: 'from-green-500 to-blue-600' },
     { path: '/library', label: 'Library', icon: Library, gradient: 'from-purple-500 to-pink-600' },
     { path: '/community', label: 'Community', icon: MessageSquare, gradient: 'from-teal-500 to-cyan-600' },

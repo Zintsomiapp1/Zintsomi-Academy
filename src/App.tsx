@@ -10,6 +10,7 @@ import Navigation from "@/components/Navigation";
 import Index from "./pages/Index";
 import Welcome from "./pages/Welcome";
 import Auth from "./pages/Auth";
+import Mjolo from "./pages/Mjolo";
 import Courses from "./pages/Courses";
 import Library from "./pages/Library";
 import Community from "./pages/Community";
@@ -47,6 +48,7 @@ const App = () => (
                   <Route path="/" element={<Index />} />
                   <Route path="/welcome" element={<Welcome onLogin={() => {}} onSignUp={() => {}} />} />
                   <Route path="/auth" element={<Auth onLogin={() => {}} onBack={() => {}} />} />
+                  <Route path="/mjolo" element={<Mjolo />} />
                   <Route path="/courses" element={<Courses />} />
                   <Route path="/library" element={<Library />} />
                   <Route path="/community" element={<Community />} />
