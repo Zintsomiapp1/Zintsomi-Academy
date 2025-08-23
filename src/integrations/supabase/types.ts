@@ -130,6 +130,66 @@ export type Database = {
         }
         Relationships: []
       }
+      credits_ledger: {
+        Row: {
+          created_at: string
+          delta: number
+          id: string
+          metadata: Json | null
+          reason: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          delta: number
+          id?: string
+          metadata?: Json | null
+          reason: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          delta?: number
+          id?: string
+          metadata?: Json | null
+          reason?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      date_rooms: {
+        Row: {
+          created_at: string
+          created_by: string
+          ended_at: string | null
+          id: string
+          match_id: string
+          media_type: string
+          room_name: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          ended_at?: string | null
+          id?: string
+          match_id: string
+          media_type?: string
+          room_name: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          ended_at?: string | null
+          id?: string
+          match_id?: string
+          media_type?: string
+          room_name?: string
+          status?: string
+        }
+        Relationships: []
+      }
       lessons: {
         Row: {
           audio_url: string | null
@@ -186,6 +246,153 @@ export type Database = {
           },
         ]
       }
+      mjolo_matches: {
+        Row: {
+          created_at: string
+          id: string
+          love_meter: number
+          status: string
+          updated_at: string
+          user1_id: string
+          user2_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          love_meter?: number
+          status?: string
+          updated_at?: string
+          user1_id: string
+          user2_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          love_meter?: number
+          status?: string
+          updated_at?: string
+          user1_id?: string
+          user2_id?: string
+        }
+        Relationships: []
+      }
+      moderation_flags: {
+        Row: {
+          bucket: string | null
+          category: string | null
+          confidence: number | null
+          created_at: string
+          details: Json | null
+          file_path: string | null
+          id: string
+          image_url: string | null
+          status: string
+          user_id: string
+          verdict: string
+        }
+        Insert: {
+          bucket?: string | null
+          category?: string | null
+          confidence?: number | null
+          created_at?: string
+          details?: Json | null
+          file_path?: string | null
+          id?: string
+          image_url?: string | null
+          status?: string
+          user_id: string
+          verdict: string
+        }
+        Update: {
+          bucket?: string | null
+          category?: string | null
+          confidence?: number | null
+          created_at?: string
+          details?: Json | null
+          file_path?: string | null
+          id?: string
+          image_url?: string | null
+          status?: string
+          user_id?: string
+          verdict?: string
+        }
+        Relationships: []
+      }
+      orders: {
+        Row: {
+          amount: number
+          boost_type: string | null
+          created_at: string
+          credits_amount: number | null
+          currency: string
+          id: string
+          product_type: string
+          status: string
+          stripe_session_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          boost_type?: string | null
+          created_at?: string
+          credits_amount?: number | null
+          currency?: string
+          id?: string
+          product_type: string
+          status?: string
+          stripe_session_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          boost_type?: string | null
+          created_at?: string
+          credits_amount?: number | null
+          currency?: string
+          id?: string
+          product_type?: string
+          status?: string
+          stripe_session_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      photo_swaps: {
+        Row: {
+          created_at: string
+          id: string
+          initiator_id: string
+          initiator_like: boolean | null
+          matched_at: string | null
+          target_id: string
+          target_like: boolean | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          initiator_id: string
+          initiator_like?: boolean | null
+          matched_at?: string | null
+          target_id: string
+          target_like?: boolean | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          initiator_id?: string
+          initiator_like?: boolean | null
+          matched_at?: string | null
+          target_id?: string
+          target_like?: boolean | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -213,6 +420,108 @@ export type Database = {
           id?: string
           updated_at?: string
           username?: string | null
+        }
+        Relationships: []
+      }
+      quiz_questions: {
+        Row: {
+          active: boolean
+          category: Database["public"]["Enums"]["quiz_category"]
+          correct_index: number
+          created_at: string
+          created_by: string | null
+          id: string
+          options: string[]
+          question: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          category: Database["public"]["Enums"]["quiz_category"]
+          correct_index: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          options: string[]
+          question: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          category?: Database["public"]["Enums"]["quiz_category"]
+          correct_index?: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          options?: string[]
+          question?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      quiz_sessions: {
+        Row: {
+          attempts: number
+          correct: boolean | null
+          created_at: string
+          id: string
+          last_attempt_at: string | null
+          match_id: string
+          question_id: string
+          receiver_id: string
+          sender_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          attempts?: number
+          correct?: boolean | null
+          created_at?: string
+          id?: string
+          last_attempt_at?: string | null
+          match_id: string
+          question_id: string
+          receiver_id: string
+          sender_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          attempts?: number
+          correct?: boolean | null
+          created_at?: string
+          id?: string
+          last_attempt_at?: string | null
+          match_id?: string
+          question_id?: string
+          receiver_id?: string
+          sender_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_blocks: {
+        Row: {
+          blocked_id: string
+          blocker_id: string
+          created_at: string
+          id: string
+          reason: string | null
+        }
+        Insert: {
+          blocked_id: string
+          blocker_id: string
+          created_at?: string
+          id?: string
+          reason?: string | null
+        }
+        Update: {
+          blocked_id?: string
+          blocker_id?: string
+          created_at?: string
+          id?: string
+          reason?: string | null
         }
         Relationships: []
       }
@@ -299,6 +608,39 @@ export type Database = {
           },
         ]
       }
+      user_reports: {
+        Row: {
+          created_at: string
+          details: string | null
+          id: string
+          reason: string
+          reported_id: string
+          reporter_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason: string
+          reported_id: string
+          reporter_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason?: string
+          reported_id?: string
+          reporter_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -335,6 +677,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      quiz_category: "music" | "movies" | "travel" | "hobbies" | "lifestyle"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -463,6 +806,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      quiz_category: ["music", "movies", "travel", "hobbies", "lifestyle"],
     },
   },
 } as const
