@@ -56,6 +56,12 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				mjolo: {
+					coral: 'hsl(var(--mjolo-coral))',
+					orange: 'hsl(var(--mjolo-orange))',
+					pink: 'hsl(var(--mjolo-pink))',
+					purple: 'hsl(var(--mjolo-purple))',
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
