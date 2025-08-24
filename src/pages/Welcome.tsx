@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play, Star, Users, BookOpen } from 'lucide-react';
+import { Heart, MessageCircle, Users, Zap, Camera, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -9,55 +9,43 @@ interface WelcomeProps {
 }
 
 const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
-  const handleVRDemo = () => {
-    window.location.href = '/vr-content';
-  };
-
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-br from-mjolo-coral via-mjolo-pink to-mjolo-purple">
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-white">
+      <div className="relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="flex items-center justify-center mb-8">
-            <img
-              src="/lovable-uploads/3c8a256a-babc-45a4-bf11-fb10887a065e.png"
-              alt="Mjolo logo"
-              className="w-20 h-20 object-contain animate-bounce"
-            />
+              <img
+                src="/lovable-uploads/3c8a256a-babc-45a4-bf11-fb10887a065e.png"
+                alt="Mjolo logo"
+                className="w-24 h-24 object-contain animate-bounce"
+              />
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-sky-600 leading-tight">
-              Welcome to{' '}
-              <span className="text-sky-600 font-extrabold block sm:inline">
-                MJOLO
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-white leading-tight">
+              Find Your{' '}
+              <span className="bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent font-extrabold block sm:inline">
+                Perfect Match
               </span>
             </h1>
-            <p className="text-lg sm:text-xl text-gray-600 mb-8 max-w-3xl mx-auto font-medium">
-              Meet people, match, and chat across Africa. MJOLO uses smart features to help you connect authentically and safely.
+            <p className="text-xl sm:text-2xl text-white/90 mb-8 max-w-3xl mx-auto font-medium">
+              Africa's most exciting dating platform. Connect authentically, chat safely, and find meaningful relationships.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
                 size="lg" 
                 onClick={onSignUp}
-                className="bg-gradient-to-r from-sky-400 to-sky-500 hover:from-sky-500 hover:to-sky-600 text-white px-8 py-3 font-semibold"
+                className="bg-white text-mjolo-purple hover:bg-white/90 px-8 py-4 font-semibold text-lg shadow-lg"
               >
-                Get Started Free
+                Start Dating Now
               </Button>
               <Button 
                 variant="outline" 
                 size="lg" 
                 onClick={onLogin}
-                className="px-8 py-3 bg-gradient-to-r from-sky-400 to-sky-500 hover:from-sky-500 hover:to-sky-600 text-white border-0"
+                className="px-8 py-4 text-white border-white/30 hover:bg-white/10 backdrop-blur-sm font-semibold text-lg"
               >
                 Sign In
-              </Button>
-              <Button 
-                variant="outline" 
-                size="lg" 
-                onClick={handleVRDemo}
-                className="px-8 py-3 bg-gradient-to-r from-sky-400 to-sky-500 hover:from-sky-500 hover:to-sky-600 text-white border-0"
-              >
-                Try VR Demo
               </Button>
             </div>
           </div>
@@ -65,62 +53,86 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
       </div>
 
       {/* Features Section */}
-      <div className="py-16 bg-gray-50">
+      <div className="py-16 bg-white/10 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Learn Through Stories
+            <h2 className="text-3xl font-bold text-white mb-4">
+              Why Choose Mjolo?
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Experience learning like never before with our innovative approach to education
+            <p className="text-white/80 max-w-2xl mx-auto text-lg">
+              The smartest way to meet amazing people across Africa
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <Card className="text-center p-6 hover:shadow-lg transition-shadow bg-white border border-gray-200">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <Card className="text-center p-6 hover:shadow-xl transition-all bg-white/20 backdrop-blur-sm border border-white/20 hover:bg-white/30">
               <CardContent className="pt-6">
-                <div className="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <BookOpen className="w-6 h-6 text-sky-600" />
+                <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <Heart className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2">Interactive Stories</h3>
-                <p className="text-gray-600 text-sm">
-                  Engage with immersive storytelling experiences
+                <h3 className="font-semibold text-white mb-2 text-lg">Smart Matching</h3>
+                <p className="text-white/80 text-sm">
+                  Our AI finds your perfect matches based on compatibility and shared interests
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="text-center p-6 hover:shadow-lg transition-shadow bg-white border border-gray-200">
+            <Card className="text-center p-6 hover:shadow-xl transition-all bg-white/20 backdrop-blur-sm border border-white/20 hover:bg-white/30">
               <CardContent className="pt-6">
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Play className="w-6 h-6 text-purple-600" />
+                <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <MessageCircle className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2">VR Content</h3>
-                <p className="text-gray-600 text-sm">
-                  Step into virtual worlds and experience stories firsthand
+                <h3 className="font-semibold text-white mb-2 text-lg">Safe Chat</h3>
+                <p className="text-white/80 text-sm">
+                  Secure messaging with photo verification and privacy controls
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="text-center p-6 hover:shadow-lg transition-shadow bg-white border border-gray-200">
+            <Card className="text-center p-6 hover:shadow-xl transition-all bg-white/20 backdrop-blur-sm border border-white/20 hover:bg-white/30">
               <CardContent className="pt-6">
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Users className="w-6 h-6 text-green-600" />
+                <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <Camera className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2">Community</h3>
-                <p className="text-gray-600 text-sm">
-                  Join a vibrant community of learners and storytellers
+                <h3 className="font-semibold text-white mb-2 text-lg">Photo Swap</h3>
+                <p className="text-white/80 text-sm">
+                  Exchange photos safely with mutual consent and verification
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="text-center p-6 hover:shadow-lg transition-shadow bg-white border border-gray-200">
+            <Card className="text-center p-6 hover:shadow-xl transition-all bg-white/20 backdrop-blur-sm border border-white/20 hover:bg-white/30">
               <CardContent className="pt-6">
-                <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Star className="w-6 h-6 text-yellow-600" />
+                <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <Zap className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2">AI-Powered</h3>
-                <p className="text-gray-600 text-sm">
-                  Personalized learning experiences powered by AI
+                <h3 className="font-semibold text-white mb-2 text-lg">Quiz Battles</h3>
+                <p className="text-white/80 text-sm">
+                  Fun quizzes to break the ice and discover compatibility
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center p-6 hover:shadow-xl transition-all bg-white/20 backdrop-blur-sm border border-white/20 hover:bg-white/30">
+              <CardContent className="pt-6">
+                <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <Users className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="font-semibold text-white mb-2 text-lg">Date Rooms</h3>
+                <p className="text-white/80 text-sm">
+                  Virtual date spaces to connect before meeting in person
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center p-6 hover:shadow-xl transition-all bg-white/20 backdrop-blur-sm border border-white/20 hover:bg-white/30">
+              <CardContent className="pt-6">
+                <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <Shield className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="font-semibold text-white mb-2 text-lg">Verified Profiles</h3>
+                <p className="text-white/80 text-sm">
+                  All profiles are verified for authentic and safe connections
                 </p>
               </CardContent>
             </Card>
@@ -129,20 +141,20 @@ const Welcome = ({ onLogin, onSignUp }: WelcomeProps) => {
       </div>
 
       {/* CTA Section */}
-      <div className="py-16 bg-sky-600">
+      <div className="py-16 bg-white/10 backdrop-blur-sm">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-white mb-4">
-            Ready to Begin Your Journey?
+          <h2 className="text-4xl font-bold text-white mb-4">
+            Ready to Find Love?
           </h2>
-          <p className="text-sky-100 mb-8 text-lg">
-            Join thousands of learners exploring African storytelling traditions through modern technology
+          <p className="text-white/80 mb-8 text-xl">
+            Join thousands of singles across Africa finding meaningful connections
           </p>
           <Button 
             size="lg" 
             onClick={onSignUp}
-            className="bg-white text-sky-600 hover:bg-gray-50 px-8 py-3 font-semibold"
+            className="bg-white text-mjolo-purple hover:bg-white/90 px-12 py-4 font-bold text-xl shadow-xl"
           >
-            Start Learning Today
+            Join Mjolo Today
           </Button>
         </div>
       </div>
