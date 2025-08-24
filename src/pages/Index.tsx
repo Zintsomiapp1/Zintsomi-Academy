@@ -5,7 +5,6 @@ import Auth from './Auth';
 import { useAuth } from '@/hooks/useAuth';
 import UserDashboard from '@/components/user/UserDashboard';
 import AskKhalulu from '@/components/AskKhalulu';
-import ZAcademyCourses from '@/components/academy/ZAcademyCourses';
 
 const Index = () => {
   const [currentPage, setCurrentPage] = useState<'welcome' | 'auth' | 'dashboard'>('welcome');
@@ -52,20 +51,15 @@ const Index = () => {
           <div className="mb-6 sm:mb-8">
             <div className="text-center mb-4 sm:mb-6">
               <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 px-2">
-                Need Help? Ask Khalulu the Storyteller!
+                Need Help? Ask Khalulu!
               </h2>
               <p className="text-gray-600 text-sm sm:text-base px-2">
-                Your friendly AI companion is here to help with any questions about your learning journey.
+                Your friendly AI companion is here to help with any questions.
               </p>
             </div>
             <div className="px-2">
               <AskKhalulu />
             </div>
-          </div>
-
-          {/* Z Academy Courses Section */}
-          <div className="mb-8 sm:mb-12">
-            <ZAcademyCourses />
           </div>
           
           <div className="px-2">

@@ -15,11 +15,11 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { useUserProgress } from '@/hooks/useUserProgress';
+// import { useUserProgress } from '@/hooks/useUserProgress';
 
 const UserDashboard = () => {
   const { user } = useAuth();
-  const { progress } = useUserProgress();
+  // const { progress } = useUserProgress();
 
   const stats = [
     { label: 'Courses Completed', value: '0', icon: Trophy, color: 'text-yellow-600' },
@@ -47,18 +47,7 @@ const UserDashboard = () => {
                   Settings
                 </Button>
               </Link>
-              <Link to="/wishlist">
-                <Button variant="outline" size="sm">
-                  <Heart className="w-4 h-4 mr-2" />
-                  Wishlist
-                </Button>
-              </Link>
-              <Link to="/cart">
-                <Button variant="outline" size="sm">
-                  <ShoppingCart className="w-4 h-4 mr-2" />
-                  Cart
-                </Button>
-              </Link>
+              {/* Removed wishlist and cart buttons */}
             </div>
           </div>
         </CardContent>
@@ -91,10 +80,10 @@ const UserDashboard = () => {
         </CardHeader>
         <CardContent className="text-center py-12">
           <BookOpen className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No courses started yet</h3>
-          <p className="text-gray-600 mb-6">Begin your learning journey by exploring our course catalog</p>
-          <Link to="/courses">
-            <Button className="bg-sky-600 hover:bg-sky-700">Browse Courses</Button>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Welcome to Mjolo!</h3>
+          <p className="text-gray-600 mb-6">Your social and gaming platform</p>
+          <Link to="/mjolo">
+            <Button className="bg-sky-600 hover:bg-sky-700">Go to Mjolo</Button>
           </Link>
         </CardContent>
       </Card>
@@ -103,11 +92,11 @@ const UserDashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardContent className="p-6 text-center">
-            <BookOpen className="w-12 h-12 mx-auto mb-4 text-sky-600" />
-            <h3 className="font-semibold mb-2">Browse Courses</h3>
-            <p className="text-sm text-gray-600 mb-4">Discover new learning opportunities</p>
-            <Link to="/courses">
-              <Button className="w-full bg-sky-600 hover:bg-sky-700">Explore Courses</Button>
+            <Heart className="w-12 h-12 mx-auto mb-4 text-pink-600" />
+            <h3 className="font-semibold mb-2">Mjolo Dating</h3>
+            <p className="text-sm text-gray-600 mb-4">Find your perfect match</p>
+            <Link to="/mjolo">
+              <Button className="w-full bg-pink-600 hover:bg-pink-700">Start Dating</Button>
             </Link>
           </CardContent>
         </Card>

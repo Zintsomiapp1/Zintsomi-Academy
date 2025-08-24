@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useUserRole } from '@/hooks/useUserRole';
-import CourseManagement from './CourseManagement';
+// import CourseManagement from './CourseManagement';
 import LibraryManagement from './LibraryManagement';
 import CommunityManagement from './CommunityManagement';
 import UserManagement from './UserManagement';
@@ -44,7 +44,7 @@ const AdminPanel = () => {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Panel</h1>
-          <p className="text-gray-600">Manage Storytelling College content and users</p>
+          <p className="text-gray-600">Manage Mjolo platform content and users</p>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
@@ -176,7 +176,9 @@ const AdminPanel = () => {
           </TabsContent>
 
           <TabsContent value="courses">
-            <CourseManagement />
+            <div className="text-center py-12">
+              <p className="text-gray-600">Course management removed</p>
+            </div>
           </TabsContent>
 
           <TabsContent value="library">
