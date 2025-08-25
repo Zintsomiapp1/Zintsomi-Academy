@@ -4,7 +4,7 @@ import Welcome from './Welcome';
 import Auth from './Auth';
 import { useAuth } from '@/hooks/useAuth';
 import UserDashboard from '@/components/user/UserDashboard';
-import AskKhalulu from '@/components/AskKhalulu';
+
 
 const Index = () => {
   const [currentPage, setCurrentPage] = useState<'welcome' | 'auth' | 'dashboard'>('welcome');
@@ -47,20 +47,6 @@ const Index = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-gray-50">
         <div className="container mx-auto px-4 py-4 sm:py-8 max-w-7xl">
-          {/* Ask Khalulu Section - Prominently positioned */}
-          <div className="mb-6 sm:mb-8">
-            <div className="text-center mb-4 sm:mb-6">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 px-2">
-                Need Help? Ask Khalulu!
-              </h2>
-              <p className="text-gray-600 text-sm sm:text-base px-2">
-                Your friendly AI companion is here to help with any questions.
-              </p>
-            </div>
-            <div className="px-2">
-              <AskKhalulu />
-            </div>
-          </div>
           
           <div className="px-2">
             <UserDashboard />
