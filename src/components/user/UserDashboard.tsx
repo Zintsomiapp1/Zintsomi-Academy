@@ -22,10 +22,10 @@ const UserDashboard = () => {
   // const { progress } = useUserProgress();
 
   const stats = [
-    { label: 'Courses Completed', value: '0', icon: Trophy, color: 'text-yellow-600' },
-    { label: 'Hours Learned', value: '0', icon: Clock, color: 'text-sky-600' },
-    { label: 'Current Streak', value: '0 days', icon: Target, color: 'text-green-600' },
-    { label: 'Certificates', value: '0', icon: BookOpen, color: 'text-purple-600' }
+    { label: 'Matches Made', value: '0', icon: Heart, color: 'text-pink-600' },
+    { label: 'Messages Sent', value: '0', icon: Clock, color: 'text-blue-600' },
+    { label: 'Profile Views', value: '0', icon: Target, color: 'text-green-600' },
+    { label: 'Dates Planned', value: '0', icon: Trophy, color: 'text-purple-600' }
   ];
 
   return (
@@ -38,7 +38,7 @@ const UserDashboard = () => {
               <h2 className="text-2xl font-bold mb-2">
                 Welcome back, {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Learner'}!
               </h2>
-              <p className="text-gray-600">Start your learning journey today</p>
+              <p className="text-gray-600">Ready to find your perfect match?</p>
             </div>
             <div className="flex gap-2">
               <Link to="/profile-settings">
@@ -73,17 +73,17 @@ const UserDashboard = () => {
         })}
       </div>
 
-      {/* Empty Learning State */}
+      {/* Get Started */}
       <Card>
         <CardHeader>
-          <CardTitle>Continue Learning</CardTitle>
+          <CardTitle>Start Your Dating Journey</CardTitle>
         </CardHeader>
         <CardContent className="text-center py-12">
-          <BookOpen className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Welcome to Mjolo!</h3>
-          <p className="text-gray-600 mb-6">Your social and gaming platform</p>
+          <Heart className="w-16 h-16 mx-auto mb-4 text-pink-500" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Find Your Perfect Match</h3>
+          <p className="text-gray-600 mb-6">Connect with amazing people across Africa</p>
           <Link to="/mjolo">
-            <Button className="bg-sky-600 hover:bg-sky-700">Go to Mjolo</Button>
+            <Button className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white">Start Dating</Button>
           </Link>
         </CardContent>
       </Card>
