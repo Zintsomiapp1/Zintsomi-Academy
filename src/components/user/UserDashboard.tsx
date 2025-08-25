@@ -89,7 +89,7 @@ const UserDashboard = () => {
       </Card>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
           <CardContent className="p-6 text-center">
             <Heart className="w-12 h-12 mx-auto mb-4 text-pink-600" />
@@ -101,16 +101,6 @@ const UserDashboard = () => {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="p-6 text-center">
-            <Target className="w-12 h-12 mx-auto mb-4 text-green-600" />
-            <h3 className="font-semibold mb-2">Brain Training</h3>
-            <p className="text-sm text-gray-600 mb-4">Exercise your cognitive abilities</p>
-            <Link to="/brain-training">
-              <Button className="w-full" variant="outline">Start Training</Button>
-            </Link>
-          </CardContent>
-        </Card>
 
         <Card>
           <CardContent className="p-6 text-center">
