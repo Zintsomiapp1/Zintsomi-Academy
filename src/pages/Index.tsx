@@ -45,13 +45,8 @@ const Index = () => {
   // If user is authenticated, show user dashboard with enhanced features
   if (user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-gray-50">
-        <div className="container mx-auto px-4 py-4 sm:py-8 max-w-7xl">
-          
-          <div className="px-2">
-            <UserDashboard />
-          </div>
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-mjolo-pink/5 via-white to-mjolo-purple/5">
+        <UserDashboard />
       </div>
     );
   }
