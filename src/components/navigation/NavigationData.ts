@@ -19,10 +19,8 @@ import {
 
 export const createNavItems = (isAdmin: boolean) => {
   const baseItems = [
-    { path: '/', label: 'Home', icon: Home, gradient: 'from-sky-500 to-blue-600' },
-    { path: '/mjolo', label: 'Mjolo', icon: Heart, gradient: 'from-pink-500 to-red-600' },
-    { path: '/games', label: 'Games', icon: Gamepad2, gradient: 'from-orange-500 to-red-600' },
-    { path: '/brain-training', label: 'Brain Training', icon: Brain, gradient: 'from-indigo-500 to-purple-600' },
+    { path: '/', label: 'Home', icon: Home, gradient: 'from-mjolo-pink to-mjolo-purple' },
+    { path: '/mjolo', label: 'Mjolo', icon: Heart, gradient: 'from-mjolo-coral to-mjolo-pink' },
   ];
 
   if (isAdmin) {
