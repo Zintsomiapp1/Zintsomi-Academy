@@ -7,6 +7,7 @@ import { PhotoSwaps } from '@/components/mjolo/PhotoSwaps';
 import { MatchFeed } from '@/components/mjolo/MatchFeed';
 import { QuizBattle } from '@/components/mjolo/QuizBattle';
 import { DateRooms } from '@/components/mjolo/DateRooms';
+import MessagingInterface from '@/components/messaging/MessagingInterface';
 import { useAuth } from '@/hooks/useAuth';
 
 export default function Mjolo() {
@@ -42,10 +43,14 @@ export default function Mjolo() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8">
+          <TabsList className="grid w-full grid-cols-5 mb-8">
             <TabsTrigger value="matches" className="flex items-center gap-2">
               <Heart className="h-4 w-4" />
               Matches
+            </TabsTrigger>
+            <TabsTrigger value="messages" className="flex items-center gap-2">
+              <MessageSquare className="h-4 w-4" />
+              Messages
             </TabsTrigger>
             <TabsTrigger value="photos" className="flex items-center gap-2">
               <Camera className="h-4 w-4" />
@@ -56,13 +61,17 @@ export default function Mjolo() {
               Quiz Battle
             </TabsTrigger>
             <TabsTrigger value="dates" className="flex items-center gap-2">
-              <MessageSquare className="h-4 w-4" />
+              <Users className="h-4 w-4" />
               Date Rooms
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="matches">
             <MatchFeed />
+          </TabsContent>
+
+          <TabsContent value="messages">
+            <MessagingInterface />
           </TabsContent>
 
           <TabsContent value="photos">

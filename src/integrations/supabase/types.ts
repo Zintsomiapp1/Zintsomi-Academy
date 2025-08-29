@@ -318,6 +318,39 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_preferences: {
+        Row: {
+          activity_notifications: boolean
+          created_at: string
+          id: string
+          match_notifications: boolean
+          message_notifications: boolean
+          push_notifications: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          activity_notifications?: boolean
+          created_at?: string
+          id?: string
+          match_notifications?: boolean
+          message_notifications?: boolean
+          push_notifications?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          activity_notifications?: boolean
+          created_at?: string
+          id?: string
+          match_notifications?: boolean
+          message_notifications?: boolean
+          push_notifications?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           amount: number
@@ -556,6 +589,72 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          match_id: string | null
+          message_type: string
+          read_at: string | null
+          receiver_id: string
+          sender_id: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          match_id?: string | null
+          message_type?: string
+          read_at?: string | null
+          receiver_id: string
+          sender_id: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          match_id?: string | null
+          message_type?: string
+          read_at?: string | null
+          receiver_id?: string
+          sender_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_presence: {
+        Row: {
+          created_at: string
+          currently_typing_to: string | null
+          id: string
+          is_online: boolean
+          last_seen: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          currently_typing_to?: string | null
+          id?: string
+          is_online?: boolean
+          last_seen?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          currently_typing_to?: string | null
+          id?: string
+          is_online?: boolean
+          last_seen?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_progress: {
         Row: {
