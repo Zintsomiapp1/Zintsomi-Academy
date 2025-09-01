@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
+import { usePushNotifications } from '@/hooks/usePushNotifications';
 
 export interface UserMessage {
   id: string;
@@ -31,6 +32,7 @@ export interface UserPresence {
 export const useMessaging = (receiverId?: string) => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { notifyNewMessage } = usePushNotifications();
   const [messages, setMessages] = useState<UserMessage[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [userPresence, setUserPresence] = useState<Record<string, UserPresence>>({});
@@ -195,10 +197,16 @@ export const useMessaging = (receiverId?: string) => {
 
           // Show notification if message is from someone else
           if (newMessage.sender_id !== user.id) {
+            const senderName = senderProfile?.full_name || "Someone";
+            
+            // Show toast notification
             toast({
               title: "New Message",
-              description: senderProfile?.full_name || "Someone sent you a message"
+              description: `${senderName} sent you a message`
             });
+
+            // Show push notification
+            notifyNewMessage(senderName, newMessage.content);
           }
         }
       )
