@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ConversationList from './ConversationList';
 import ChatWindow from './ChatWindow';
+import OnlineUsersList from './OnlineUsersList';
 
 const MessagingInterface = () => {
   const [selectedConversation, setSelectedConversation] = useState<{
@@ -18,16 +19,30 @@ const MessagingInterface = () => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full max-w-6xl mx-auto">
       {selectedConversation ? (
-        <ChatWindow
-          receiverId={selectedConversation.userId}
-          receiverName={selectedConversation.userName}
-          receiverAvatar={selectedConversation.userAvatar}
-          onBack={handleBack}
-        />
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+          <div className="lg:col-span-3">
+            <ChatWindow
+              receiverId={selectedConversation.userId}
+              receiverName={selectedConversation.userName}
+              receiverAvatar={selectedConversation.userAvatar}
+              onBack={handleBack}
+            />
+          </div>
+          <div className="hidden lg:block">
+            <OnlineUsersList />
+          </div>
+        </div>
       ) : (
-        <ConversationList onSelectConversation={handleSelectConversation} />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2">
+            <ConversationList onSelectConversation={handleSelectConversation} />
+          </div>
+          <div className="hidden lg:block">
+            <OnlineUsersList />
+          </div>
+        </div>
       )}
     </div>
   );

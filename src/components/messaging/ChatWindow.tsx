@@ -101,6 +101,13 @@ const ChatWindow = ({ receiverId, receiverName, receiverAvatar, onBack }: ChatWi
             >
               {isReceiverOnline ? "Online" : "Offline"}
             </Badge>
+            
+            {/* Typing indicator in header */}
+            {isTyping && (
+              <span className="text-xs text-mjolo-pink font-medium italic animate-pulse">
+                typing...
+              </span>
+            )}
           </div>
         </div>
       </CardHeader>
@@ -123,7 +130,7 @@ const ChatWindow = ({ receiverId, receiverName, receiverAvatar, onBack }: ChatWi
               );
             })}
             
-            {isTyping && <TypingIndicator />}
+            {isTyping && <TypingIndicator userName={receiverName} userAvatar={receiverAvatar} />}
             <div ref={messagesEndRef} />
           </div>
         </ScrollArea>
