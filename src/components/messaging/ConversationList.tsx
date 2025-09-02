@@ -9,6 +9,7 @@ import { Search, MessageCircle, Users, Circle } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import OnlineStatus from '@/components/ui/online-status';
 
 interface Profile {
   id: string;
@@ -40,6 +41,7 @@ const ConversationList = ({ onSelectConversation }: ConversationListProps) => {
   const { toast } = useToast();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [onlineUsers, setOnlineUsers] = useState<Record<string, any>>({});
+  const [userPresence, setUserPresence] = useState<Record<string, { is_online: boolean; last_seen: string }>>({});
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -98,6 +100,23 @@ const ConversationList = ({ onSelectConversation }: ConversationListProps) => {
       profilesData?.forEach((profile) => {
         profilesMap[profile.id] = profile;
       });
+
+      // Get presence data for conversation participants
+      if (userIdsArray.length > 0) {
+        const { data: presenceData } = await supabase
+          .from('user_presence')
+          .select('user_id, is_online, last_seen')
+          .in('user_id', userIdsArray);
+
+        const presenceMap: Record<string, { is_online: boolean; last_seen: string }> = {};
+        presenceData?.forEach((presence) => {
+          presenceMap[presence.user_id] = {
+            is_online: presence.is_online,
+            last_seen: presence.last_seen
+          };
+        });
+        setUserPresence(presenceMap);
+      }
 
       messageData?.forEach(message => {
         const otherUserId = message.sender_id === user.id ? message.receiver_id : message.sender_id;

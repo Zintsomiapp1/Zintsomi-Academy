@@ -139,7 +139,7 @@ const OnlineUsersList = () => {
               {onlineUsers.map((user) => (
                 <div
                   key={user.user_id}
-                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"
+                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors"
                 >
                   <div className="relative">
                     <Avatar className="w-10 h-10">

@@ -91,16 +91,16 @@ const ChatWindow = ({ receiverId, receiverName, receiverAvatar, onBack }: ChatWi
         <div className="flex-1">
           <CardTitle className="text-lg">{receiverName}</CardTitle>
           <div className="flex items-center gap-2">
-            <Badge 
-              variant={isReceiverOnline ? "default" : "secondary"}
-              className={`text-xs ${
-                isReceiverOnline 
-                  ? "bg-green-500 hover:bg-green-600" 
-                  : "bg-gray-400"
-              }`}
-            >
-              {isReceiverOnline ? "Online" : "Offline"}
-            </Badge>
+            <div className="flex items-center gap-1">
+              <div className={`w-2 h-2 rounded-full ${
+                isReceiverOnline ? 'bg-green-500' : 'bg-gray-400'
+              }`} />
+              <span className={`text-xs font-medium ${
+                isReceiverOnline ? 'text-green-600' : 'text-gray-500'
+              }`}>
+                {isReceiverOnline ? 'Online' : 'Offline'}
+              </span>
+            </div>
             
             {/* Typing indicator in header */}
             {isTyping && (
