@@ -49,6 +49,7 @@ const ChatWindow = ({ receiverId, receiverName, receiverAvatar, onBack }: ChatWi
   }, [messages, user?.id, markAsRead]);
 
   const isReceiverOnline = userPresence[receiverId]?.is_online || false;
+  const isReceiverTyping = userPresence[receiverId]?.currently_typing_to === user?.id;
 
   const handleSendMessage = (content: string) => {
     sendMessage(content);
@@ -103,7 +104,7 @@ const ChatWindow = ({ receiverId, receiverName, receiverAvatar, onBack }: ChatWi
             </div>
             
             {/* Typing indicator in header */}
-            {isTyping && (
+            {isReceiverTyping && (
               <span className="text-xs text-mjolo-pink font-medium italic animate-pulse">
                 typing...
               </span>
@@ -130,7 +131,7 @@ const ChatWindow = ({ receiverId, receiverName, receiverAvatar, onBack }: ChatWi
               );
             })}
             
-            {isTyping && <TypingIndicator userName={receiverName} userAvatar={receiverAvatar} />}
+            {isReceiverTyping && <TypingIndicator userName={receiverName} userAvatar={receiverAvatar} />}
             <div ref={messagesEndRef} />
           </div>
         </ScrollArea>

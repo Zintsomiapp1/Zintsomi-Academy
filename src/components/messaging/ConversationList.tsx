@@ -41,7 +41,7 @@ const ConversationList = ({ onSelectConversation }: ConversationListProps) => {
   const { toast } = useToast();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [onlineUsers, setOnlineUsers] = useState<Record<string, any>>({});
-  const [userPresence, setUserPresence] = useState<Record<string, { is_online: boolean; last_seen: string }>>({});
+  const [userPresence, setUserPresence] = useState<Record<string, { is_online: boolean; last_seen: string; currently_typing_to: string | null }>>({});
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -105,14 +105,15 @@ const ConversationList = ({ onSelectConversation }: ConversationListProps) => {
       if (userIdsArray.length > 0) {
         const { data: presenceData } = await supabase
           .from('user_presence')
-          .select('user_id, is_online, last_seen')
+          .select('user_id, is_online, last_seen, currently_typing_to')
           .in('user_id', userIdsArray);
 
-        const presenceMap: Record<string, { is_online: boolean; last_seen: string }> = {};
+        const presenceMap: Record<string, { is_online: boolean; last_seen: string; currently_typing_to: string | null }> = {};
         presenceData?.forEach((presence) => {
           presenceMap[presence.user_id] = {
             is_online: presence.is_online,
-            last_seen: presence.last_seen
+            last_seen: presence.last_seen,
+            currently_typing_to: presence.currently_typing_to
           };
         });
         setUserPresence(presenceMap);

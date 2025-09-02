@@ -31,7 +31,7 @@ const MessagingInterface = () => {
             />
           </div>
           <div className="hidden lg:block">
-            <OnlineUsersList />
+            <OnlineUsersList onSelectUser={handleSelectConversation} />
           </div>
         </div>
       ) : (
@@ -40,7 +40,7 @@ const MessagingInterface = () => {
             <ConversationList onSelectConversation={handleSelectConversation} />
           </div>
           <div className="hidden lg:block">
-            <OnlineUsersList />
+            <OnlineUsersList onSelectUser={handleSelectConversation} />
           </div>
         </div>
       )}

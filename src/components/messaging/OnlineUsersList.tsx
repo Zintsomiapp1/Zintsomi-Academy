@@ -21,7 +21,11 @@ interface OnlineUser {
   };
 }
 
-const OnlineUsersList = () => {
+interface OnlineUsersListProps {
+  onSelectUser?: (userId: string, userName: string, userAvatar?: string) => void;
+}
+
+const OnlineUsersList = ({ onSelectUser }: OnlineUsersListProps) => {
   const { user } = useAuth();
   const [onlineUsers, setOnlineUsers] = useState<OnlineUser[]>([]);
   const [loading, setLoading] = useState(true);
@@ -140,6 +144,7 @@ const OnlineUsersList = () => {
                 <div
                   key={user.user_id}
                   className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors"
+                  onClick={() => onSelectUser?.(user.user_id, user.profile?.full_name || user.profile?.username || 'Unknown', user.profile?.avatar_url)}
                 >
                   <div className="relative">
                     <Avatar className="w-10 h-10">
