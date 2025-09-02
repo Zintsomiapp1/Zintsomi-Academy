@@ -10,6 +10,13 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
+interface Profile {
+  id: string;
+  username: string | null;
+  full_name: string | null;
+  avatar_url: string | null;
+}
+
 interface Conversation {
   id: string;
   user_id: string;
@@ -87,10 +94,10 @@ const ConversationList = ({ onSelectConversation }: ConversationListProps) => {
         .select('id, username, full_name, avatar_url')
         .in('id', userIdsArray) : { data: [] };
 
-      const profilesMap = profilesData?.reduce((acc, profile) => {
-        acc[profile.id] = profile;
-        return acc;
-      }, {} as Record<string, any>) || {};
+      const profilesMap: Record<string, Profile> = {};
+      profilesData?.forEach((profile) => {
+        profilesMap[profile.id] = profile;
+      });
 
       messageData?.forEach(message => {
         const otherUserId = message.sender_id === user.id ? message.receiver_id : message.sender_id;
@@ -106,9 +113,9 @@ const ConversationList = ({ onSelectConversation }: ConversationListProps) => {
           conversationMap.set(otherUserId, {
             id: otherUserId,
             user_id: otherUserId,
-            full_name: otherUser.full_name || otherUser.username || 'Unknown',
-            username: otherUser.username || '',
-            avatar_url: otherUser.avatar_url || '',
+            full_name: (otherUser.full_name || otherUser.username || 'Unknown'),
+            username: (otherUser.username || ''),
+            avatar_url: (otherUser.avatar_url || ''),
             last_message: message.content,
             last_message_time: message.created_at,
             unread_count: isUnread ? (existingConv?.unread_count || 0) + 1 : (existingConv?.unread_count || 0),
