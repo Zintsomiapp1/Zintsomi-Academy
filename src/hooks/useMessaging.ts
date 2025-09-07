@@ -112,11 +112,15 @@ export const useMessaging = (receiverId?: string) => {
             .single();
           
           if (achievements) {
-            await supabase.rpc('check_and_award_achievement', {
-              user_id: user.id,
-              achievement_id: achievements.id,
-              progress: 1
-            });
+            await supabase
+              .from('user_achievements')
+              .insert({
+                user_id: user.id,
+                achievement_id: achievements.id,
+                progress: 1,
+                is_completed: true,
+                completed_at: new Date().toISOString()
+              });
           }
         } catch (error) {
           console.error('Error checking social butterfly achievement:', error);

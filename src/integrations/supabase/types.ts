@@ -912,6 +912,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_and_award_achievement: {
+        Args: { achievement_id: string; progress: number; user_id: string }
+        Returns: undefined
+      }
       check_streak_achievements: {
         Args: { current_streak: number; streak_type: string; user_id: string }
         Returns: undefined

@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import GamificationWidget from '@/components/gamification/GamificationWidget';
 
 const UserDashboard = () => {
   const { user } = useAuth();
@@ -150,6 +151,11 @@ const UserDashboard = () => {
               </CardContent>
             </Card>
           </Link>
+        </div>
+        
+        {/* Gamification Widget */}
+        <div className="mt-6">
+          <GamificationWidget />
         </div>
       </div>
     </div>
