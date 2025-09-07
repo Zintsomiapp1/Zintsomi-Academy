@@ -10,6 +10,9 @@ import Index from "./pages/Index";
 import Welcome from "./pages/Welcome";
 import Auth from "./pages/Auth";
 import Mjolo from "./pages/Mjolo";
+import Games from "./pages/Games";
+import BrainTraining from "./pages/BrainTraining";
+import Gamification from "./pages/Gamification";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminPanel from "./pages/AdminPanel";
 import ProfileSettings from "./pages/ProfileSettings";
@@ -33,6 +36,9 @@ const App = () => (
                 <Route path="/welcome" element={<Welcome onLogin={() => {}} onSignUp={() => {}} />} />
                 <Route path="/auth" element={<Auth onLogin={() => {}} onBack={() => {}} />} />
                 <Route path="/mjolo" element={<Mjolo />} />
+                <Route path="/games" element={<Games />} />
+                <Route path="/brain-training" element={<BrainTraining />} />
+                <Route path="/gamification" element={<Gamification />} />
                 <Route path="/admin-dashboard" element={<AdminDashboard />} />
                 <Route path="/admin" element={<AdminPanel />} />
                 <Route path="/settings" element={<ProfileSettings />} />

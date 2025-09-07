@@ -99,6 +99,29 @@ export const useMessaging = (receiverId?: string) => {
 
       // Clear typing indicator
       await updateTypingStatus(false);
+      
+      // Award social achievements for messaging
+      const messageCount = messages.length + 1;
+      if (messageCount === 1) {
+        // Award "Social Butterfly" achievement for first message
+        try {
+          const { data: achievements } = await supabase
+            .from('achievements')
+            .select('id')
+            .eq('name', 'Social Butterfly')
+            .single();
+          
+          if (achievements) {
+            await supabase.rpc('check_and_award_achievement', {
+              user_id: user.id,
+              achievement_id: achievements.id,
+              progress: 1
+            });
+          }
+        } catch (error) {
+          console.error('Error checking social butterfly achievement:', error);
+        }
+      }
     } catch (error) {
       console.error('Error sending message:', error);
       toast({

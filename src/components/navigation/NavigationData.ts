@@ -21,6 +21,9 @@ export const createNavItems = (isAdmin: boolean) => {
   const baseItems = [
     { path: '/', label: 'Home', icon: Home, gradient: 'from-mjolo-pink to-mjolo-purple' },
     { path: '/mjolo', label: 'Mjolo', icon: Heart, gradient: 'from-mjolo-coral to-mjolo-pink' },
+    { path: '/games', label: 'Games', icon: Gamepad2, gradient: 'from-purple-600 to-blue-600' },
+    { path: '/brain-training', label: 'Brain Training', icon: Brain, gradient: 'from-green-600 to-blue-600' },
+    { path: '/gamification', label: 'Achievements', icon: Trophy, gradient: 'from-yellow-500 to-orange-600' },
   ];
 
   if (isAdmin) {
