@@ -142,43 +142,50 @@ const Auth = ({ onLogin, onBack }: AuthProps) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <Button
-          variant="ghost"
-          onClick={onBack}
-          className="mb-6 text-gray-600 hover:text-gray-900"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Welcome
-        </Button>
+    <div className="max-w-md mx-auto min-h-screen bg-white">
+      <div className="relative h-screen flex flex-col">
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 safe-area-top">
+          <Button
+            variant="ghost"
+            onClick={onBack}
+            className="p-2 touch-target"
+            size="sm"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
+          <h1 className="font-semibold text-lg">
+            {isLogin ? 'Sign In' : 'Create Account'}
+          </h1>
+          <div className="w-9"></div> {/* Spacer for centering */}
+        </div>
 
-        <Card className="w-full">
-          <CardHeader className="text-center">
-            <img
-              src="/lovable-uploads/3c8a256a-babc-45a4-bf11-fb10887a065e.png"
-              alt="Mjolo logo"
-              className="w-16 h-16 object-contain mx-auto mb-4"
-            />
-            <CardTitle className="text-2xl font-bold">
-              {isLogin ? 'Welcome Back' : 'Join Zintsomi College'}
-            </CardTitle>
-            <p className="text-gray-600">
-              {isLogin
-                ? 'Sign in to continue your learning journey'
-                : 'Create an account to start exploring stories'}
-            </p>
-          </CardHeader>
+        {/* Logo Section */}
+        <div className="px-6 py-8 text-center">
+          <img
+            src="/lovable-uploads/3c8a256a-babc-45a4-bf11-fb10887a065e.png"
+            alt="Mjolo logo"
+            className="w-20 h-20 object-contain mx-auto mb-6"
+          />
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-mjolo-pink to-mjolo-purple bg-clip-text text-transparent mb-2">
+            Welcome to Mjolo
+          </h2>
+          <p className="text-gray-600">
+            {isLogin
+              ? 'Sign in to start swiping and find your match'
+              : 'Create your profile and discover love'}
+          </p>
+        </div>
 
-          <CardContent>
-            <AuthForm
-              isLogin={isLogin}
-              loading={loading}
-              onSubmit={handleSubmit}
-              onToggleMode={() => setIsLogin(!isLogin)}
-            />
-          </CardContent>
-        </Card>
+        {/* Form Section */}
+        <div className="flex-1 px-6 pb-6">
+          <AuthForm
+            isLogin={isLogin}
+            loading={loading}
+            onSubmit={handleSubmit}
+            onToggleMode={() => setIsLogin(!isLogin)}
+          />
+        </div>
       </div>
     </div>
   );
