@@ -7,11 +7,12 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Camera, Save, User, Mail, Phone, MapPin, Shield, Bell } from 'lucide-react';
+import { Camera, Save, User, Mail, Phone, MapPin, Shield, Bell, MessageSquare } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import SecuritySettings from '@/components/settings/SecuritySettings';
 import NotificationSettings from '@/components/notifications/NotificationSettings';
+import { ProfilePrompts } from '@/components/profile/ProfilePrompts';
 
 const ProfileSettings = () => {
   const { user } = useAuth();
@@ -58,10 +59,14 @@ const ProfileSettings = () => {
           <h1 className="text-3xl font-bold text-gray-900 mb-8">Account Settings</h1>
           
           <Tabs defaultValue="profile" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="profile" className="flex items-center gap-2">
                 <User className="h-4 w-4" />
                 Profile
+              </TabsTrigger>
+              <TabsTrigger value="prompts" className="flex items-center gap-2">
+                <MessageSquare className="h-4 w-4" />
+                Prompts
               </TabsTrigger>
               <TabsTrigger value="notifications" className="flex items-center gap-2">
                 <Bell className="h-4 w-4" />
@@ -210,6 +215,10 @@ const ProfileSettings = () => {
                   {loading ? 'Saving...' : 'Save Changes'}
                 </Button>
               </div>
+            </TabsContent>
+
+            <TabsContent value="prompts">
+              <ProfilePrompts />
             </TabsContent>
 
             <TabsContent value="notifications">

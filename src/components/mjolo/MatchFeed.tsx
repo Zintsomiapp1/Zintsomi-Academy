@@ -6,6 +6,7 @@ import { Heart, X, MessageSquare, Star } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
+import { SwipeableCard } from './SwipeableCard';
 
 interface Profile {
   id: string;
@@ -13,6 +14,10 @@ interface Profile {
   full_name: string;
   avatar_url: string;
   bio: string;
+  prompts?: Array<{
+    question: string;
+    answer: string;
+  }>;
 }
 
 interface Match {
@@ -40,17 +45,40 @@ export function MatchFeed() {
 
   const fetchProfiles = async () => {
     try {
-      const { data, error } = await supabase
+      // First get profiles
+      const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
         .select('*')
         .neq('id', user?.id)
         .limit(10);
 
-      if (error) throw error;
+      if (profilesError) throw profilesError;
       
-      setProfiles(data || []);
-      if (data && data.length > 0) {
-        setCurrentProfile(data[0]);
+      // Then get their prompt answers
+      const profilesWithPrompts = await Promise.all(
+        (profilesData || []).map(async (profile) => {
+          const { data: promptAnswers } = await supabase
+            .from('user_prompt_answers')
+            .select(`
+              answer,
+              prompt:profile_prompts(question)
+            `)
+            .eq('user_id', profile.id)
+            .limit(3);
+
+          return {
+            ...profile,
+            prompts: promptAnswers?.map(pa => ({
+              question: pa.prompt.question,
+              answer: pa.answer
+            })) || []
+          };
+        })
+      );
+      
+      setProfiles(profilesWithPrompts);
+      if (profilesWithPrompts && profilesWithPrompts.length > 0) {
+        setCurrentProfile(profilesWithPrompts[0]);
       }
     } catch (error) {
       console.error('Error fetching profiles:', error);
@@ -160,41 +188,10 @@ export function MatchFeed() {
     <div className="space-y-6">
       {/* Current Profile Card */}
       {currentProfile && (
-        <Card className="max-w-md mx-auto">
-          <CardHeader className="text-center">
-            <Avatar className="h-32 w-32 mx-auto">
-              <AvatarImage src={currentProfile.avatar_url} />
-              <AvatarFallback className="text-2xl">
-                {currentProfile.full_name?.[0] || currentProfile.username?.[0] || '?'}
-              </AvatarFallback>
-            </Avatar>
-            <CardTitle className="text-xl">
-              {currentProfile.full_name || currentProfile.username}
-            </CardTitle>
-            {currentProfile.bio && (
-              <p className="text-muted-foreground">{currentProfile.bio}</p>
-            )}
-          </CardHeader>
-          <CardContent>
-            <div className="flex justify-center gap-4">
-              <Button
-                variant="outline"
-                size="lg"
-                className="rounded-full w-16 h-16"
-                onClick={() => handleSwipe(false)}
-              >
-                <X className="h-6 w-6 text-red-500" />
-              </Button>
-              <Button
-                size="lg"
-                className="rounded-full w-16 h-16 bg-gradient-to-r from-pink-500 to-red-500"
-                onClick={() => handleSwipe(true)}
-              >
-                <Heart className="h-6 w-6" />
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <SwipeableCard
+          profile={currentProfile}
+          onSwipe={handleSwipe}
+        />
       )}
 
       {/* Matches List */}
