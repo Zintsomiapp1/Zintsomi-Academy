@@ -10,9 +10,15 @@ interface Profile {
   full_name: string;
   avatar_url: string;
   bio: string;
+  distance?: number | null;
   prompts?: Array<{
     question: string;
     answer: string;
+  }>;
+  photos?: Array<{
+    photo_url: string;
+    is_primary: boolean;
+    display_order: number;
   }>;
 }
 
@@ -137,22 +143,48 @@ export const SwipeableCard: React.FC<SwipeableCardProps> = ({
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}
       >
-        <CardHeader className="text-center pb-4">
-          <Avatar className="h-32 w-32 mx-auto mb-4">
-            <AvatarImage src={profile.avatar_url} />
-            <AvatarFallback className="text-2xl">
-              {profile.full_name?.[0] || profile.username?.[0] || '?'}
-            </AvatarFallback>
-          </Avatar>
-          <CardTitle className="text-2xl">
-            {profile.full_name || profile.username}
-          </CardTitle>
-          {profile.bio && (
-            <p className="text-muted-foreground mt-2">{profile.bio}</p>
+        <div className="h-96 bg-gradient-to-br from-pink-400 to-purple-400 relative overflow-hidden rounded-t-2xl">
+          {profile.photos && profile.photos.length > 0 ? (
+            <div className="relative w-full h-full">
+              <img 
+                src={profile.photos.find(p => p.is_primary)?.photo_url || profile.photos[0]?.photo_url} 
+                alt={profile.full_name || profile.username}
+                className="w-full h-full object-cover"
+              />
+              {profile.photos.length > 1 && (
+                <div className="absolute top-4 right-4 bg-black/50 text-white px-2 py-1 rounded-full text-sm">
+                  1/{profile.photos.length}
+                </div>
+              )}
+            </div>
+          ) : profile.avatar_url ? (
+            <img 
+              src={profile.avatar_url} 
+              alt={profile.full_name || profile.username}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-white text-6xl font-bold">
+              {(profile.full_name || profile.username)?.[0]?.toUpperCase()}
+            </div>
           )}
-        </CardHeader>
+        </div>
         
-        <CardContent className="space-y-4">
+        <div className="p-6 space-y-4">
+          <div>
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold">{profile.full_name || profile.username}</h2>
+              {profile.distance && (
+                <span className="text-sm text-muted-foreground bg-muted px-2 py-1 rounded-full">
+                  {Math.round(profile.distance)} km away
+                </span>
+              )}
+            </div>
+            {profile.bio && (
+              <p className="text-muted-foreground mt-2">{profile.bio}</p>
+            )}
+          </div>
+        
           {/* Profile Prompts */}
           {profile.prompts && profile.prompts.length > 0 && (
             <div className="space-y-3">
@@ -199,7 +231,7 @@ export const SwipeableCard: React.FC<SwipeableCardProps> = ({
               <Heart className="h-6 w-6" />
             </Button>
           </div>
-        </CardContent>
+        </div>
       </Card>
     </div>
   );

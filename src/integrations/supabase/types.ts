@@ -502,6 +502,11 @@ export type Database = {
           created_at: string
           full_name: string | null
           id: string
+          latitude: number | null
+          location_city: string | null
+          location_country: string | null
+          longitude: number | null
+          max_distance: number | null
           updated_at: string
           username: string | null
         }
@@ -511,6 +516,11 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id: string
+          latitude?: number | null
+          location_city?: string | null
+          location_country?: string | null
+          longitude?: number | null
+          max_distance?: number | null
           updated_at?: string
           username?: string | null
         }
@@ -520,6 +530,11 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id?: string
+          latitude?: number | null
+          location_city?: string | null
+          location_country?: string | null
+          longitude?: number | null
+          max_distance?: number | null
           updated_at?: string
           username?: string | null
         }
@@ -733,6 +748,36 @@ export type Database = {
           receiver_id?: string
           sender_id?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      user_photos: {
+        Row: {
+          created_at: string
+          display_order: number | null
+          id: string
+          is_primary: boolean | null
+          photo_url: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          is_primary?: boolean | null
+          photo_url: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          is_primary?: boolean | null
+          photo_url?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -974,6 +1019,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calculate_distance: {
+        Args: { lat1: number; lat2: number; lon1: number; lon2: number }
+        Returns: number
+      }
       check_and_award_achievement: {
         Args: { achievement_id: string; progress: number; user_id: string }
         Returns: undefined

@@ -13,6 +13,8 @@ import { useToast } from '@/hooks/use-toast';
 import SecuritySettings from '@/components/settings/SecuritySettings';
 import NotificationSettings from '@/components/notifications/NotificationSettings';
 import { ProfilePrompts } from '@/components/profile/ProfilePrompts';
+import { LocationPicker } from '@/components/mjolo/LocationPicker';
+import { PhotoManager } from '@/components/mjolo/PhotoManager';
 
 const ProfileSettings = () => {
   const { user } = useAuth();
@@ -217,8 +219,10 @@ const ProfileSettings = () => {
               </div>
             </TabsContent>
 
-            <TabsContent value="prompts">
+            <TabsContent value="prompts" className="space-y-6">
               <ProfilePrompts />
+              <LocationPicker />
+              <PhotoManager />
             </TabsContent>
 
             <TabsContent value="notifications">

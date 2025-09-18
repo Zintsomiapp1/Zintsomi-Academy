@@ -14,9 +14,15 @@ interface Profile {
   full_name: string;
   avatar_url: string;
   bio: string;
+  distance?: number | null;
   prompts?: Array<{
     question: string;
     answer: string;
+  }>;
+  photos?: Array<{
+    photo_url: string;
+    is_primary: boolean;
+    display_order: number;
   }>;
 }
 
@@ -45,40 +51,85 @@ export function MatchFeed() {
 
   const fetchProfiles = async () => {
     try {
-      // First get profiles
-      const { data: profilesData, error: profilesError } = await supabase
+      // Get current user's location for distance filtering
+      const { data: currentUserData } = await supabase
+        .from('profiles')
+        .select('latitude, longitude, max_distance')
+        .eq('id', user?.id)
+        .single();
+
+      let profilesQuery = supabase
         .from('profiles')
         .select('*')
-        .neq('id', user?.id)
-        .limit(10);
+        .neq('id', user?.id);
+
+      // If user has location set, filter by distance
+      if (currentUserData?.latitude && currentUserData?.longitude) {
+        profilesQuery = profilesQuery
+          .not('latitude', 'is', null)
+          .not('longitude', 'is', null);
+      }
+
+      const { data: profilesData, error: profilesError } = await profilesQuery.limit(10);
 
       if (profilesError) throw profilesError;
       
-      // Then get their prompt answers
+      // Then get their prompt answers and photos
       const profilesWithPrompts = await Promise.all(
         (profilesData || []).map(async (profile) => {
-          const { data: promptAnswers } = await supabase
-            .from('user_prompt_answers')
-            .select(`
-              answer,
-              prompt:profile_prompts(question)
-            `)
-            .eq('user_id', profile.id)
-            .limit(3);
+          const [promptAnswers, photos] = await Promise.all([
+            supabase
+              .from('user_prompt_answers')
+              .select(`
+                answer,
+                prompt:profile_prompts(question)
+              `)
+              .eq('user_id', profile.id)
+              .limit(3),
+            supabase
+              .from('user_photos')
+              .select('photo_url, is_primary, display_order')
+              .eq('user_id', profile.id)
+              .order('display_order')
+          ]);
+
+          // Calculate distance if both users have location
+          let distance = null;
+          if (currentUserData?.latitude && currentUserData?.longitude && 
+              profile.latitude && profile.longitude) {
+            const { data: distanceData } = await supabase
+              .rpc('calculate_distance', {
+                lat1: currentUserData.latitude,
+                lon1: currentUserData.longitude,
+                lat2: profile.latitude,
+                lon2: profile.longitude
+              });
+            distance = distanceData;
+          }
 
           return {
             ...profile,
-            prompts: promptAnswers?.map(pa => ({
+            distance,
+            prompts: promptAnswers.data?.map(pa => ({
               question: pa.prompt.question,
               answer: pa.answer
-            })) || []
+            })) || [],
+            photos: photos.data || []
           };
         })
       );
+
+      // Filter by distance if user has set max_distance
+      let filteredProfiles = profilesWithPrompts;
+      if (currentUserData?.max_distance) {
+        filteredProfiles = profilesWithPrompts.filter(profile => 
+          !profile.distance || profile.distance <= currentUserData.max_distance
+        );
+      }
       
-      setProfiles(profilesWithPrompts);
-      if (profilesWithPrompts && profilesWithPrompts.length > 0) {
-        setCurrentProfile(profilesWithPrompts[0]);
+      setProfiles(filteredProfiles);
+      if (filteredProfiles && filteredProfiles.length > 0) {
+        setCurrentProfile(filteredProfiles[0]);
       }
     } catch (error) {
       console.error('Error fetching profiles:', error);
