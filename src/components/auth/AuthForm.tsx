@@ -29,12 +29,15 @@ const AuthForm = ({ isLogin, loading, onSubmit, onToggleMode, onGoogleSignIn }: 
   });
 
   const handleGoogleSignIn = async () => {
-    await supabase.auth.signInWithOAuth({
+    const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: 'https://mjolo-app.vercel.app'
+        redirectTo: 'https://mjolo-app.vercel.app/dashboard'
       }
     });
+    
+    if (error) console.error('Google login error', error);
+    else console.log('Redirecting to Google login...', data);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
