@@ -74,7 +74,7 @@ export const useAuth = () => {
           username,
           full_name: fullName,
         },
-        emailRedirectTo: `${window.location.origin}/`
+        emailRedirectTo: 'https://mjolo-app.vercel.app'
       },
     });
     return { data, error };
