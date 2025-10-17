@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { playSound } from '@/lib/sounds';
 
 interface NotificationSubscription {
   endpoint: string;
@@ -146,6 +147,7 @@ export const usePushNotifications = () => {
 
   // Send notification for new message
   const notifyNewMessage = useCallback((senderName: string, message: string) => {
+    playSound('message');
     sendNotification(`New message from ${senderName}`, {
       body: message,
       tag: 'new-message',
@@ -155,6 +157,7 @@ export const usePushNotifications = () => {
 
   // Send notification for new match
   const notifyNewMatch = useCallback((matchName: string) => {
+    playSound('match');
     sendNotification(`New match with ${matchName}! 💕`, {
       body: 'Start chatting now',
       tag: 'new-match',
@@ -164,6 +167,7 @@ export const usePushNotifications = () => {
 
   // Send notification for activity
   const notifyActivity = useCallback((title: string, message: string) => {
+    playSound('notification');
     sendNotification(title, {
       body: message,
       tag: 'activity',

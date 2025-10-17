@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { usePushNotifications } from '@/hooks/usePushNotifications';
+import { playSound } from '@/lib/sounds';
 
 export interface UserMessage {
   id: string;
@@ -225,6 +226,9 @@ export const useMessaging = (receiverId?: string) => {
           // Show notification if message is from someone else
           if (newMessage.sender_id !== user.id) {
             const senderName = senderProfile?.full_name || "Someone";
+            
+            // Play sound
+            playSound('message');
             
             // Show toast notification
             toast({
