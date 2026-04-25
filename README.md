@@ -60,6 +60,11 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
+
+## Product roadmap
+
+A living staged roadmap is tracked in [`ROADMAP.md`](./ROADMAP.md).
+
 ## How can I deploy this project?
 
 Simply open [Lovable](https://lovable.dev/projects/27b8946b-f96c-4254-8e1b-a530b2016557) and click on Share -> Publish.
