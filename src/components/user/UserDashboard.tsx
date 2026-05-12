@@ -1,32 +1,28 @@
 
 import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { 
-  Heart, 
-  MessageCircle, 
-  Eye, 
-  Calendar,
-  Camera,
-  Settings,
-  User,
-  Plus,
-  Users,
-  Flame
-} from 'lucide-react';
+import { Heart, Camera, Plus, Users, Flame, Trees } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import GamificationWidget from '@/components/gamification/GamificationWidget';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useDailyStreak } from '@/hooks/useDailyStreak';
+import OnboardingChecklist from '@/components/user/OnboardingChecklist';
+import StageTracker from '@/components/user/StageTracker';
 
 const UserDashboard = () => {
   const { user } = useAuth();
-  
+  const { t } = useLanguage();
+
   const userName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User';
   const userInitials = userName.split(' ').map(n => n[0]).join('').toUpperCase();
+  const userKey = user?.id || user?.email || null;
+  const { streak } = useDailyStreak(userKey);
 
   return (
-    <div className="max-w-md mx-auto bg-white min-h-screen mobile-scroll">
+    <div className="max-w-md mx-auto bg-white min-h-screen mobile-scroll pb-[calc(6rem+env(safe-area-inset-bottom))]">
+      {userKey && <OnboardingChecklist userKey={userKey} />}
       {/* Stories Section */}
       <div className="px-4 py-4 border-b border-gray-100">
         <div className="flex items-center space-x-4 overflow-x-auto">
@@ -72,10 +68,10 @@ const UserDashboard = () => {
             </Avatar>
             <div className="flex-1">
               <h2 className="text-xl font-bold text-gray-900">{userName}</h2>
-              <p className="text-gray-600 text-sm">Ready to find love ✨</p>
+              <p className="text-gray-600 text-sm">{t('profileReady')}</p>
               <div className="flex items-center gap-1 mt-2">
                 <Flame className="h-4 w-4 text-orange-500" />
-                <span className="text-sm font-medium text-gray-700">0 streak</span>
+                <span className="text-sm font-medium text-gray-700">{streak} {t('streak')}</span>
               </div>
             </div>
           </div>
@@ -123,15 +119,25 @@ const UserDashboard = () => {
       
       {/* Quick Actions */}
       <div className="px-4 py-4 border-t border-gray-100">
-        <h3 className="font-semibold text-gray-900 mb-4">Discover Love</h3>
+        <h3 className="font-semibold text-gray-900 mb-4">{t('discoverLove')}</h3>
         <div className="space-y-3">
           <Link to="/mjolo" className="block">
             <Button className="w-full bg-gradient-to-r from-mjolo-pink to-mjolo-purple hover:from-mjolo-pink/90 hover:to-mjolo-purple/90 text-white font-semibold py-4 rounded-xl">
               <Heart className="h-5 w-5 mr-2" />
-              Start Swiping
+              {t('startSwiping')}
+            </Button>
+          </Link>
+          <Link to="/vr-story-forest" className="block">
+            <Button variant="outline" className="w-full border-emerald-700 text-emerald-700 hover:bg-emerald-50 font-semibold py-4 rounded-xl">
+              <Trees className="h-5 w-5 mr-2" />
+              Enter VR Story Forest
             </Button>
           </Link>
         </div>
+      </div>
+
+      <div className="px-4 pb-4">
+        <StageTracker />
       </div>
 
       {/* Gamification Widget */}

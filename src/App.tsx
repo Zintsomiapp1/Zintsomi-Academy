@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 import { useAuth } from "@/hooks/useAuth";
 import MobileBottomNav from "@/components/MobileBottomNav";
 import MobileHeader from "@/components/MobileHeader";
@@ -19,6 +20,7 @@ import Messaging from "./pages/Messaging";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminPanel from "./pages/AdminPanel";
 import ProfileSettings from "./pages/ProfileSettings";
+import VRStoryForest from "./pages/VRStoryForest";
 import NotFound from "./pages/NotFound";
 import ErrorBoundary from "./components/ErrorBoundary";
 
@@ -62,6 +64,7 @@ const AppContent = () => {
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/admin" element={<AdminPanel />} />
           <Route path="/settings" element={<ProfileSettings />} />
+          <Route path="/vr-story-forest" element={<VRStoryForest />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
@@ -74,7 +77,8 @@ const AppContent = () => {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
-      <TooltipProvider>
+      <LanguageProvider>
+        <TooltipProvider>
         <Toaster />
         <Sonner />
         <BrowserRouter>
@@ -82,7 +86,8 @@ const App = () => (
             <AppContent />
           </ErrorBoundary>
         </BrowserRouter>
-      </TooltipProvider>
+        </TooltipProvider>
+      </LanguageProvider>
     </ThemeProvider>
   </QueryClientProvider>
 );
